@@ -12,6 +12,7 @@ import "tailwindcss/tailwind.css";
 // Perfect Scrollbar
 import PerfectScrollbar from "vue2-perfect-scrollbar";
 import "vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css";
+import store from './store'
 
 Vue.use(PerfectScrollbar)
 
@@ -23,5 +24,6 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')

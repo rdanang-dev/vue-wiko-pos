@@ -6,16 +6,16 @@
         <div
           class="flex bg-white rounded-lg max-w-md mx-auto flex-col text-center"
         >
-          <span class="mt-5 text-lg font-bold">REKRUTMENT DOSEN</span>
+          <span class="mt-5 text-lg font-bold">Wisata Kopi</span>
           <a class="mx-48 mt-3"
             ><img
               class="h-16"
-              src="https://irenkartika.files.wordpress.com/2014/12/logo-bulat-upj.png"
+              src="~@/assets/logos.png"
               alt=""
               width="auto"
           /></a>
           <div class=" mb-8 p-8 ">
-            <span class="text-sm text-blueGray-400">Sign In</span>
+            <!-- <span class="text-sm text-blueGray-400">Sign In</span> -->
             <!-- <h4 class="mb-6 text-3xl">Join our community</h4> -->
             <div
               class="flex flex-col justify-start mb-4 px-4 bg-blueGray-50 rounded"
@@ -123,8 +123,5 @@ export default {
 };
 </script>
 <style>
-.background-login {
-  background-image: url("https://th.bing.com/th/id/R7eacd3594a4ff3ebd5326029bccc9ba1?rik=Z%2fNH3Ps6j%2f9DFA&riu=http%3a%2f%2fupj.ac.id%2fupload%2fmodule%2fgallery3%2fgallery68.jpg&ehk=yPhVP1qMo3pAWbmzb6n4hwFBJ9wIFopCN%2bQ9lM6QnH4%3d&risl=&pid=ImgRaw");
-  background-position: center center;
-}
+
 </style>

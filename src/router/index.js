@@ -18,6 +18,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "Information" */ "../views/Login.vue")
   },
+  {
+    path: "/data-menu",
+    name: "DataMenu",
+    component: () =>
+      import(/* webpackChunkName: "JobVacancies" */ "../views/data-menu.vue")
+  },
 ]
 
 const router = new VueRouter({

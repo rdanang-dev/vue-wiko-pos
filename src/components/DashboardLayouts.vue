@@ -14,7 +14,7 @@
           <slot />
         </div>
 
-        <Footer />
+        <!-- <Footer /> -->
       </div>
     </div>
   </div>
@@ -25,7 +25,7 @@ import { mapState } from "vuex";
 
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
-import Footer from "./Footer";
+// import Footer from "./Footer";
 
 export default {
   name: "Dashboard",
@@ -35,7 +35,7 @@ export default {
   components: {
     Sidebar,
     Navbar,
-    Footer
+    // Footer
   }
 };
 </script>

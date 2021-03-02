@@ -6,7 +6,7 @@
       <!-- left navbar -->
       <div class="flex">
         <!-- mobile hamburger -->
-        <div class="inline-block lg:hidden flex items-center mr-4">
+        <div class="lg:hidden flex items-center mr-4">
           <button
             class="hover:text-blue-500 hover:border-white focus:outline-none navbar-burger"
             @click="toggleSidebar()"
@@ -83,7 +83,7 @@
     >
       <a href="#" class="block px-4 py-2 hover:bg-gray-200">Account</a>
       <a href="#" class="block px-4 py-2 hover:bg-gray-200">Settings</a>
-      <a href="#" class="block px-4 py-2 hover:bg-gray-200">Logout</a>
+      <a href="/login" class="block px-4 py-2 hover:bg-gray-200">Logout</a>
     </div>
     <!-- dropdown menu end -->
   </div>
