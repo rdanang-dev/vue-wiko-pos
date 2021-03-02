@@ -6,18 +6,18 @@ import VueAxios from 'vue-axios'
 // Router
 import router from './router'
 // Tailwind
-import "tailwindcss/tailwind.css";
-import MyTheme from './myTheme.js'
 import VueTailwind from 'vue-tailwind';
+import MyTheme from './myTheme.js'
+import "tailwindcss/tailwind.css";
 // Perfect Scrollbar
 import PerfectScrollbar from "vue2-perfect-scrollbar";
 import "vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css";
 
-Vue.use(PerfectScrollbar);
-
-Vue.use(VueTailwind, MyTheme);
+Vue.use(PerfectScrollbar)
 
 Vue.use(VueAxios, axios)
+
+Vue.use(VueTailwind, MyTheme);
 
 Vue.config.productionTip = false
 
