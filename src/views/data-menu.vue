@@ -6,31 +6,89 @@
           Data Menu
         </div>
         <hr class="mt-5 border-black" />
+        <div class="flex justify-between mt-5">
+          <div class="w-full mr-5">
+            <t-input v-model="search" placeholder="Search" />
+          </div>
 
+          <button
+            @click="openFormModal()"
+            class="py-2 px-3 bg-blue-500 rounded-md text-white focus:shadow-outline-none focus:shadow-xl"
+          >
+            <icon-plus></icon-plus>
+          </button>
+        </div>
         <div class="text-black mt-10 mx-5 overflow-x-auto">
-          <t-table :headers="headers" :data="getApplicantList">
+          <t-table :headers="headers" :data="menuList">
             <template slot="row" slot-scope="props">
               <tr
                 :class="[
-                  props.trClass
+                  props.trClass,
                   // props.rowIndex % 2 === 0 ? 'bg-gray-100' : ''
                 ]"
               >
                 <td :class="props.tdClass">
-                  {{ props.row._id }}
+                  {{ props.row.id }}
                 </td>
                 <td :class="props.tdClass">
-                  {{ props.row.fullName }}
+                  {{ props.row.nama }}
                 </td>
                 <td :class="props.tdClass">
-                  {{ props.row.email }}
+                  {{ props.row.harga }}
                 </td>
-                <td :class="props.tdClass">
-                  <t-button variant="secondary">Edit</t-button>
+                <td :class="props.tdClass" class="flex flex-row">
+                  <t-button
+                    variant="secondary"
+                    class="mr-2 bg-green-400"
+                    @click="openFormModal(props.row.id)"
+                    >Edit</t-button
+                  >
+                  <t-button
+                    variant="secondary"
+                    class="bg-red-400"
+                    @click="openDeleteModal(props.row.id)"
+                    >Delete</t-button
+                  >
                 </td>
               </tr>
             </template>
           </t-table>
+
+          <t-modal v-model="formModal" header="Manage Menu">
+            <div>
+              <label for="">Nama</label>
+              <t-input v-model="menuData.nama" />
+            </div>
+            <div>
+              <label for="">Harga</label>
+              <t-input v-model="menuData.harga" />
+            </div>
+
+            <template v-slot:footer>
+              <div class="flex justify-between">
+                <t-button @click="closeFormModal" type="button">
+                  Cancel
+                </t-button>
+                <t-button @click="submitMenu" type="button">
+                  Save
+                </t-button>
+              </div>
+            </template>
+          </t-modal>
+
+          <t-modal v-model="deleteModal" header="Delete">
+            The data you have been deleted wont be revert.
+            <template v-slot:footer>
+              <div class="flex justify-between">
+                <t-button @click="closeDeleteModal" type="button">
+                  Cancel
+                </t-button>
+                <t-button @click="onDeleteMenu" type="button">
+                  Ok
+                </t-button>
+              </div>
+            </template>
+          </t-modal>
         </div>
       </div>
     </div>
@@ -38,44 +96,126 @@
 </template>
 
 <script>
-import DashboardLayouts from '../components/DashboardLayouts.vue';
-import { mapActions, mapGetters } from "vuex";
+import DashboardLayouts from "../components/DashboardLayouts.vue";
+import { mapActions, mapState } from "vuex";
+import IconPlus from "vue-material-design-icons/Plus";
 export default {
-  components: { DashboardLayouts },
+  components: { DashboardLayouts, IconPlus },
   name: "Job",
   data() {
     return {
+      search: "",
+      formModal: false,
+      deleteModal: false,
+      selectedId: null,
+      selectedAction: "create",
       headers: [
         {
-          value: "_id",
-          text: "ID"
+          value: "id",
+          text: "ID",
         },
         {
-          value: "fullName",
-          text: "Fullname"
+          value: "nama",
+          text: "Nama",
         },
         {
-          value: "email",
-          text: "Email"
+          value: "harga",
+          text: "Harga",
         },
         {
           value: "actions",
-          text: "Actions"
-        }
-      ]
+          text: "Actions",
+        },
+      ],
     };
   },
   computed: {
-    ...mapGetters("auth", ["getApplicantList"])
+    ...mapState("menu", ["menuList", "menuData"]),
+    // ...mapGetters("auth", ["getApplicantList"]),
   },
   mounted() {
     this.fetchData();
   },
   methods: {
-    ...mapActions("auth", ["fetchApplicantList"]),
+    ...mapActions("menu", [
+      "getAllMenuList",
+      "getMenu",
+      "updateMenu",
+      "createMenu",
+      "deleteMenu",
+    ]),
+
+    openFormModal(id = null) {
+      // console.log(id);
+      this.formModal = true;
+
+      if (id != null) {
+        this.selectedId = id;
+        this.selectedAction = "edit";
+        this.getMenu({ id });
+      } else {
+        this.selectedId = null;
+        this.selectedAction = "create";
+      }
+    },
+
+    closeFormModal() {
+      this.formModal = false;
+    },
+
+    openDeleteModal(id) {
+      this.deleteModal = true;
+      this.selectedId = id;
+    },
+
+    closeDeleteModal() {
+      this.deleteModal = false;
+    },
+
+    async onDeleteMenu() {
+      try {
+        await this.deleteMenu({ id: this.selectedId });
+        this.fetchData();
+        this.closeDeleteModal();
+        this.$toast.success("Data Delete Successfully", { duration: 3000 });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async submitMenu() {
+      try {
+        console.log(this.selectedAction);
+        if (this.selectedAction == "create") {
+          await this.createMenu({ payload: this.menuData });
+        } else if (this.selectedAction == "edit") {
+          await this.updateMenu({
+            id: this.selectedId,
+            payload: this.menuData,
+          });
+          console.log(this.$toast);
+
+          this.closeFormModal();
+        }
+        this.fetchData();
+        this.$toast.success("Data Saved Successfully", { duration: 3000 });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     fetchData() {
-      this.fetchApplicantList();
-    }
-  }
+      this.getAllMenuList();
+    },
+    // fetchApiMenu() {
+    //   const url = "https://wiko-pos.test/api/menu";
+    //   let self = this;
+
+    //   this.axios.get(url).then((response) => {
+    //     console.log(response);
+    //     self.menuList = response.data;
+    //   });
+    // },
+  },
 };
 </script>
