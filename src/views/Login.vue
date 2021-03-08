@@ -8,11 +8,7 @@
         >
           <span class="mt-5 text-lg font-bold">Wisata Kopi</span>
           <a class="mx-48 mt-3"
-            ><img
-              class="h-16"
-              src="~@/assets/logos.png"
-              alt=""
-              width="auto"
+            ><img class="h-16" src="~@/assets/logos.png" alt="" width="auto"
           /></a>
           <div class=" mb-8 p-8 ">
             <!-- <span class="text-sm text-blueGray-400">Sign In</span> -->
@@ -26,6 +22,7 @@
                   class="w-full pl-3 py-4 rounded-lg text-xs placeholder-blueGray-400 font-semibold leading-none bg-blueGray-50 outline-none"
                   type="email"
                   placeholder="name@email.com"
+                  v-model="login.email"
                 />
                 <svg
                   class="h-6 w-6 ml-4 my-auto text-blueGray-300"
@@ -50,8 +47,8 @@
               <div class="flex flex-row">
                 <input
                   class="w-full pl-3 py-4 rounded-lg text-xs placeholder-blueGray-400 font-semibold leading-none bg-blueGray-50 outline-none"
-                  :type="passwordField"
                   placeholder="Enter your password"
+                  v-model="login.password"
                 />
                 <button
                   class="ml-4 focus:shadow focus:bg-white focus:border-none focus:outline-none"
@@ -82,7 +79,7 @@
             </div>
             <button
               class="mb-5 block w-full p-4 text-center text-xs text-white font-semibold leading-none bg-blue-600 hover:bg-blue-700 rounded"
-              @click="onLogin"
+              @click="handleLogin()"
             >
               Sign In
             </button>
@@ -101,27 +98,40 @@
 </template>
 
 <script>
+// import { mapActions, mapState } from "vuex";
 export default {
   name: "Login",
   data() {
     return {
-      passwordField: "password"
+      user: null,
+      login: {
+        email: "",
+        password: "",
+      },
     };
   },
+  computed: {
+    // ...mapState("login", ["userList", "userData"]),
+  },
   methods: {
+    // ...mapActions("login", [
+    //   "handleLogin",
+    // "getMenu",
+    // "updateMenu",
+    // "createMenu",
+    // "deleteMenu",
+    // ]),
     onShowPassword: function() {
-      if (this.passwordField === "password") {
-        this.passwordField = "text";
-      } else {
-        this.passwordField = "password";
-      }
+      // if (this.passwordField === "password") {
+      //   this.passwordField = "text";
+      // } else {
+      //   this.passwordField = "password";
+      // }
     },
     onLogin: function() {
       this.$router.push("/");
-    }
-  }
+    },
+  },
 };
 </script>
-<style>
-
-</style>
+<style></style>
