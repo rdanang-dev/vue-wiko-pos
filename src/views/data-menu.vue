@@ -131,7 +131,6 @@ export default {
   },
   computed: {
     ...mapState("menu", ["menuList", "menuData"]),
-    // ...mapGetters("auth", ["getApplicantList"]),
   },
   mounted() {
     this.fetchData();
@@ -207,15 +206,6 @@ export default {
     fetchData() {
       this.getAllMenuList();
     },
-    // fetchApiMenu() {
-    //   const url = "https://wiko-pos.test/api/menu";
-    //   let self = this;
-
-    //   this.axios.get(url).then((response) => {
-    //     console.log(response);
-    //     self.menuList = response.data;
-    //   });
-    // },
   },
 };
 </script>

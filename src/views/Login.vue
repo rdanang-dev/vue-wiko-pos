@@ -24,21 +24,8 @@
                   placeholder="name@email.com"
                   v-model="login.email"
                 />
-                <svg
-                  class="h-6 w-6 ml-4 my-auto text-blueGray-300"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewbox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                  ></path>
-                </svg>
               </div>
+              <p class="text-sm text-red-600" v-text="errors.email"></p>
             </div>
             <div class="flex flex-col mb-6 px-4 bg-blueGray-50 rounded">
               <label class="text-left">
@@ -50,46 +37,15 @@
                   placeholder="Enter your password"
                   v-model="login.password"
                 />
-                <button
-                  class="ml-4 focus:shadow focus:bg-white focus:border-none focus:outline-none"
-                  @click="onShowPassword"
-                >
-                  <svg
-                    class="h-6 w-6 my-auto text-blueGray-300"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewbox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    ></path>
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    ></path>
-                  </svg>
-                </button>
+                <p class="text-sm text-red-600" v-text="errors.password"></p>
               </div>
             </div>
             <button
               class="mb-5 block w-full p-4 text-center text-xs text-white font-semibold leading-none bg-blue-600 hover:bg-blue-700 rounded"
-              @click="handleLogin()"
+              @click="onLogin"
             >
               Sign In
             </button>
-            <hr />
-            <router-link
-              to="/register"
-              class="mt-5 block text-center w-full focus:outline-none"
-            >
-              Don't have an Account ?
-            </router-link>
           </div>
         </div>
       </div>
@@ -98,7 +54,7 @@
 </template>
 
 <script>
-// import { mapActions, mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   name: "Login",
   data() {
@@ -108,28 +64,20 @@ export default {
         email: "",
         password: "",
       },
+      errors: {},
     };
   },
   computed: {
-    // ...mapState("login", ["userList", "userData"]),
+    ...mapState("login", ["userList", "userData"]),
   },
   methods: {
-    // ...mapActions("login", [
-    //   "handleLogin",
-    // "getMenu",
-    // "updateMenu",
-    // "createMenu",
-    // "deleteMenu",
-    // ]),
-    onShowPassword: function() {
-      // if (this.passwordField === "password") {
-      //   this.passwordField = "text";
-      // } else {
-      //   this.passwordField = "password";
-      // }
-    },
-    onLogin: function() {
-      this.$router.push("/");
+    ...mapActions("login", [
+      "handleLogin",
+      // "handleUser"
+    ]),
+    async onLogin() {
+      await this.handleLogin({ payload: this.login });
+      await this.$router.push("/");
     },
   },
 };

@@ -1,4 +1,4 @@
-// import axios from "axios";
+import axios from "axios";
 
 const state = {
   userList: [],
@@ -14,16 +14,17 @@ const mutations = {
   },
 };
 const actions = {
-  // async handleLogin() {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.VUE_APP_BASE_URL}/sanctum/csrf-cookie`
-  //     );
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // },
+  async handleLogin(context, { payload }) {
+    try {
+      const response = await axios.post(
+        `${process.env.VUE_APP_BASE_URL}/api/auth`,
+        payload
+      );
+      localStorage.setItem("token", response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };
 
 const menu = {

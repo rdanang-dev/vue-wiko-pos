@@ -83,30 +83,35 @@
     >
       <a href="#" class="block px-4 py-2 hover:bg-gray-200">Account</a>
       <a href="#" class="block px-4 py-2 hover:bg-gray-200">Settings</a>
-      <a href="/login" class="block px-4 py-2 hover:bg-gray-200">Logout</a>
+      <a href="#" class="block px-4 py-2 hover:bg-gray-200" @click="onLogout"
+        >Logout</a
+      >
     </div>
     <!-- dropdown menu end -->
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
-
+import { mapActions, mapState } from "vuex";
 export default {
   name: "Navbar",
   computed: {
-    ...mapState(["sideBarOpen"])
+    ...mapState(["sideBarOpen"]),
   },
   data() {
     return {
-      dropDownOpen: false
+      dropDownOpen: false,
     };
   },
   methods: {
+    ...mapActions("login", [
+      // "handleLogin",
+      "handleLogOut",
+    ]),
     toggleSidebar() {
       this.$store.dispatch("toggleSidebar");
     },
-    onLogout() {}
-  }
+    onLogout() {},
+  },
 };
 </script>
