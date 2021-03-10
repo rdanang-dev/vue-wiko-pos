@@ -1,11 +1,11 @@
 <template>
   <dashboard-layouts>
     <div
-      class="flex flex-col-reverse lg:flex-row justify-center p-3  flex-grow h-full"
+      class="flex flex-col-reverse lg:flex-row justify-center p-3  flex-grow h-full "
     >
       <div class="w-full lg:w-8/12 mr-4">
         <div
-          class="w-full p-5 bg-white rounded-xl mb-5"
+          class="w-full p-5 bg-white rounded-xl mb-5 shadow-xl"
           v-for="(user, key) in userList"
           :key="key"
         >
