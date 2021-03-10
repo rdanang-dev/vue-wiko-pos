@@ -17,7 +17,7 @@
               class="flex flex-col justify-start mb-4 px-4 bg-blueGray-50 rounded"
             >
               <label class="text-left">Email</label>
-              <div class="flex flex-row">
+              <div class="flex flex-col">
                 <input
                   class="w-full pl-3 py-4 rounded-lg text-xs placeholder-blueGray-400 font-semibold leading-none bg-blueGray-50 outline-none"
                   type="email"
@@ -25,7 +25,12 @@
                   v-model="login.email"
                 />
               </div>
-              <p class="text-sm text-red-600" v-text="errors.email"></p>
+              <span
+                class="text-sm text-left text-red-600"
+                v-if="errorData.errors && errorData.errors.email"
+              >
+                {{ errorData.errors.email[0] }}
+              </span>
             </div>
             <div class="flex flex-col mb-6 px-4 bg-blueGray-50 rounded">
               <label class="text-left">
@@ -33,12 +38,19 @@
               </label>
               <div class="flex flex-row">
                 <input
+                  type="password"
                   class="w-full pl-3 py-4 rounded-lg text-xs placeholder-blueGray-400 font-semibold leading-none bg-blueGray-50 outline-none"
                   placeholder="Enter your password"
                   v-model="login.password"
                 />
-                <p class="text-sm text-red-600" v-text="errors.password"></p>
+                <!-- <p  v-text="errors.password"></p> -->
               </div>
+              <span
+                class="text-sm text-left text-red-600"
+                v-if="errorData.errors && errorData.errors.password"
+              >
+                {{ errorData.errors.password[0] }}
+              </span>
             </div>
             <button
               class="mb-5 block w-full p-4 text-center text-xs text-white font-semibold leading-none bg-blue-600 hover:bg-blue-700 rounded"
@@ -68,7 +80,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("login", ["userList", "userData"]),
+    ...mapState("login", ["userList", "userData", "errorData"]),
   },
   methods: {
     ...mapActions("login", [
@@ -76,8 +88,15 @@ export default {
       // "handleUser"
     ]),
     async onLogin() {
-      await this.handleLogin({ payload: this.login });
-      await this.$router.push("/");
+      try {
+        // set payload dengan isi dari variable login yaitu login.email dan login.password
+        const response = await this.handleLogin({ payload: this.login });
+        console.log("berhasil", response);
+        this.$router.push("/");
+      } catch (error) {
+        console.log(error);
+        this.$toast.error(error.message);
+      }
     },
   },
 };

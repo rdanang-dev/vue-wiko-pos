@@ -97,6 +97,7 @@ export default {
   name: "Navbar",
   computed: {
     ...mapState(["sideBarOpen"]),
+    ...mapState("login", ["userList", "userData"]),
   },
   data() {
     return {
@@ -111,7 +112,10 @@ export default {
     toggleSidebar() {
       this.$store.dispatch("toggleSidebar");
     },
-    onLogout() {},
+    async onLogout() {
+      await this.handleLogOut();
+      await this.$router.push("/login");
+    },
   },
 };
 </script>
