@@ -29,13 +29,13 @@
                   name: 'AccountEdit',
                   params: { action: 'edit', id: user.id },
                 }"
-                variant="secondary"
-                class="mr-2 bg-green-400 rounded-md"
+                variant="success"
+                class="mr-2 bg-green-400 rounded-md text-white"
                 >Edit</t-button
               >
               <t-button
-                variant="secondary"
-                class="mr-2 bg-red-700 rounded-md"
+                variant="error"
+                class="mr-2 bg-red-700 rounded-md text-white"
                 @click="openDeleteModal(user.id)"
                 >Delete</t-button
               >
@@ -97,6 +97,7 @@ export default {
   name: "Account",
   data() {
     return {
+      search:"",
       modalDetails: false,
       deleteModal: false,
       selectedId: null,

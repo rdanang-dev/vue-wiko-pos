@@ -5,14 +5,12 @@ const state = {
     errors: [],
   },
   profile: {},
-  token: localStorage.getItem("token"),
-  isAuthenticated: !!localStorage.getItem("token"),
+  token: ""
 };
 const getters = {
   isAuthenticated(state) {
-    state.token = localStorage.getItem("token");
     axios.defaults.headers.common["Authorization"] = `Bearer ${state.token}`;
-    return state.isAuthenticated;
+    return !!state.token;
   },
 };
 const mutations = {
@@ -28,7 +26,6 @@ const mutations = {
   purgeAuth(state) {
     state.profile = {};
     state.token = "";
-    localStorage.removeItem("token");
   },
 };
 const actions = {
