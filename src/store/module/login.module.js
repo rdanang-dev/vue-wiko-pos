@@ -30,6 +30,11 @@ const mutations = {
   setError(state, payload) {
     state.errorData = payload;
   },
+  purgeAuth(state) {
+    state.profile = {};
+    state.token = "";
+    localStorage.removeItem("token");
+  },
 };
 const actions = {
   // fungsi handle login
@@ -77,14 +82,15 @@ const actions = {
       } catch (error) {
         console.log(error);
       }
+    } else {
+      context.commit("purgeAuth");
     }
   },
 
-  async handleLogout(context) {
+  async handleLogOut(context) {
     try {
       await axios.get(`${process.env.VUE_APP_BASE_URL}/api/auth`);
-      localStorage.removeItem("token");
-      context.commit();
+      context.commit("purgeAuth");
     } catch (error) {
       console.error(error);
     }
