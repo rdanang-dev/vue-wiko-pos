@@ -30,7 +30,25 @@ const routes = [
     path: "/account",
     name: "Account",
     component: () =>
-      import(/* webpackChunkName: "JobVacancies" */ "../views/Account.vue"),
+      import(
+        /* webpackChunkName: "JobVacancies" */ "../views/Account/Account.vue"
+      ),
+  },
+  {
+    path: "/account/:action",
+    name: "AccountCreate",
+    component: () =>
+      import(
+        /* webpackChunkName: "JobVacancies" */ "../views/Account/AccountForm.vue"
+      ),
+  },
+  {
+    path: "/account/:action/:id",
+    name: "AccountEdit",
+    component: () =>
+      import(
+        /* webpackChunkName: "JobVacancies" */ "../views/Account/AccountForm.vue"
+      ),
   },
   {
     path: "/transaction",

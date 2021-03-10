@@ -101,7 +101,7 @@ import { mapActions, mapState } from "vuex";
 import IconPlus from "vue-material-design-icons/Plus";
 export default {
   components: { DashboardLayouts, IconPlus },
-  name: "Job",
+  name: "Menu",
   data() {
     return {
       search: "",

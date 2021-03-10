@@ -1,8 +1,6 @@
 import axios from "axios";
 
 const state = {
-  userList: [],
-  userData: {},
   errorData: {
     errors: [],
   },
@@ -18,9 +16,6 @@ const getters = {
   },
 };
 const mutations = {
-  setUserList(state, payload) {
-    state.userList = payload;
-  },
   setProfile(state, payload) {
     state.profile = payload;
   },
@@ -97,7 +92,7 @@ const actions = {
   },
 };
 
-const menu = {
+const login = {
   namespaced: true,
   state,
   getters,
@@ -105,4 +100,4 @@ const menu = {
   actions,
 };
 
-export default menu;
+export default login;

@@ -5,6 +5,7 @@ Vue.use(Vuex);
 
 import menu from "./module/menu.module";
 import login from "./module/login.module";
+import user from "./module/user.module";
 
 export default new Vuex.Store({
   state: {
@@ -28,5 +29,6 @@ export default new Vuex.Store({
   modules: {
     menu,
     login,
+    user,
   },
 });
