@@ -7,6 +7,8 @@ import menu from "./module/menu.module";
 import login from "./module/login.module";
 import user from "./module/user.module";
 
+import createPersistedState from "vuex-persistedstate";
+
 export default new Vuex.Store({
   state: {
     sideBarOpen: false,
@@ -31,4 +33,13 @@ export default new Vuex.Store({
     login,
     user,
   },
+  plugins:[
+      createPersistedState({
+        storage:{
+          getItem: (key) => localStorage.getItem(key),
+          setItem: (key, value) => localStorage.setItem(key,value),
+          removeItem: (key) => localStorage.removeItem(key)
+        }
+      })
+  ]
 });
