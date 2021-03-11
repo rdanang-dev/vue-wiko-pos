@@ -6,6 +6,7 @@ Vue.use(Vuex);
 import menu from "./module/menu.module";
 import login from "./module/login.module";
 import user from "./module/user.module";
+import order from "./module/order.module";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -32,6 +33,7 @@ export default new Vuex.Store({
     menu,
     login,
     user,
+    order
   },
   plugins:[
       createPersistedState({

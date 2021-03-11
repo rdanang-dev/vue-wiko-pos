@@ -19,7 +19,7 @@
           </button>
         </div>
         <div class="text-black mt-10 mx-5 overflow-x-auto">
-          <t-table :headers="headers" :data="menuList">
+          <t-table :headers="headers" :data="menuList.data">
             <template slot="row" slot-scope="props">
               <tr
                 :class="[
@@ -55,6 +55,9 @@
           </t-table>
 
           <t-modal v-model="formModal" header="Manage Menu">
+            <div>
+              <img :src="menuData.image_url" class="object-fit" />
+            </div>
             <div>
               <label for="">Nama</label>
               <t-input v-model="menuData.nama" />

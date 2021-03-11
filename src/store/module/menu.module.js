@@ -1,6 +1,8 @@
 import axios from "axios";
 const state = {
-  menuList: [],
+  menuList: {
+    data:[]
+  },
   menuData: {},
 };
 const getters = {};
@@ -28,7 +30,7 @@ const actions = {
       const response = await axios.get(
         `${process.env.VUE_APP_BASE_URL}/api/menu/${id}`
       );
-      context.commit("setMenu", response.data);
+      context.commit("setMenu", response.data.data);
     } catch (error) {
       console.log(error);
     }
