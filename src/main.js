@@ -27,6 +27,10 @@ Vue.use(VueAxios, axios);
 
 Vue.use(VueTailwind, MyTheme);
 
+Vue.filter("formatRupiah",(value) => {
+  return new Intl.NumberFormat('id-ID').format(value);
+});
+
 Vue.config.productionTip = false;
 
 new Vue({

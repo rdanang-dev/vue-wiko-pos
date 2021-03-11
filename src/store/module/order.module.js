@@ -6,6 +6,12 @@ const state = {
         data:[]
     },
     orderData: {},
+    cart:[
+        {
+            customer_id:"",
+            selectedProduct:[]
+        }
+    ],
     selectedProduct:[]
 };
 const getters = {
@@ -21,6 +27,11 @@ const mutations = {
     addSelectedProduct(state, payload) {
         console.log(payload);
         state.selectedProduct.push(payload);
+    },
+    removeSelectedProduct(state, id) {
+        state.selectedProduct = state.selectedProduct.filter(value => {
+            return value.id !== id
+        })
     },
     updateField
 };
