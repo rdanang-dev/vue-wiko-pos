@@ -97,7 +97,7 @@ export default {
   name: "Account",
   data() {
     return {
-      search:"",
+      search: "",
       modalDetails: false,
       deleteModal: false,
       selectedId: null,
@@ -113,7 +113,6 @@ export default {
     ...mapActions("user", [
       "getAllUserList",
       "getUser",
-      // "updateMenu",
       // "createMenu",
       "deleteUser",
     ]),

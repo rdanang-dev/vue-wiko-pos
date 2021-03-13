@@ -37,7 +37,6 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import DashboardLayouts from "../../components/DashboardLayouts.vue";
-// @ is an alias to /src
 
 export default {
   name: "AccountForm",
@@ -58,31 +57,6 @@ export default {
   },
   methods: {
     ...mapActions("user", ["resetUser", "getUser", "createUser", "updateUser"]),
-    // openModalDetails(id) {
-    //   this.selectedId = id;
-    //   this.modalDetails = true;
-    //   this.getUser({ id });
-    // },
-
-    // openDeleteModal(id) {
-    //   this.deleteModal = true;
-    //   this.selectedId = id;
-    // },
-
-    // closeDeleteModal() {
-    //   this.deleteModal = false;
-    // },
-
-    // async onDeleteUser() {
-    //   try {
-    //     await this.deleteUser({ id: this.selectedId });
-    //     this.fetchData();
-    //     this.closeDeleteModal();
-    //     this.$toast.success("Data Delete Successfully", { duration: 3000 });
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // },
 
     submitForm() {
       try {
