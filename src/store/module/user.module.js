@@ -28,7 +28,7 @@ const actions = {
       const response = await axios.get(
         `${process.env.VUE_APP_BASE_URL}/api/user/${id}`
       );
-      context.commit("setUser", response.data);
+      context.commit("setUser", response.data.data);
     } catch (error) {
       console.log(error);
     }
@@ -50,7 +50,7 @@ const actions = {
   },
   async updateUser(context, { id, payload }) {
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `${process.env.VUE_APP_BASE_URL}/api/user/${id}`,
         payload
       );

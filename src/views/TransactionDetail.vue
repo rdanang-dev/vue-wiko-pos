@@ -17,7 +17,7 @@
             class="w-1/4 lg:w-1/4 rounded-xl shadow-md px-1 mb-5"
             v-for="(menu, key) in filteredItem"
             :key="key"
-            @click="onSelectMenu(menu.id)"
+            @click="onSelectMenu(menu.menu_id)"
           >
             <div>
               <img class="rounded-t-lg" :src="menu.image_url" />
@@ -54,7 +54,7 @@
                   <t-button
                     fixedClasses="h-7 w-7 rounded-full"
                     class="flex justify-center align-middle"
-                    @click="onPlus(menu.id, menu.price)"
+                    @click="onPlus(menu.menu_id, menu.price)"
                   >
                     <icon-plus class="w-6 h-6" />
                   </t-button>
@@ -64,7 +64,7 @@
                   <t-button
                     fixedClasses="h-7 w-7 rounded-full"
                     class="flex justify-center align-middle"
-                    @click="onMin(menu.id, menu.price)"
+                    @click="onMin(menu.menu_id, menu.price)"
                   >
                     <icon-minus class="w-6 h-6" />
                   </t-button>
@@ -86,7 +86,9 @@
 
         <div class="mt-5 flex flex-col">
           <div class="flex flex-col w-full mb-2">
-            <t-button class="w-full">Move to Cart</t-button>
+            <t-button :to="{ name: 'Transaction' }" class="w-full"
+              >Move to Cart</t-button
+            >
           </div>
           <div class="flex flex-col w-full">
             <t-button class="w-full">CheckOut</t-button>
@@ -128,7 +130,7 @@ export default {
     };
   },
   created() {
-    this.syncData = debounce(this.syncData, 2000);
+    this.syncData = debounce(this.syncData, 1000);
   },
   onActive() {
     console.log("active");
@@ -186,11 +188,11 @@ export default {
     },
 
     onSelectMenu(id) {
-      let findMenu = this.productMenu.find((value) => value.id === id);
-      let checkExists = this.details.some((value) => value.id === id);
-
+      let findMenu = this.productMenu.find((value) => value.menu_id === id);
+      let checkExists = this.details.some((value) => value.menu_id === id);
+      // console.log(findMenu);
       if (checkExists) {
-        let findIndex = this.details.findIndex((value) => value.id === id);
+        let findIndex = this.details.findIndex((value) => value.menu_id === id);
         let qty = this.details[findIndex].qty;
 
         this.details[findIndex].qty = qty + 1;
@@ -205,7 +207,9 @@ export default {
 
     onPlus(id, paramHarga) {
       const price = paramHarga;
-      let currentIndex = this.details.findIndex((value) => value.id === id);
+      let currentIndex = this.details.findIndex(
+        (value) => value.menu_id === id
+      );
       let qty = this.details[currentIndex].qty;
       this.details[currentIndex].qty += 1;
       this.details[currentIndex].total_price = (qty + 1) * price;
@@ -213,7 +217,9 @@ export default {
 
     onMin(id, paramHarga) {
       const price = paramHarga;
-      let currentIndex = this.details.findIndex((value) => value.id === id);
+      let currentIndex = this.details.findIndex(
+        (value) => value.menu_id === id
+      );
       let qty = this.details[currentIndex].qty;
       if (qty > 1) {
         this.details[currentIndex].qty -= 1;

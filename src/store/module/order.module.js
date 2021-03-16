@@ -33,7 +33,7 @@ const mutations = {
   },
   removeSelectedProduct(state, id) {
     state.orderData.details = state.orderData.details.filter((value) => {
-      return value.id !== id;
+      return value.menu_id !== id;
     });
   },
   updateField,

@@ -1,7 +1,7 @@
 import axios from "axios";
 const state = {
   menuList: {
-    data:[]
+    data: [],
   },
   menuData: {},
 };
@@ -35,12 +35,17 @@ const actions = {
       console.log(error);
     }
   },
+  clearMenu(context) {
+    context.commit("setMenu", {});
+  },
   async createMenu(context, { payload }) {
     try {
       const response = await axios.post(
         `${process.env.VUE_APP_BASE_URL}/api/menu`,
         payload
       );
+
+      context.dispatch("clearMenu");
 
       return response.data;
     } catch (error) {
@@ -49,11 +54,11 @@ const actions = {
   },
   async updateMenu(context, { id, payload }) {
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `${process.env.VUE_APP_BASE_URL}/api/menu/${id}`,
         payload
       );
-
+      context.dispatch("clearMenu");
       return response.data;
     } catch (error) {
       console.log(error);

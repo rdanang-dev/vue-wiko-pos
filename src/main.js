@@ -23,7 +23,7 @@ import IdleVue from "idle-vue";
 
 const eventsHub = new Vue();
 
-Vue.use(IdleVue, { eventEmitter: eventsHub, store, idleTime: 10000 });
+Vue.use(IdleVue, { eventEmitter: eventsHub, store, idleTime: 5000 });
 
 Vue.use(VueToast);
 

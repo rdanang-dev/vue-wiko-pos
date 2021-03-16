@@ -6,39 +6,45 @@
       <div class="w-full lg:w-8/12 mr-4">
         <div
           class="w-full p-5 bg-white rounded-xl mb-5 shadow-xl"
-          v-for="(user, key) in userList"
+          v-for="(user, key) in userList.data"
           :key="key"
         >
           <div class="flex justify-between">
             <div>
               <img
-                src="https://a7sas.net/wp-content/uploads/2019/07/4060.jpeg"
+                :src="user.image_url"
                 class="w-12 h-12 rounded-full shadow-lg"
               />
               {{ user.name }}
             </div>
-            <div class="flex flex-row">
-              <t-button
-                variant="secondary"
-                class="mr-2 bg-blue-300 rounded-md py-2"
-                @click="openModalDetails(user.id)"
-                >Details</t-button
-              >
-              <t-button
-                :to="{
-                  name: 'AccountEdit',
-                  params: { action: 'edit', id: user.id },
-                }"
-                variant="success"
-                class="mr-2 bg-green-400 rounded-md text-white"
-                >Edit</t-button
-              >
-              <t-button
-                variant="error"
-                class="mr-2 bg-red-700 rounded-md text-white"
-                @click="openDeleteModal(user.id)"
-                >Delete</t-button
-              >
+            <div class="flex flex-row py-4">
+              <div>
+                <t-button
+                  variant="secondary"
+                  class="mr-2 bg-blue-300 rounded-md"
+                  @click="openModalDetails(user.id)"
+                  >Details</t-button
+                >
+              </div>
+              <div>
+                <t-button
+                  :to="{
+                    name: 'AccountEdit',
+                    params: { action: 'edit', id: user.id },
+                  }"
+                  variant="success"
+                  class="mr-2 bg-green-400 rounded-md text-white"
+                  >Edit</t-button
+                >
+              </div>
+              <div>
+                <t-button
+                  variant="error"
+                  class="mr-2 bg-red-700 rounded-md text-white"
+                  @click="openDeleteModal(user.id)"
+                  >Delete</t-button
+                >
+              </div>
             </div>
           </div>
         </div>

@@ -55,8 +55,35 @@
           </t-table>
 
           <t-modal v-model="formModal" header="Manage Menu">
+            <div class="flex justify-center">
+              <img
+                :src="menuData.image_url"
+                class="object-fit w-full"
+                style="max-width:250px;"
+              />
+            </div>
             <div>
-              <img :src="menuData.image_url" class="object-fit" />
+              <label for="">Picture</label>
+              <label
+                class="w-full flex flex-col items-center px-1 py-1 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue hover:text-blue-500"
+              >
+                <svg
+                  class="w-8 h-8"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z"
+                  />
+                </svg>
+                <span class="mt-2 text-base leading-normal">{{
+                  selectedImage != null && selectedImage.name
+                    ? selectedImage.name
+                    : " Select File"
+                }}</span>
+                <input type="file" class="hidden" @change="onFileChange" />
+              </label>
             </div>
             <div>
               <label for="">Nama</label>
@@ -111,6 +138,7 @@ export default {
       formModal: false,
       deleteModal: false,
       selectedId: null,
+      selectedImage: null,
       selectedAction: "create",
       headers: [
         {
@@ -145,6 +173,7 @@ export default {
       "updateMenu",
       "createMenu",
       "deleteMenu",
+      "clearMenu",
     ]),
 
     openFormModal(id = null) {
@@ -156,8 +185,10 @@ export default {
         this.selectedAction = "edit";
         this.getMenu({ id });
       } else {
+        // formModal.reset();
         this.selectedId = null;
         this.selectedAction = "create";
+        this.clearMenu();
       }
     },
 
@@ -187,23 +218,35 @@ export default {
 
     async submitMenu() {
       try {
-        console.log(this.selectedAction);
+        // console.log(this.selectedAction);
+        const formData = new FormData();
+        if (this.selectedImage != null) {
+          formData.append("image", this.selectedImage);
+        }
+        formData.append("name", this.menuData.name);
+        formData.append("price", this.menuData.price);
+
         if (this.selectedAction == "create") {
-          await this.createMenu({ payload: this.menuData });
+          await this.createMenu({ payload: formData });
         } else if (this.selectedAction == "edit") {
           await this.updateMenu({
             id: this.selectedId,
-            payload: this.menuData,
+            payload: formData,
           });
-          console.log(this.$toast);
+          // console.log(this.$toast);
 
           this.closeFormModal();
         }
         this.fetchData();
         this.$toast.success("Data Saved Successfully", { duration: 3000 });
+        this.selectedImage = null;
       } catch (error) {
         console.log(error);
       }
+    },
+
+    async onFileChange(e) {
+      this.selectedImage = e.target.files[0];
     },
 
     fetchData() {

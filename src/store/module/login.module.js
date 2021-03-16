@@ -5,7 +5,7 @@ const state = {
     errors: [],
   },
   profile: {},
-  token: ""
+  token: "",
 };
 const getters = {
   isAuthenticated(state) {
@@ -70,7 +70,7 @@ const actions = {
         const response = await axios.get(
           `${process.env.VUE_APP_BASE_URL}/api/profile`
         );
-        context.commit("setProfile", response.data);
+        context.commit("setProfile", response.data.data);
       } catch (error) {
         console.log(error);
       }

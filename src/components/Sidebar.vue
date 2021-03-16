@@ -47,10 +47,7 @@
           </span>
           <span class="text-gray-700">Kelola Akun</span>
         </router-link>
-      </div>
 
-      <div class="mb-4 px-4">
-        <p class="pl-4 text-sm font-semibold mb-1">Transaction</p>
         <router-link
           to="/transaction"
           exact
@@ -61,17 +58,6 @@
             <cartVariant></cartVariant>
           </span>
           <span class="text-gray-700">Trasaction</span>
-        </router-link>
-        <router-link
-          to="/cart"
-          exact
-          exact-active-class="bg-gray-200"
-          class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
-        >
-          <span class="h-6 w-6 fill-current mr-2" viewBox="0 0 20 20">
-            <cartArrowDown></cartArrowDown>
-          </span>
-          <span class="text-gray-700">Cart</span>
         </router-link>
       </div>
 
@@ -107,7 +93,6 @@
 <script>
 import { mapState } from "vuex";
 import cartVariant from "vue-material-design-icons/CartVariant";
-import cartArrowDown from "vue-material-design-icons/CartArrowDown";
 import viewDashboard from "vue-material-design-icons/ViewDashboard";
 import food from "vue-material-design-icons/Food";
 import accountSupervisorCircle from "vue-material-design-icons/AccountSupervisorCircle";
@@ -117,7 +102,6 @@ export default {
   name: "Sidebar",
   components: {
     cartVariant,
-    cartArrowDown,
     viewDashboard,
     food,
     accountSupervisorCircle,
