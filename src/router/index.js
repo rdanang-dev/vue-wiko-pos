@@ -57,6 +57,12 @@ const routes = [
       import(/* webpackChunkName: "JobVacancies" */ "../views/Transaction.vue"),
   },
   {
+    path: "/transaction/:id",
+    name: "TransactionDetail",
+    component: () =>
+      import(/* webpackChunkName: "JobVacancies" */ "../views/TransactionDetail.vue"),
+  },
+  {
     path: "/cart",
     name: "Cart",
     component: () =>

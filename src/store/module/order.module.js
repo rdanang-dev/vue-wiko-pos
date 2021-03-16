@@ -5,7 +5,10 @@ const state = {
   orderList: {
     data: [],
   },
-  orderData: {},
+  orderData: {
+    customer_id: "",
+    details: [],
+  },
   cart: [
     {
       customer_id: "",
@@ -26,10 +29,10 @@ const mutations = {
   },
   addSelectedProduct(state, payload) {
     console.log(payload);
-    state.selectedProduct.push(payload);
+    state.orderData.details.push(payload);
   },
   removeSelectedProduct(state, id) {
-    state.selectedProduct = state.selectedProduct.filter((value) => {
+    state.orderData.details = state.orderData.details.filter((value) => {
       return value.id !== id;
     });
   },
@@ -56,7 +59,7 @@ const actions = {
       console.log(error);
     }
   },
-  async createOrder(context, { payload }) {
+  async createOrder(context, { payload } = { payload: {} }) {
     try {
       const response = await axios.post(
         `${process.env.VUE_APP_BASE_URL}/api/order`,

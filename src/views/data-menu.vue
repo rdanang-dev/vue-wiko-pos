@@ -31,10 +31,10 @@
                   {{ props.row.id }}
                 </td>
                 <td :class="props.tdClass">
-                  {{ props.row.nama }}
+                  {{ props.row.name }}
                 </td>
                 <td :class="props.tdClass">
-                  {{ props.row.harga }}
+                  {{ props.row.price }}
                 </td>
                 <td :class="props.tdClass" class="flex flex-row">
                   <t-button
@@ -60,11 +60,11 @@
             </div>
             <div>
               <label for="">Nama</label>
-              <t-input v-model="menuData.nama" />
+              <t-input v-model="menuData.name" />
             </div>
             <div>
               <label for="">Harga</label>
-              <t-input v-model="menuData.harga" />
+              <t-input v-model="menuData.price" />
             </div>
 
             <template v-slot:footer>
@@ -118,11 +118,11 @@ export default {
           text: "ID",
         },
         {
-          value: "nama",
+          value: "name",
           text: "Nama",
         },
         {
-          value: "harga",
+          value: "price",
           text: "Harga",
         },
         {
