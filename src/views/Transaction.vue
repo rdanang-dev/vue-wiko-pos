@@ -72,13 +72,22 @@
               </div>
               <div class="flex flex-col">
                 <div>
-                  <span class="text-sm">
+                  <span class="text-xs">
                     Harga : Rp.{{ menu.harga | formatRupiah }}
                   </span>
                 </div>
-                <span class="text-sm">
+                <span class="text-xs">
                   <div>Subtotal : Rp.{{ menu.total_harga | formatRupiah }}</div>
                 </span>
+              </div>
+              <div class="flex flex-col">
+                <t-button
+                  fixedClasses="h-7 w-7 rounded-full"
+                  class="flex justify-center align-middle"
+                  @click="onCancel(menu.id)"
+                >
+                  <icon-close class="w-6 h-6" />
+                </t-button>
               </div>
             </div>
           </perfect-scrollbar>
@@ -105,8 +114,9 @@ import { mapActions, mapState, mapMutations } from "vuex";
 import { mapMultiRowFields } from "vuex-map-fields";
 import IconPlus from "vue-material-design-icons/Plus";
 import IconMinus from "vue-material-design-icons/Minus";
+import IconClose from "vue-material-design-icons/Close";
 export default {
-  components: { DashboardLayouts, IconPlus, IconMinus },
+  components: { DashboardLayouts, IconPlus, IconMinus, IconClose },
   computed: {
     ...mapState("menu", ["menuList"]),
     ...mapMultiRowFields("order", ["selectedProduct"]),
@@ -194,6 +204,10 @@ export default {
       } else {
         this.removeSelectedProduct(id);
       }
+    },
+
+    onCancel(id) {
+      this.removeSelectedProduct(id);
     },
 
     filterItem() {
