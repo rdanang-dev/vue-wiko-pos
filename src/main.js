@@ -18,6 +18,12 @@ import store from "./store";
 //import vue toast
 import VueToast from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-sugar.css";
+// Idle Vue
+import IdleVue from "idle-vue";
+
+const eventsHub = new Vue();
+
+Vue.use(IdleVue, { eventEmitter: eventsHub, store, idleTime: 10000 });
 
 Vue.use(VueToast);
 
@@ -27,8 +33,8 @@ Vue.use(VueAxios, axios);
 
 Vue.use(VueTailwind, MyTheme);
 
-Vue.filter("formatRupiah",(value) => {
-  return new Intl.NumberFormat('id-ID').format(value);
+Vue.filter("formatRupiah", (value) => {
+  return new Intl.NumberFormat("id-ID").format(value);
 });
 
 Vue.config.productionTip = false;

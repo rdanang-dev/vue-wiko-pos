@@ -23,7 +23,7 @@
               <img class="rounded-t-lg" :src="menu.image_url" />
             </div>
             <div class="p-2">
-              {{ menu.nama }} Rp.{{ menu.harga | formatRupiah }}
+              {{ menu.name }} Rp.{{ menu.price | formatRupiah }}
             </div>
           </div>
         </perfect-scrollbar>
@@ -43,18 +43,18 @@
           <perfect-scrollbar class="" style="max-height:230px">
             <div
               class="py-2 px-2 flex flex-row justify-between"
-              v-for="(menu, key) in selectedProduct"
+              v-for="(menu, key) in details"
               :key="key"
             >
               <div class="flex flex-col">
                 <div>
-                  {{ menu.nama }}
+                  {{ menu.name }}
                 </div>
                 <div class="flex flex-row align-middle">
                   <t-button
                     fixedClasses="h-7 w-7 rounded-full"
                     class="flex justify-center align-middle"
-                    @click="onPlus(menu.id, menu.harga)"
+                    @click="onPlus(menu.id, menu.price)"
                   >
                     <icon-plus class="w-6 h-6" />
                   </t-button>
@@ -64,7 +64,7 @@
                   <t-button
                     fixedClasses="h-7 w-7 rounded-full"
                     class="flex justify-center align-middle"
-                    @click="onMin(menu.id, menu.harga)"
+                    @click="onMin(menu.id, menu.price)"
                   >
                     <icon-minus class="w-6 h-6" />
                   </t-button>
@@ -73,11 +73,11 @@
               <div class="flex flex-col">
                 <div>
                   <span class="text-sm">
-                    Harga : Rp.{{ menu.harga | formatRupiah }}
+                    Harga : Rp.{{ menu.price | formatRupiah }}
                   </span>
                 </div>
                 <span class="text-sm">
-                  <div>Subtotal : Rp.{{ menu.total_harga | formatRupiah }}</div>
+                  <div>Subtotal : Rp.{{ menu.total_price | formatRupiah }}</div>
                 </span>
               </div>
             </div>
@@ -105,33 +105,67 @@ import { mapActions, mapState, mapMutations } from "vuex";
 import { mapMultiRowFields } from "vuex-map-fields";
 import IconPlus from "vue-material-design-icons/Plus";
 import IconMinus from "vue-material-design-icons/Minus";
+import { debounce } from "debounce";
 export default {
   components: { DashboardLayouts, IconPlus, IconMinus },
   computed: {
     ...mapState("menu", ["menuList"]),
-    ...mapMultiRowFields("order", ["selectedProduct"]),
+    ...mapState("order", ["orderData"]),
+    ...mapMultiRowFields("order", ["orderData.details"]),
     filteredItem() {
-      return this.menuList.data.filter((value) => {
-        return value.nama.toLowerCase().includes(this.searchMenu.toLowerCase());
+      return this.productMenu.filter((value) => {
+        return value.name.toLowerCase().includes(this.searchMenu.toLowerCase());
       });
     },
   },
   data() {
     return {
+      id: this.$route.params.id,
       searchMenu: "",
       filteredList: [],
+      productMenu: [],
       calculator: [],
     };
+  },
+  created() {
+    this.syncData = debounce(this.syncData, 2000);
+  },
+  onActive() {
+    console.log("active");
+  },
+  async onIdle() {
+    // console.log("onIdle");
+    await this.syncData();
   },
   mounted() {
     this.fetchData();
   },
+  async beforeDestroy() {
+    await this.syncData();
+  },
   methods: {
     ...mapActions("menu", ["getAllMenuList"]),
+    ...mapActions("order", ["getOrder", "updateOrder"]),
     ...mapMutations("order", ["addSelectedProduct", "removeSelectedProduct"]),
-
+    syncData() {
+      this.updateOrder({ id: this.id, payload: this.orderData });
+    },
     async fetchData() {
       await this.getAllMenuList();
+
+      this.productMenu = this.menuList.data.map((value) => {
+        return {
+          menu_id: value.id,
+          image_url: value.image_url,
+          name: value.name,
+          price: value.price,
+          qty: value.qty,
+          slug: value.slug,
+          total_price: value.total_price,
+        };
+      });
+
+      await this.getOrder({ id: this.id });
     },
 
     getDate() {
@@ -152,53 +186,46 @@ export default {
     },
 
     onSelectMenu(id) {
-      let findMenu = this.menuList.data.find((value) => value.id === id);
-      let checkExists = this.selectedProduct.some((value) => value.id === id);
+      let findMenu = this.productMenu.find((value) => value.id === id);
+      let checkExists = this.details.some((value) => value.id === id);
 
       if (checkExists) {
-        let findIndex = this.selectedProduct.findIndex(
-          (value) => value.id === id
-        );
-        let qty = this.selectedProduct[findIndex].qty;
+        let findIndex = this.details.findIndex((value) => value.id === id);
+        let qty = this.details[findIndex].qty;
 
-        this.selectedProduct[findIndex].qty = qty + 1;
-        this.selectedProduct[findIndex].total_harga =
-          (qty + 1) * findMenu.harga;
+        this.details[findIndex].qty = qty + 1;
+        this.details[findIndex].total_price = (qty + 1) * findMenu.price;
       } else {
         findMenu.qty = 1;
-        findMenu.total_harga = findMenu.harga;
+        findMenu.total_price = findMenu.price;
         let pushData = Object.assign({}, findMenu);
         this.addSelectedProduct(pushData);
       }
     },
 
     onPlus(id, paramHarga) {
-      const harga = paramHarga;
-      let currentIndex = this.selectedProduct.findIndex(
-        (value) => value.id === id
-      );
-      let qty = this.selectedProduct[currentIndex].qty;
-      this.selectedProduct[currentIndex].qty += 1;
-      this.selectedProduct[currentIndex].total_harga = (qty + 1) * harga;
+      const price = paramHarga;
+      let currentIndex = this.details.findIndex((value) => value.id === id);
+      let qty = this.details[currentIndex].qty;
+      this.details[currentIndex].qty += 1;
+      this.details[currentIndex].total_price = (qty + 1) * price;
     },
 
     onMin(id, paramHarga) {
-      const harga = paramHarga;
-      let currentIndex = this.selectedProduct.findIndex(
-        (value) => value.id === id
-      );
-      let qty = this.selectedProduct[currentIndex].qty;
+      const price = paramHarga;
+      let currentIndex = this.details.findIndex((value) => value.id === id);
+      let qty = this.details[currentIndex].qty;
       if (qty > 1) {
-        this.selectedProduct[currentIndex].qty -= 1;
-        this.selectedProduct[currentIndex].total_harga = (qty - 1) * harga;
+        this.details[currentIndex].qty -= 1;
+        this.details[currentIndex].total_price = (qty - 1) * price;
       } else {
         this.removeSelectedProduct(id);
       }
     },
 
     filterItem() {
-      this.filteredList = this.menuList.data.filter((value) => {
-        return value.nama.toLowerCase() === this.searchMenu.toLowerCase();
+      this.filteredList = this.productMenu.filter((value) => {
+        return value.name.toLowerCase() === this.searchMenu.toLowerCase();
       });
     },
   },
