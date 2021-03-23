@@ -58,7 +58,7 @@
             <div class="flex justify-center">
               <img
                 :src="menuData.image_url"
-                class="object-fit w-full"
+                class="object-fit w-full p"
                 style="max-width:250px;"
               />
             </div>

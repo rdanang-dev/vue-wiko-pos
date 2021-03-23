@@ -121,8 +121,6 @@ router.beforeEach(async (to, from, next) => {
   const isAuthenticated = store.getters["login/isAuthenticated"];
 
   const requiredAuth = to.matched.some((record) => record.meta.needAuth);
-  // console.log("required", requiredAuth);
-  // console.log("isAuthenticated", isAuthenticated);
   try {
     if (requiredAuth && !isAuthenticated) {
       console.log("gagal");
