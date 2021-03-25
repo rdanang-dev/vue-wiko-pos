@@ -36,6 +36,16 @@
           <t-input v-model="userData.email" />
         </div>
         <div class="mt-5">
+          <label for="">Roles</label>
+          <t-select
+            class="bg-white border-gray-300 focus:border-blue-500 placeholder-gray-300"
+            v-model="userData.role_id"
+            :options="roleList"
+            value-attribute="id"
+            text-attribute="name"
+          ></t-select>
+        </div>
+        <div class="mt-5">
           <label for="">Password</label>
           <t-input
             v-model="userData.password"
@@ -76,13 +86,19 @@ export default {
     };
   },
   computed: {
-    ...mapState("user", ["userData"]),
+    ...mapState("user", ["userData", "roleList"]),
   },
   mounted() {
     this.fetchData();
   },
   methods: {
-    ...mapActions("user", ["resetUser", "getUser", "createUser", "updateUser"]),
+    ...mapActions("user", [
+      "resetUser",
+      "getUser",
+      "createUser",
+      "updateUser",
+      "getAllRoles",
+    ]),
 
     submitForm() {
       try {
@@ -110,6 +126,7 @@ export default {
     },
 
     fetchData() {
+      this.getAllRoles();
       if (this.action == "edit") {
         this.getUser({ id: this.id });
       } else {

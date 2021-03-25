@@ -69,11 +69,11 @@
     <t-modal v-model="modalDetails" header="Details">
       <div>
         <img
-          src="https://a7sas.net/wp-content/uploads/2019/07/4060.jpeg"
-          class="w-40 h-40 rounded-full shadow-lg"
+          :src="userData.image_url"
+          class="w-40 h-40 rounded-full shadow-lg m-auto"
         />
       </div>
-      <div>
+      <div class="mt-5">
         <p>Nama : {{ userData.name }}</p>
         <p>Email : {{ userData.email }}</p>
       </div>

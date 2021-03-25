@@ -17,6 +17,9 @@ const mutations = {
   setProfile(state, payload) {
     state.profile = payload;
   },
+  // setRole(state,payload){
+  //   state.role = payload;
+  // },
   setToken(state, payload) {
     state.token = payload;
   },
@@ -87,6 +90,19 @@ const actions = {
       console.error(error);
     }
   },
+
+  // async getUserRole(context) {
+  //   try {
+  //       const response = await axios.get(
+  //         `${process.env.VUE_APP_BASE_URL}/api/role`
+  //       );
+  //       context.commit("setRole", response.data.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  // },
+  // async getUserRoles(context) {},
 };
 
 const login = {

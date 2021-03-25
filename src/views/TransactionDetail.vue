@@ -20,7 +20,7 @@
             @click="onSelectMenu(menu.menu_id)"
           >
             <div>
-              <img class="rounded-t-lg" :src="menu.image_url" />
+              <img class="h-28 w-full rounded-t-lg" :src="menu.image_url" />
             </div>
             <div class="p-2">
               {{ menu.name }} Rp.{{ menu.price | formatRupiah }}
@@ -31,16 +31,16 @@
       <div class="w-full lg:w-4/12 sticky p-5 bg-white rounded-xl shadow-xl">
         <div class="bg-gray-100">
           <div class="flex justify-between">
-            <span>Tanggal</span>
-            <span>{{ getDate() }}</span>
+            <span class="text-sm">Tanggal</span>
+            <span class="text-sm">{{ getDate() }}</span>
           </div>
           <div class="flex justify-between">
-            <span>Waktu</span>
-            <span>{{ getTime() }}</span>
+            <span class="text-sm">Waktu</span>
+            <span class="text-sm">{{ getTime() }}</span>
           </div>
         </div>
         <div>
-          <perfect-scrollbar class="" style="max-height:230px">
+          <perfect-scrollbar class="mt-1" style="max-height:150px">
             <div
               class="py-2 px-2 flex flex-row justify-between"
               v-for="(menu, key) in details"
@@ -84,17 +84,61 @@
           </perfect-scrollbar>
         </div>
 
-        <div class="mt-5 flex flex-col">
-          <div class="flex flex-col w-full mb-2">
+        <div class="mt-2 flex flex-col">
+          <div class="flex justify-between">
+            <div class="flex flex-col">
+              <span class="text-sm">Sub Total</span>
+              <span class="text-xs">0 Barang</span>
+            </div>
+            <div>
+              <span class="text-sm">Rp.</span>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="flex flex-col mt-2">
+              <span class="text-sm">Diskon</span>
+              <span class="text-xs"
+                ><button
+                  type="button"
+                  class="text-blue-500 underline hover:text-blue-600 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  @click="onChangeDiscount"
+                >
+                  Change
+                </button></span
+              >
+            </div>
+            <div>
+              <t-input
+                v-if="changeDiscount"
+                v-model="discount"
+                type="number"
+              ></t-input>
+              <span class="text-sm" v-else>{{ discount }} % </span>
+            </div>
+          </div>
+          <div
+            class="bg-green-300 rounded-lg mt-3 text-green-50 text-center py-1"
+          >
+            <span class="text-md">Rp.</span>
+          </div>
+          <div class="flex flex-row mt-2">
+            <div class="p-3 border border-gray-300 text-gray-400 text-sm">
+              Rp.
+            </div>
+            <!-- <div class="border border-gray-300"> -->
+            <t-input
+              class="rounded-none"
+              placeholder="Masukan nominal bayar"
+            ></t-input>
+            <!-- </div> -->
+          </div>
+          <div class="flex flex-col w-full mt-4 mb-2">
             <t-button :to="{ name: 'Transaction' }" class="w-full"
               >Move to Cart</t-button
             >
           </div>
           <div class="flex flex-col w-full">
             <t-button class="w-full">CheckOut</t-button>
-          </div>
-          <div>
-            <div></div>
           </div>
         </div>
       </div>
@@ -122,11 +166,12 @@ export default {
   },
   data() {
     return {
+      discount: 0,
+      changeDiscount: false,
       id: this.$route.params.id,
       searchMenu: "",
       filteredList: [],
       productMenu: [],
-      calculator: [],
     };
   },
   created() {
@@ -168,6 +213,10 @@ export default {
       });
 
       await this.getOrder({ id: this.id });
+    },
+
+    onChangeDiscount() {
+      this.changeDiscount = !this.changeDiscount;
     },
 
     getDate() {

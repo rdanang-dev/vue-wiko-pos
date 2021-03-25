@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen h-full w-full background-login bg-gray-400">
-    <div class="py-32 container px-4 mx-auto">
+  <div class="min-h-screen w-full background-login">
+    <div class="py-32 container mx-auto">
       <div
         class="flex bg-gray-50 rounded-lg max-w-md mx-auto flex-col text-center shadow-2xl"
       >
@@ -39,11 +39,37 @@
             </label>
             <div class="flex flex-row">
               <input
-                type="password"
+                :type="passwordField"
                 class="w-full pl-3 py-4 rounded-lg text-xs font-semibold leading-none outline-none"
                 placeholder="Enter your password"
                 v-model="login.password"
+                @keyup.enter="onLogin"
               />
+              <button
+                class="ml-4 focus:shadow focus:bg-white focus:border-none focus:outline-none"
+                @click="onShowPassword"
+              >
+                <svg
+                  class="h-6 w-6 my-auto text-blueGray-300"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewbox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  ></path>
+                </svg>
+              </button>
             </div>
             <span
               class="text-sm text-left text-red-600"
@@ -70,6 +96,7 @@ export default {
   name: "Login",
   data() {
     return {
+      passwordField: "password",
       user: null,
       login: {
         email: "",
@@ -86,6 +113,13 @@ export default {
       "handleLogin",
       // "handleUser"
     ]),
+    onShowPassword: function() {
+      if (this.passwordField === "password") {
+        this.passwordField = "text";
+      } else {
+        this.passwordField = "password";
+      }
+    },
     async onLogin() {
       try {
         const response = await this.handleLogin({ payload: this.login });
@@ -101,15 +135,9 @@ export default {
 </script>
 
 <style scoped>
-/* .background-login {
+.background-login {
   background-image: url("~@/assets/login_background1.png");
   background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-} */
+  overflow: hidden;
+}
 </style>
