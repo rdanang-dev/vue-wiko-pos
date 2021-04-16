@@ -108,9 +108,13 @@ export default {
   computed: {
     ...mapState("login", ["userList", "userData", "errorData"]),
   },
+  mounted() {
+    this.clearError();
+  },
   methods: {
     ...mapActions("login", [
       "handleLogin",
+      "clearError",
       // "handleUser"
     ]),
     onShowPassword: function() {
@@ -125,9 +129,11 @@ export default {
         const response = await this.handleLogin({ payload: this.login });
         console.log("berhasil", response);
         this.$router.push("/");
+        this.clearError();
       } catch (error) {
         console.log(error);
         this.$toast.error(error.message);
+        // this.clearError();
       }
     },
   },

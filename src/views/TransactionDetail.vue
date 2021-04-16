@@ -112,6 +112,7 @@
                 v-if="changeDiscount"
                 v-model="discount"
                 type="number"
+                style="width: 150px"
               ></t-input>
               <span class="text-sm" v-else>{{ discount }} % </span>
             </div>

@@ -100,7 +100,7 @@ export default {
   name: "Navbar",
   computed: {
     ...mapState(["sideBarOpen"]),
-    ...mapState("login", ["userList", "profile"]),
+    ...mapState("login", ["profile"]),
   },
   data() {
     return {

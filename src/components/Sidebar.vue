@@ -40,6 +40,7 @@
           to="/account"
           exact
           exact-active-class="bg-gray-200"
+          v-if="profile.roles == 'admin'"
           class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
         >
           <span class="h-6 w-6 fill-current mr-2" viewBox="0 0 20 20">
@@ -110,6 +111,7 @@ export default {
   },
   computed: {
     ...mapState(["sideBarOpen"]),
+    ...mapState("login", ["profile"]),
   },
   data() {
     return {

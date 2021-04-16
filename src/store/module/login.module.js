@@ -32,6 +32,14 @@ const mutations = {
   },
 };
 const actions = {
+  clearError(context) {
+    const payload = {
+      errorData: {
+        errors: [],
+      },
+    };
+    context.commit("setError", payload);
+  },
   // fungsi handle login
   async handleLogin(context, { payload }) {
     try {
@@ -55,6 +63,7 @@ const actions = {
       }
       if (error.response.status == 401) {
         console.error("masuk error", error.response);
+
         throw new Error(errorMessage);
       } else if (error.response.status == 400) {
         context.commit("setError", error.response.data);
