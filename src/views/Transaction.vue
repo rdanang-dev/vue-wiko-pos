@@ -8,7 +8,7 @@
         <t-table :headers="headers" :data="orderList.data">
           <template slot="row" slot-scope="props">
             <tr
-              @click="onSelectRow(props.row.id)"
+              @click="onSelectRow(props.row)"
               :class="[
                 props.trClass,
                 // props.rowIndex % 2 === 0 ? 'bg-gray-100' : ''
@@ -27,10 +27,18 @@
                 {{ props.row.created_at }}
               </td>
               <td :class="props.tdClass">
-                {{ props.row.status }}
-              </td>
-              <td :class="props.tdClass">
-                {{ props.row.status }}
+                <button
+                  v-if="props.row.status == 1"
+                  class="block px-4 py-1 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed bg-yellow-300"
+                >
+                  Pending
+                </button>
+                <button
+                  v-else-if="props.row.status == 2"
+                  class="block px-4 py-1 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed bg-green-300"
+                >
+                  Success
+                </button>
               </td>
               <td :class="props.tdClass">
                 {{ props.row.total_price }}
@@ -74,10 +82,6 @@ export default {
           value: "total_price",
           text: "Harga",
         },
-        {
-          value: "actions",
-          text: "Actions",
-        },
       ],
     };
   },
@@ -99,9 +103,16 @@ export default {
       await this.createOrder();
       await this.getAllOrderList();
     },
-    onSelectRow(id) {
-      console.log("id");
-      this.$router.push({ name: "TransactionDetail", params: { id: id } });
+    onSelectRow(row) {
+      // console.log("id");
+      if (row.status == 1) {
+        this.$router.push({
+          name: "TransactionDetail",
+          params: { id: row.id },
+        });
+      } else {
+        this.$toast.error("Transaction Already Completed", 3000);
+      }
     },
   },
 };
