@@ -15,10 +15,24 @@ const mutations = {
   },
 };
 const actions = {
-  async getAllMenuList(context) {
+  async getAllMenuList(
+    context,
+    { page, limit, filter } = { page: 1, limit: null, filter: "" }
+  ) {
     try {
+      const params = new URLSearchParams();
+      if (page != null) {
+        params.append("page", page);
+      }
+      if (limit != null) {
+        params.append("per_page", limit);
+      }
+
+      if (filter != null && filter != "") {
+        params.append("filter", filter);
+      }
       const response = await axios.get(
-        `${process.env.VUE_APP_BASE_URL}/api/menu`
+        `${process.env.VUE_APP_BASE_URL}/api/menu?${params}`
       );
       context.commit("setMenuList", response.data);
     } catch (error) {

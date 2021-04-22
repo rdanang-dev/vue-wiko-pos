@@ -5,6 +5,9 @@ const state = {
   orderList: {
     data: [],
   },
+  successList: {
+    data: [],
+  },
   orderData: {
     customer_id: "",
     details: [],
@@ -39,16 +42,21 @@ const mutations = {
   updateField,
 };
 const actions = {
-  async getAllOrderList(context) {
+  async getAllOrderList(context, { status } = { status: 1 }) {
     try {
+      const param = new URLSearchParams();
+      if (status != null) {
+        param.append("status", status);
+      }
       const response = await axios.get(
-        `${process.env.VUE_APP_BASE_URL}/api/order`
+        `${process.env.VUE_APP_BASE_URL}/api/order?${param}`
       );
       context.commit("setOrderList", response.data);
     } catch (error) {
       console.error(error);
     }
   },
+
   async getOrder(context, { id }) {
     try {
       const response = await axios.get(
@@ -59,6 +67,7 @@ const actions = {
       console.log(error);
     }
   },
+
   async createOrder(context, { payload } = { payload: {} }) {
     try {
       const response = await axios.post(
@@ -105,4 +114,3 @@ const order = {
 };
 
 export default order;
-

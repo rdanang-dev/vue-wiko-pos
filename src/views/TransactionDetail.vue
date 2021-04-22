@@ -33,6 +33,7 @@
           </perfect-scrollbar>
         </div>
       </div>
+      w
       <div class="w-full lg:w-4/12 sticky pl-2">
         <div class="p-5 bg-white rounded-xl shadow-xl" style="height: 530px;">
           <div class="flex">

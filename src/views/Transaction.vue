@@ -151,6 +151,7 @@ export default {
   data() {
     return {
       openTab: 1,
+      status: 1,
       headers: [
         {
           value: "id",
@@ -188,13 +189,21 @@ export default {
   methods: {
     ...mapActions("order", {
       getAllOrderList: "getAllOrderList",
+      createOrder: "createOrder",
     }),
-    createOrder: "createOrder",
     fetchData() {
       this.getAllOrderList();
     },
     toggleTabs: function(tabNumber) {
       this.openTab = tabNumber;
+      if (this.openTab == 1) {
+        this.status = 1;
+      } else {
+        this.status = 2;
+      }
+      this.getAllOrderList({
+        status: this.status,
+      });
     },
     async onCreateOrder() {
       await this.createOrder();

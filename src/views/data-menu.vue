@@ -8,7 +8,7 @@
         <hr class="mt-5 border-black" />
         <div class="flex justify-between mt-5">
           <div class="w-full mr-5">
-            <t-input v-model="search" placeholder="Search" />
+            <t-input v-model="search" @change="onSearch" placeholder="Search" />
           </div>
 
           <button
@@ -19,6 +19,11 @@
           </button>
         </div>
         <div class="text-black mt-10 mx-5 overflow-x-auto">
+          <select v-model="limit">
+            <option value="5">5</option>
+            <option value="15">15</option>
+          </select>
+
           <t-table :headers="headers" :data="menuList.data">
             <template slot="row" slot-scope="props">
               <tr
@@ -53,6 +58,14 @@
               </tr>
             </template>
           </t-table>
+
+          <t-pagination
+            :total-items="menuList.meta.total"
+            :per-page="menuList.meta.per_page"
+            :limit="limit"
+            :hideEllipsis="true"
+            v-model="currentPage"
+          />
 
           <t-modal v-model="formModal" header="Manage Menu">
             <div class="flex justify-center">
@@ -140,6 +153,8 @@ export default {
       selectedId: null,
       selectedImage: null,
       selectedAction: "create",
+      currentPage: 1,
+      limit: 5,
       headers: [
         {
           value: "id",
@@ -166,6 +181,22 @@ export default {
   mounted() {
     this.fetchData();
   },
+  watch: {
+    currentPage(newVal) {
+      this.getAllMenuList({
+        page: newVal,
+        limit: this.limit,
+        filter: this.search,
+      });
+    },
+    limit(newVal) {
+      this.getAllMenuList({
+        page: this.currentPage,
+        limit: newVal,
+        filter: this.search,
+      });
+    },
+  },
   methods: {
     ...mapActions("menu", [
       "getAllMenuList",
@@ -175,6 +206,14 @@ export default {
       "deleteMenu",
       "clearMenu",
     ]),
+
+    onSearch() {
+      this.getAllMenuList({
+        page: this.currentPage,
+        limit: this.limit,
+        filter: this.search,
+      });
+    },
 
     openFormModal(id = null) {
       // console.log(id);
@@ -250,7 +289,7 @@ export default {
     },
 
     fetchData() {
-      this.getAllMenuList();
+      this.getAllMenuList({ page: this.currentPage, limit: this.limit });
     },
   },
 };
