@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import DashboardLayouts from "../components/DashboardLayouts.vue";
-import LineChart from "../components/LineChart.vue";
+import DashboardLayouts from "../../components/DashboardLayouts.vue";
+import LineChart from "../../components/LineChart.vue";
 // @ is an alias to /src
 
 export default {

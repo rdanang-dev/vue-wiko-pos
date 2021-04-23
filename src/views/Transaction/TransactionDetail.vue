@@ -168,7 +168,7 @@
   </dashboard-layouts>
 </template>
 <script>
-import DashboardLayouts from "../components/DashboardLayouts.vue";
+import DashboardLayouts from "../../components/DashboardLayouts.vue";
 import { mapActions, mapState, mapMutations } from "vuex";
 import { mapMultiRowFields } from "vuex-map-fields";
 import IconPlus from "vue-material-design-icons/Plus";

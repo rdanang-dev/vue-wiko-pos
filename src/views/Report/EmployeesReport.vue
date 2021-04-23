@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import DashboardLayouts from "../components/DashboardLayouts.vue";
+import DashboardLayouts from "../../components/DashboardLayouts.vue";
 // @ is an alias to /src
 
 export default {

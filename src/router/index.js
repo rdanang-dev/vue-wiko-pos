@@ -24,7 +24,7 @@ const routes = [
     path: "/data-menu",
     name: "DataMenu",
     component: () =>
-      import(/* webpackChunkName: "JobVacancies" */ "../views/data-menu.vue"),
+      import(/* webpackChunkName: "JobVacancies" */ "../views/Product.vue"),
   },
   {
     path: "/account",
@@ -66,7 +66,9 @@ const routes = [
       needAuth: true,
     },
     component: () =>
-      import(/* webpackChunkName: "JobVacancies" */ "../views/Transaction.vue"),
+      import(
+        /* webpackChunkName: "JobVacancies" */ "../views/Transaction/Transaction.vue"
+      ),
   },
   {
     path: "/transaction/:id",
@@ -76,17 +78,8 @@ const routes = [
     },
     component: () =>
       import(
-        /* webpackChunkName: "JobVacancies" */ "../views/TransactionDetail.vue"
+        /* webpackChunkName: "JobVacancies" */ "../views/Transaction/TransactionDetail.vue"
       ),
-  },
-  {
-    path: "/cart",
-    name: "Cart",
-    meta: {
-      needAuth: true,
-    },
-    component: () =>
-      import(/* webpackChunkName: "JobVacancies" */ "../views/Cart.vue"),
   },
   {
     path: "/transaction-report",
@@ -96,7 +89,7 @@ const routes = [
     },
     component: () =>
       import(
-        /* webpackChunkName: "JobVacancies" */ "../views/transaction-report.vue"
+        /* webpackChunkName: "JobVacancies" */ "../views/Report/TransactionReport.vue"
       ),
   },
   {
@@ -107,7 +100,7 @@ const routes = [
     },
     component: () =>
       import(
-        /* webpackChunkName: "JobVacancies" */ "../views/employees-report.vue"
+        /* webpackChunkName: "JobVacancies" */ "../views/Report/EmployeesReport.vue"
       ),
   },
 ];

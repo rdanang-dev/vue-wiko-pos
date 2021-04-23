@@ -6,9 +6,17 @@
           Data Menu
         </div>
         <hr class="mt-5 border-black" />
-        <div class="flex justify-between mt-5">
-          <div class="w-full mr-5">
+
+        <div class="flex justify-between">
+          <div class="relative flex w-full flex-wrap items-stretch">
             <t-input v-model="search" @change="onSearch" placeholder="Search" />
+            <span
+              v-if="!!search"
+              @click="clearSearch"
+              class="text-center absolute bg-transparent text-base items-center justify-center right-0 pr-2 py-2 text-gray-400"
+            >
+              <close-thick></close-thick>
+            </span>
           </div>
 
           <button
@@ -17,14 +25,15 @@
           >
             <icon-plus></icon-plus>
           </button>
-        </div>
-        <div class="text-black mt-10 mx-5 overflow-x-auto">
+
           <select v-model="limit">
             <option value="5">5</option>
-            <option value="15">15</option>
+            <option value="10">10</option>
           </select>
+        </div>
 
-          <t-table :headers="headers" :data="menuList.data">
+        <div class="text-black mt-4 mx-5 overflow-x-auto">
+          <t-table :headers="headers" :data="menuList.data" class="mt-5">
             <template slot="row" slot-scope="props">
               <tr
                 :class="[
@@ -32,9 +41,9 @@
                   // props.rowIndex % 2 === 0 ? 'bg-gray-100' : ''
                 ]"
               >
-                <td :class="props.tdClass">
+                <!-- <td :class="props.tdClass">
                   {{ props.row.id }}
-                </td>
+                </td> -->
                 <td :class="props.tdClass">
                   {{ props.row.name }}
                 </td>
@@ -142,8 +151,9 @@
 import DashboardLayouts from "../components/DashboardLayouts.vue";
 import { mapActions, mapState } from "vuex";
 import IconPlus from "vue-material-design-icons/Plus";
+import CloseThick from "vue-material-design-icons/CloseThick";
 export default {
-  components: { DashboardLayouts, IconPlus },
+  components: { DashboardLayouts, IconPlus, CloseThick },
   name: "Menu",
   data() {
     return {
@@ -156,10 +166,10 @@ export default {
       currentPage: 1,
       limit: 5,
       headers: [
-        {
-          value: "id",
-          text: "ID",
-        },
+        // {
+        //   value: "id",
+        //   text: "ID",
+        // },
         {
           value: "name",
           text: "Nama",
@@ -208,11 +218,17 @@ export default {
     ]),
 
     onSearch() {
+      this.currentPage = 1;
       this.getAllMenuList({
         page: this.currentPage,
         limit: this.limit,
         filter: this.search,
       });
+    },
+
+    clearSearch() {
+      this.search = "";
+      this.onSearch();
     },
 
     openFormModal(id = null) {

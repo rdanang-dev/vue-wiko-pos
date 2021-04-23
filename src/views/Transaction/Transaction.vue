@@ -144,7 +144,7 @@
   </dashboard-layouts>
 </template>
 <script>
-import DashboardLayouts from "../components/DashboardLayouts.vue";
+import DashboardLayouts from "../../components/DashboardLayouts.vue";
 import { mapActions, mapState } from "vuex";
 export default {
   components: { DashboardLayouts },
