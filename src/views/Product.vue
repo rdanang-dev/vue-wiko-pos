@@ -1,15 +1,18 @@
 <template>
   <dashboard-layouts>
-    <div class="flex justify-center p-5  flex-grow h-full">
-      <div class="p-5 bg-white rounded-xl w-full">
-        <div class="text-2xl text-black mt-5 mx-5 font-bold text-center">
-          Data Menu
+    <div class="flex justify-center flex-grow h-full">
+      <div class="pt-1 px-5 pb-5 bg-white rounded-xl w-full">
+        <div class="text-2xl text-black mt-5 font-bold text-center">
+          Daftar Product
         </div>
-        <hr class="mt-5 border-black" />
 
-        <div class="flex justify-between">
-          <div class="relative flex w-full flex-wrap items-stretch">
-            <t-input v-model="search" @change="onSearch" placeholder="Search" />
+        <div class="flex py-1">
+          <div class="relative flex w-full flex-wrap items-stretch pr-1">
+            <t-input
+              v-model="search"
+              @change="onSearch"
+              placeholder="Search Here"
+            />
             <span
               v-if="!!search"
               @click="clearSearch"
@@ -19,31 +22,28 @@
             </span>
           </div>
 
-          <button
-            @click="openFormModal()"
-            class="py-2 px-3 bg-blue-500 rounded-md text-white focus:shadow-outline-none focus:shadow-xl"
-          >
-            <icon-plus></icon-plus>
-          </button>
+          <div class="pr-1">
+            <button
+              @click="openFormModal()"
+              class="py-2 px-3 bg-blue-500 rounded-md text-white focus:shadow-outline-none focus:shadow-xl"
+            >
+              <icon-plus></icon-plus>
+            </button>
+          </div>
 
-          <select v-model="limit">
+          <select
+            class="transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            v-model="limit"
+          >
             <option value="5">5</option>
             <option value="10">10</option>
           </select>
         </div>
 
-        <div class="text-black mt-4 mx-5 overflow-x-auto">
-          <t-table :headers="headers" :data="menuList.data" class="mt-5">
+        <div class="text-black overflow-x-auto py-1">
+          <t-table :headers="headers" :data="menuList.data">
             <template slot="row" slot-scope="props">
-              <tr
-                :class="[
-                  props.trClass,
-                  // props.rowIndex % 2 === 0 ? 'bg-gray-100' : ''
-                ]"
-              >
-                <!-- <td :class="props.tdClass">
-                  {{ props.row.id }}
-                </td> -->
+              <tr :class="[props.trClass]">
                 <td :class="props.tdClass">
                   {{ props.row.name }}
                 </td>
@@ -69,6 +69,7 @@
           </t-table>
 
           <t-pagination
+            class="mt-2"
             :total-items="menuList.meta.total"
             :per-page="menuList.meta.per_page"
             :limit="limit"
@@ -273,7 +274,6 @@ export default {
 
     async submitMenu() {
       try {
-        // console.log(this.selectedAction);
         const formData = new FormData();
         if (this.selectedImage != null) {
           formData.append("image", this.selectedImage);
@@ -288,10 +288,8 @@ export default {
             id: this.selectedId,
             payload: formData,
           });
-          // console.log(this.$toast);
-
-          this.closeFormModal();
         }
+        this.closeFormModal();
         this.fetchData();
         this.$toast.success("Data Saved Successfully", { duration: 3000 });
         this.selectedImage = null;
