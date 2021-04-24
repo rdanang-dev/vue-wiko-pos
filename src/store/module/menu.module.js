@@ -17,15 +17,15 @@ const mutations = {
 const actions = {
   async getAllMenuList(
     context,
-    { page, limit, filter } = { page: 1, limit: null, filter: "" }
+    { page, per_page, filter } = { page: 1, per_page: null, filter: "" }
   ) {
     try {
       const params = new URLSearchParams();
       if (page != null) {
         params.append("page", page);
       }
-      if (limit != null) {
-        params.append("per_page", limit);
+      if (per_page != null) {
+        params.append("per_page", per_page);
       }
 
       if (filter != null && filter != "") {

@@ -9,12 +9,12 @@
         <div class="flex py-1">
           <div class="relative flex w-full flex-wrap items-stretch pr-1">
             <t-input
-              v-model="search"
+              v-model="filter"
               @change="onSearch"
               placeholder="Search Here"
             />
             <span
-              v-if="!!search"
+              v-if="!!filter"
               @click="clearSearch"
               class="text-center absolute bg-transparent text-base items-center justify-center right-0 pr-2 py-2 text-gray-400"
             >
@@ -33,7 +33,7 @@
 
           <select
             class="transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            v-model="limit"
+            v-model.number="perPage"
           >
             <option value="5">5</option>
             <option value="10">10</option>
@@ -71,8 +71,7 @@
           <t-pagination
             class="mt-2"
             :total-items="menuList.meta.total"
-            :per-page="menuList.meta.per_page"
-            :limit="limit"
+            :per-page="perPage"
             :hideEllipsis="true"
             v-model="currentPage"
           />
@@ -158,19 +157,15 @@ export default {
   name: "Menu",
   data() {
     return {
-      search: "",
+      filter: "",
       formModal: false,
       deleteModal: false,
       selectedId: null,
       selectedImage: null,
       selectedAction: "create",
       currentPage: 1,
-      limit: 5,
+      perPage: 5,
       headers: [
-        // {
-        //   value: "id",
-        //   text: "ID",
-        // },
         {
           value: "name",
           text: "Nama",
@@ -196,15 +191,15 @@ export default {
     currentPage(newVal) {
       this.getAllMenuList({
         page: newVal,
-        limit: this.limit,
-        filter: this.search,
+        per_page: this.perPage,
+        filter: this.filter,
       });
     },
-    limit(newVal) {
+    perPage(newVal) {
       this.getAllMenuList({
         page: this.currentPage,
-        limit: newVal,
-        filter: this.search,
+        per_page: newVal,
+        filter: this.filter,
       });
     },
   },
@@ -222,18 +217,17 @@ export default {
       this.currentPage = 1;
       this.getAllMenuList({
         page: this.currentPage,
-        limit: this.limit,
-        filter: this.search,
+        per_page: this.perPage,
+        filter: this.filter,
       });
     },
 
     clearSearch() {
-      this.search = "";
+      this.filter = "";
       this.onSearch();
     },
 
     openFormModal(id = null) {
-      // console.log(id);
       this.formModal = true;
 
       if (id != null) {
@@ -241,7 +235,6 @@ export default {
         this.selectedAction = "edit";
         this.getMenu({ id });
       } else {
-        // formModal.reset();
         this.selectedId = null;
         this.selectedAction = "create";
         this.clearMenu();
@@ -303,7 +296,7 @@ export default {
     },
 
     fetchData() {
-      this.getAllMenuList({ page: this.currentPage, limit: this.limit });
+      this.getAllMenuList({ page: this.currentPage, per_page: this.perPage });
     },
   },
 };
