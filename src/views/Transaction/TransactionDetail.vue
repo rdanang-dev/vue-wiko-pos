@@ -33,7 +33,6 @@
           </perfect-scrollbar>
         </div>
       </div>
-      w
       <div class="w-full lg:w-4/12 sticky pl-2">
         <div class="p-5 bg-white rounded-xl shadow-xl" style="height: 530px;">
           <div class="flex">
@@ -174,7 +173,6 @@ import { mapMultiRowFields } from "vuex-map-fields";
 import IconPlus from "vue-material-design-icons/Plus";
 import IconMinus from "vue-material-design-icons/Minus";
 import cartVariant from "vue-material-design-icons/CartVariant";
-// import { debounce } from "debounce";
 export default {
   components: { DashboardLayouts, IconPlus, IconMinus, cartVariant },
   computed: {
@@ -186,9 +184,6 @@ export default {
         return value.name.toLowerCase().includes(this.searchMenu.toLowerCase());
       });
     },
-    // subTotal(){
-    //   return this.detaisl.
-    // }
   },
   data() {
     return {
@@ -250,10 +245,8 @@ export default {
     countTransaction() {
       this.subTotal = 0;
       this.subTotalItemQty = 0;
-      // this.cash = null;
       this.totalDiscount = 0;
       this.finalTotal = 0;
-      // this.change = 0;
 
       this.details.forEach((value) => {
         this.subTotal += parseInt(value.total_price);
@@ -296,7 +289,6 @@ export default {
     onSelectMenu(id) {
       let findMenu = this.productMenu.find((value) => value.menu_id === id);
       let checkExists = this.details.some((value) => value.menu_id === id);
-      // console.log(findMenu);
       if (checkExists) {
         let findIndex = this.details.findIndex((value) => value.menu_id === id);
         let qty = this.details[findIndex].qty;

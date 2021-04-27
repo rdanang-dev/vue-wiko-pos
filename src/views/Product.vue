@@ -24,6 +24,15 @@
 
           <div class="pr-1">
             <button
+              @click="onSearch"
+              class="py-2 px-3 bg-blue-500 rounded-md text-white focus:shadow-outline-none focus:shadow-xl"
+            >
+              <magnify></magnify>
+            </button>
+          </div>
+
+          <div class="pr-1">
+            <button
               @click="openFormModal()"
               class="py-2 px-3 bg-blue-500 rounded-md text-white focus:shadow-outline-none focus:shadow-xl"
             >
@@ -79,9 +88,9 @@
           <t-modal v-model="formModal" header="Manage Menu">
             <div class="flex justify-center">
               <img
+                v-if="menuData.image_url"
                 :src="menuData.image_url"
-                class="object-fit w-full p"
-                style="max-width:250px;"
+                class="h-40 w-72 max-w-xs max-h-40"
               />
             </div>
             <div>
@@ -102,18 +111,43 @@
                 <span class="mt-2 text-base leading-normal">{{
                   selectedImage != null && selectedImage.name
                     ? selectedImage.name
-                    : " Select File"
+                    : "Select File"
                 }}</span>
                 <input type="file" class="hidden" @change="onFileChange" />
               </label>
+              <button
+                v-if="!!selectedImage"
+                class="block w-full rounded text-md text-white bg-red-500 px-4 py-1 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                @click="clearImage"
+              >
+                Remove Image
+              </button>
+              <span
+                class="text-sm text-left text-red-600"
+                v-if="errorData.errors && errorData.errors.image"
+              >
+                {{ errorData.errors.image[0] }}
+              </span>
             </div>
             <div>
               <label for="">Nama</label>
               <t-input v-model="menuData.name" />
+              <span
+                class="text-sm text-left text-red-600"
+                v-if="errorData.errors && errorData.errors.name"
+              >
+                {{ errorData.errors.name[0] }}
+              </span>
             </div>
             <div>
               <label for="">Harga</label>
               <t-input v-model="menuData.price" />
+              <span
+                class="text-sm text-left text-red-600"
+                v-if="errorData.errors && errorData.errors.price"
+              >
+                {{ errorData.errors.price[0] }}
+              </span>
             </div>
 
             <template v-slot:footer>
@@ -121,7 +155,11 @@
                 <t-button @click="closeFormModal" type="button">
                   Cancel
                 </t-button>
-                <t-button @click="submitMenu" type="button">
+                <t-button
+                  @click="submitMenu"
+                  :disabled="!!selectedImage && selectedImage.size > 2048000"
+                  type="button"
+                >
                   Save
                 </t-button>
               </div>
@@ -152,8 +190,9 @@ import DashboardLayouts from "../components/DashboardLayouts.vue";
 import { mapActions, mapState } from "vuex";
 import IconPlus from "vue-material-design-icons/Plus";
 import CloseThick from "vue-material-design-icons/CloseThick";
+import Magnify from "vue-material-design-icons/Magnify";
 export default {
-  components: { DashboardLayouts, IconPlus, CloseThick },
+  components: { DashboardLayouts, IconPlus, CloseThick, Magnify },
   name: "Menu",
   data() {
     return {
@@ -165,6 +204,7 @@ export default {
       selectedAction: "create",
       currentPage: 1,
       perPage: 5,
+      errors: {},
       headers: [
         {
           value: "name",
@@ -182,12 +222,24 @@ export default {
     };
   },
   computed: {
-    ...mapState("menu", ["menuList", "menuData"]),
+    ...mapState("menu", ["menuList", "menuData", "errorData"]),
+    check() {
+      return this.menuList.data.length;
+    },
   },
+
   mounted() {
     this.fetchData();
+    this.clearError();
   },
   watch: {
+    check(menu) {
+      if (!menu) {
+        this.$toast.error("Data not Found!", {
+          duration: 1000,
+        });
+      }
+    },
     currentPage(newVal) {
       this.getAllMenuList({
         page: newVal,
@@ -211,7 +263,12 @@ export default {
       "createMenu",
       "deleteMenu",
       "clearMenu",
+      "clearError",
     ]),
+
+    clearImage() {
+      this.selectedImage = null;
+    },
 
     onSearch() {
       this.currentPage = 1;
@@ -229,6 +286,8 @@ export default {
 
     openFormModal(id = null) {
       this.formModal = true;
+      this.selectedImage = null;
+      this.clearError();
 
       if (id != null) {
         this.selectedId = id;
@@ -243,6 +302,7 @@ export default {
 
     closeFormModal() {
       this.formModal = false;
+      this.clearError();
     },
 
     openDeleteModal(id) {
@@ -275,24 +335,50 @@ export default {
         formData.append("price", this.menuData.price);
 
         if (this.selectedAction == "create") {
-          await this.createMenu({ payload: formData });
+          try {
+            await this.createMenu({ payload: formData });
+            this.closeFormModal();
+            this.fetchData();
+            this.$toast.success("Data Saved Successfully", {
+              duration: 3000,
+            });
+            this.selectedImage = null;
+            this.clearError();
+          } catch (error) {
+            console.log(error);
+            this.$toast.error(error.message);
+          }
         } else if (this.selectedAction == "edit") {
-          await this.updateMenu({
-            id: this.selectedId,
-            payload: formData,
-          });
+          try {
+            await this.updateMenu({
+              id: this.selectedId,
+              payload: formData,
+            });
+            this.closeFormModal();
+            this.fetchData();
+            this.$toast.success("Data Saved Successfully", {
+              duration: 3000,
+            });
+            this.selectedImage = null;
+            this.clearError();
+          } catch (error) {
+            console.log(error);
+            this.$toast.error(error.message);
+          }
         }
-        this.closeFormModal();
-        this.fetchData();
-        this.$toast.success("Data Saved Successfully", { duration: 3000 });
-        this.selectedImage = null;
       } catch (error) {
         console.log(error);
+        this.$toast.error(error.message);
       }
     },
 
     async onFileChange(e) {
       this.selectedImage = e.target.files[0];
+      if (!!this.selectedImage && this.selectedImage.size > 2048000) {
+        this.$toast.error("File size must be lower than 2MB.", {
+          duration: 3000,
+        });
+      }
     },
 
     fetchData() {

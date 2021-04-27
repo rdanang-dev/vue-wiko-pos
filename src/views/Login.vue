@@ -112,11 +112,7 @@ export default {
     this.clearError();
   },
   methods: {
-    ...mapActions("login", [
-      "handleLogin",
-      "clearError",
-      // "handleUser"
-    ]),
+    ...mapActions("login", ["handleLogin", "clearError"]),
     onShowPassword: function() {
       if (this.passwordField === "password") {
         this.passwordField = "text";
@@ -133,7 +129,6 @@ export default {
       } catch (error) {
         console.log(error);
         this.$toast.error(error.message);
-        // this.clearError();
       }
     },
   },

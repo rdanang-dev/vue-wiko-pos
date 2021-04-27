@@ -40,15 +40,12 @@
 <script>
 import BarChart from "../components/BarChart.vue";
 import DashboardLayouts from "../components/DashboardLayouts.vue";
-// import { Bar } from 'vue-chartjs';
-// @ is an alias to /src
 
 export default {
   name: "Home",
   components: {
     DashboardLayouts,
     BarChart,
-    // Bar,
   },
   data: () => ({
     chartdata: {

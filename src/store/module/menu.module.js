@@ -4,6 +4,9 @@ const state = {
     data: [],
   },
   menuData: {},
+  errorData: {
+    errors: [],
+  },
 };
 const getters = {};
 const mutations = {
@@ -13,8 +16,20 @@ const mutations = {
   setMenu(state, payload) {
     state.menuData = payload;
   },
+  setError(state, payload) {
+    state.errorData = payload;
+  },
 };
 const actions = {
+  clearError(context) {
+    const payload = {
+      errorData: {
+        errors: [],
+      },
+    };
+    context.commit("setError", payload);
+  },
+
   async getAllMenuList(
     context,
     { page, per_page, filter } = { page: 1, per_page: null, filter: "" }
@@ -39,6 +54,7 @@ const actions = {
       console.error(error);
     }
   },
+
   async getMenu(context, { id }) {
     try {
       const response = await axios.get(
@@ -49,23 +65,35 @@ const actions = {
       console.log(error);
     }
   },
+
   clearMenu(context) {
     context.commit("setMenu", {});
   },
+
   async createMenu(context, { payload }) {
     try {
       const response = await axios.post(
         `${process.env.VUE_APP_BASE_URL}/api/menu`,
         payload
       );
-
       context.dispatch("clearMenu");
-
       return response.data;
     } catch (error) {
-      console.log(error);
+      let errorMessage = "";
+      if (error.response) {
+        errorMessage = error.response.data.message;
+      }
+      if (error.response.status == 401) {
+        console.error("masuk error", error.response);
+        throw new Error(errorMessage);
+      } else if (error.response.status == 422) {
+        context.commit("setError", error.response.data);
+        throw new Error(errorMessage);
+      }
+      return error.message;
     }
   },
+
   async updateMenu(context, { id, payload }) {
     try {
       const response = await axios.post(
@@ -75,7 +103,23 @@ const actions = {
       context.dispatch("clearMenu");
       return response.data;
     } catch (error) {
-      console.log(error);
+      let errorMessage = "";
+      if (error.response) {
+        errorMessage = error.response.data.message;
+      }
+      if (error.response.status == 401) {
+        console.error("masuk error", error.response);
+
+        throw new Error(errorMessage);
+      } else if (error.response.status == 422) {
+        context.commit("setError", error.response.data);
+        throw new Error(errorMessage);
+      } else if (error.response.status == 413) {
+        context.commit("setError", error.response.data.message);
+        throw new Error(errorMessage);
+      }
+
+      return error.message;
     }
   },
   async deleteMenu(context, { id }) {

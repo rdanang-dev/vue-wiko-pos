@@ -17,9 +17,6 @@ const mutations = {
   setProfile(state, payload) {
     state.profile = payload;
   },
-  // setRole(state,payload){
-  //   state.role = payload;
-  // },
   setToken(state, payload) {
     state.token = payload;
   },
@@ -40,18 +37,13 @@ const actions = {
     };
     context.commit("setError", payload);
   },
-  // fungsi handle login
   async handleLogin(context, { payload }) {
     try {
-      //masukin data yang di fetch dari api ke dalam variable response
       const response = await axios.post(
         `${process.env.VUE_APP_BASE_URL}/api/auth`,
-        //payload di sini berfungsi untuk mengisi data yang di transfer ke api
-        // dalam kasus ini email dan password yang di ambil dari login.vue
         payload
       );
 
-      //data user yang sudah di ambil kemdian di se ke variable setprofile dengan
       context.commit("setProfile", response.data.user);
       context.commit("setToken", response.data.token);
       localStorage.setItem("token", response.data.token);
@@ -99,19 +91,6 @@ const actions = {
       console.error(error);
     }
   },
-
-  // async getUserRole(context) {
-  //   try {
-  //       const response = await axios.get(
-  //         `${process.env.VUE_APP_BASE_URL}/api/role`
-  //       );
-  //       context.commit("setRole", response.data.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // },
-  // async getUserRoles(context) {},
 };
 
 const login = {
