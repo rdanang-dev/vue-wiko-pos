@@ -25,7 +25,7 @@
           <span class="text-gray-700">Dashboard</span>
         </router-link>
         <router-link
-          to="/data-menu"
+          to="/menu"
           exact
           exact-active-class="bg-gray-200"
           class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"

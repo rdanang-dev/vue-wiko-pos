@@ -3,6 +3,9 @@ const state = {
   userList: [],
   roleList: [],
   userData: {},
+  errorData: {
+    errors: [],
+  },
 };
 const getters = {};
 const mutations = {
@@ -15,8 +18,20 @@ const mutations = {
   setUser(state, payload) {
     state.userData = payload;
   },
+  setError(state, payload) {
+    state.errorData = payload;
+  },
 };
 const actions = {
+  clearError(context) {
+    const payload = {
+      errorData: {
+        errors: [],
+      },
+    };
+    context.commit("setError", payload);
+  },
+
   async getAllUserList(context) {
     try {
       const response = await axios.get(
@@ -56,22 +71,45 @@ const actions = {
 
       return response.data;
     } catch (error) {
-      console.log(error);
+      let errorMessage = "";
+      if (error.response) {
+        errorMessage = error.response.data.message;
+      }
+      if (error.response.status == 401) {
+        console.error("masuk error", error.response);
+        throw new Error(errorMessage);
+      } else if (error.response.status == 400) {
+        context.commit("setError", error.response.data);
+        throw new Error(errorMessage);
+      }
+      return error.message;
     }
   },
+
   resetUser(context) {
     context.commit("setUser", {});
   },
+
   async updateUser(context, { id, payload }) {
     try {
       const response = await axios.post(
         `${process.env.VUE_APP_BASE_URL}/api/user/${id}`,
         payload
       );
-
       return response.data;
     } catch (error) {
-      console.log(error);
+      let errorMessage = "";
+      if (error.response) {
+        errorMessage = error.response.data.message;
+      }
+      if (error.response.status == 401) {
+        console.error("masuk error", error.response);
+        throw new Error(errorMessage);
+      } else if (error.response.status == 400) {
+        context.commit("setError", error.response.data);
+        throw new Error(errorMessage);
+      }
+      return error.message;
     }
   },
   async deleteUser(context, { id }) {

@@ -202,14 +202,10 @@ export default {
       productMenu: [],
     };
   },
-  created() {
-    // this.syncData = debounce(this.syncData, 10000);
-  },
   onActive() {
     console.log("active");
   },
   async onIdle() {
-    // console.log("onIdle");
     await this.syncData();
   },
   mounted() {

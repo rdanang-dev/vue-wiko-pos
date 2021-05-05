@@ -6,11 +6,9 @@ module.exports = {
   },
   variants: {
     extend: {
-      opacity: ['disabled'],
-      cursor: ['disabled'],
+      opacity: ["disabled"],
+      cursor: ["disabled"],
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-  ],
-}
+  plugins: [require("@tailwindcss/forms")],
+};

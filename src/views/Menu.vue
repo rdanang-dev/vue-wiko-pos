@@ -69,7 +69,7 @@
                   <t-button
                     variant="secondary"
                     class="bg-red-400"
-                    @click="openDeleteModal(props.row.id)"
+                    @click="confirmDelete(props.row.id)"
                     >Delete</t-button
                   >
                 </td>
@@ -79,7 +79,7 @@
 
           <t-pagination
             class="mt-2"
-            :total-items="menuList.meta.total"
+            :total-items="!!menuList.meta.total ? menuList.meta.total : 1"
             :per-page="perPage"
             :hideEllipsis="true"
             v-model="currentPage"
@@ -165,20 +165,6 @@
               </div>
             </template>
           </t-modal>
-
-          <t-modal v-model="deleteModal" header="Delete">
-            The data you have been deleted wont be revert.
-            <template v-slot:footer>
-              <div class="flex justify-between">
-                <t-button @click="closeDeleteModal" type="button">
-                  Cancel
-                </t-button>
-                <t-button @click="onDeleteMenu" type="button">
-                  Ok
-                </t-button>
-              </div>
-            </template>
-          </t-modal>
         </div>
       </div>
     </div>
@@ -198,7 +184,6 @@ export default {
     return {
       filter: "",
       formModal: false,
-      deleteModal: false,
       selectedId: null,
       selectedImage: null,
       selectedAction: "create",
@@ -221,6 +206,7 @@ export default {
       ],
     };
   },
+
   computed: {
     ...mapState("menu", ["menuList", "menuData", "errorData"]),
     check() {
@@ -232,11 +218,12 @@ export default {
     this.fetchData();
     this.clearError();
   },
+
   watch: {
     check(menu) {
       if (!menu) {
         this.$toast.error("Data not Found!", {
-          duration: 1000,
+          duration: 3000,
         });
       }
     },
@@ -305,21 +292,33 @@ export default {
       this.clearError();
     },
 
-    openDeleteModal(id) {
-      this.deleteModal = true;
+    async confirmDelete(id) {
       this.selectedId = id;
-    },
-
-    closeDeleteModal() {
-      this.deleteModal = false;
-    },
-
-    async onDeleteMenu() {
       try {
-        await this.deleteMenu({ id: this.selectedId });
-        this.fetchData();
-        this.closeDeleteModal();
-        this.$toast.success("Data Delete Successfully", { duration: 3000 });
+        await this.getMenu({ id });
+        this.$swal({
+          title: "Are you sure?",
+          text:
+            this.menuData.name +
+            " " +
+            "will be Deleted, And you won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "rgba(52,211,153,1)",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            try {
+              this.deleteMenu({ id: this.selectedId }).then(() => {
+                this.fetchData();
+              });
+              this.$swal("Deleted!", "Your file has been deleted.", "success");
+            } catch (error) {
+              console.log(error);
+            }
+          }
+        });
       } catch (error) {
         console.log(error);
       }

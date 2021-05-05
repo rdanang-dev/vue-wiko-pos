@@ -21,10 +21,10 @@ const routes = [
       import(/* webpackChunkName: "Information" */ "../views/Login.vue"),
   },
   {
-    path: "/data-menu",
-    name: "DataMenu",
+    path: "/menu",
+    name: "menu",
     component: () =>
-      import(/* webpackChunkName: "JobVacancies" */ "../views/Product.vue"),
+      import(/* webpackChunkName: "JobVacancies" */ "../views/Menu.vue"),
   },
   {
     path: "/account",

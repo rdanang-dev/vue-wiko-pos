@@ -2,6 +2,31 @@
   <dashboard-layouts>
     <div class="flex justify-center p-5  flex-grow h-full">
       <form @submit.prevent="submitForm" class="p-5 bg-white rounded-xl w-full">
+        <!-- <div class="flex flex-col">
+          <div class="justify-items-center">
+            <img
+              v-if="userData.image_url"
+              :src="userData.image_url"
+              class="h-40 w-72 max-w-xs max-h-40"
+            />
+          </div>
+          <div>
+            <button
+              v-if="!!userData.image_url"
+              class="block w-full rounded text-md text-white bg-red-500 px-4 py-1 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              @click="userData.image_url = null"
+            >
+              Remove Image
+            </button>
+          </div>
+        </div> -->
+        <div class="flex justify-center">
+          <img
+            v-if="userData.image_url"
+            :src="userData.image_url"
+            class="h-40 w-72 max-w-xs max-h-40"
+          />
+        </div>
         <div>
           <label for="">Picture</label>
           <label
@@ -26,14 +51,33 @@
             </span>
             <input type="file" class="hidden" @change="onFileChange" />
           </label>
+          <button
+            v-if="!!selectedImage"
+            class="block w-full rounded text-md text-white bg-red-500 px-4 py-1 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            @click="clearImage"
+          >
+            Remove Image
+          </button>
         </div>
         <div>
           <label for="">Nama</label>
           <t-input v-model="userData.name" />
+          <span
+            class="text-sm text-left text-red-600"
+            v-if="errorData.errors && errorData.errors.name"
+          >
+            {{ errorData.errors.name[0] }}
+          </span>
         </div>
         <div class="mt-5">
           <label for="">E-Mail</label>
           <t-input v-model="userData.email" />
+          <span
+            class="text-sm text-left text-red-600"
+            v-if="errorData.errors && errorData.errors.email"
+          >
+            {{ errorData.errors.email[0] }}
+          </span>
         </div>
         <div class="mt-5">
           <label for="">Roles</label>
@@ -55,6 +99,12 @@
                 : 'type for changing password'
             "
           />
+          <span
+            class="text-sm text-left text-red-600"
+            v-if="errorData.errors && errorData.errors.password"
+          >
+            {{ errorData.errors.password[0] }}
+          </span>
         </div>
         <div class="flex justify-end">
           <t-button
@@ -83,13 +133,16 @@ export default {
       action: this.$route.params.action,
       id: this.$route.params.id,
       selectedImage: null,
+      errors: {},
     };
   },
   computed: {
-    ...mapState("user", ["userData", "roleList"]),
+    ...mapState("user", ["userData", "roleList", "errorData"]),
   },
   mounted() {
     this.fetchData();
+    this.clearError();
+    console.log(this.selectedImage);
   },
   methods: {
     ...mapActions("user", [
@@ -98,7 +151,12 @@ export default {
       "createUser",
       "updateUser",
       "getAllRoles",
+      "clearError",
     ]),
+
+    clearImage() {
+      this.selectedImage = null;
+    },
 
     submitForm() {
       try {
@@ -109,12 +167,26 @@ export default {
         for (let key in this.userData) {
           formData.append(key, this.userData[key]);
         }
+
         if (this.action == "create") {
-          this.createUser({ payload: formData });
-          this.$toast.success("User Created");
-        } else {
-          this.updateUser({ id: this.id, payload: formData });
-          this.$toast.success("User Updated");
+          try {
+            this.createUser({ payload: formData });
+            this.$toast.success("User Created");
+            this.selectedImage = null;
+            this.clearError();
+          } catch (error) {
+            console.log(error);
+            this.$toast.error(error.message);
+          }
+        } else if (this.action == "edit") {
+          try {
+            this.updateUser({ id: this.id, payload: formData });
+            this.$toast.success("User Updated!");
+            this.clearError();
+          } catch (error) {
+            console.log(error);
+            this.$toast.error(error.message);
+          }
         }
       } catch (error) {
         this.$toast.error("error");

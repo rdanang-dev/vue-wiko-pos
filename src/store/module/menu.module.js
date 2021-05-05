@@ -32,7 +32,11 @@ const actions = {
 
   async getAllMenuList(
     context,
-    { page, per_page, filter } = { page: 1, per_page: null, filter: "" }
+    { page, per_page, filter } = {
+      page: 1,
+      per_page: null,
+      filter: "",
+    }
   ) {
     try {
       const params = new URLSearchParams();
@@ -42,7 +46,6 @@ const actions = {
       if (per_page != null) {
         params.append("per_page", per_page);
       }
-
       if (filter != null && filter != "") {
         params.append("filter", filter);
       }
@@ -83,10 +86,7 @@ const actions = {
       if (error.response) {
         errorMessage = error.response.data.message;
       }
-      if (error.response.status == 401) {
-        console.error("masuk error", error.response);
-        throw new Error(errorMessage);
-      } else if (error.response.status == 422) {
+      if (error.response.status == 422) {
         context.commit("setError", error.response.data);
         throw new Error(errorMessage);
       }
@@ -109,7 +109,6 @@ const actions = {
       }
       if (error.response.status == 401) {
         console.error("masuk error", error.response);
-
         throw new Error(errorMessage);
       } else if (error.response.status == 422) {
         context.commit("setError", error.response.data);
@@ -118,7 +117,6 @@ const actions = {
         context.commit("setError", error.response.data.message);
         throw new Error(errorMessage);
       }
-
       return error.message;
     }
   },
