@@ -1,6 +1,8 @@
 <template>
   <dashboard-layouts>
-    <div class="flex flex-col lg:flex-row justify-center flex-grow h-full">
+    <div
+      class="flex flex-col lg:flex-row justify-center flex-grow h-full no-print"
+    >
       <div class="w-full flex flex-row flex-wrap lg:w-8/12 pr-2">
         <div class="p-3 bg-white rounded-xl shadow-xl">
           <t-input
@@ -139,7 +141,7 @@
                 v-model.number="cash"
                 @keyup="onCashChange"
                 placeholder="Masukan nominal bayar"
-              ></t-input>
+              />
             </div>
             <div class="flex justify-end">
               <div
@@ -155,7 +157,7 @@
             <div class="flex flex-col w-full">
               <t-button
                 class="w-full"
-                @click="onCheckout"
+                @click="openReceiptModal"
                 :disabled="minus || cash == null"
                 >CheckOut</t-button
               >
@@ -163,9 +165,100 @@
           </div>
         </div>
       </div>
+      <t-modal v-model="receiptModal" ref="testing" hideCloseButton:true>
+        <div id="printReceipt" ref="printReceipt">
+          <div class="flex justify-center text-center flex-col">
+            <img
+              class="h-12 w-12 mx-auto"
+              src="~@/assets/small_ico.jpg"
+              alt="logo"
+            />
+            <div class="text-xl">Wisata Kopi</div>
+            <hr class="my-1" />
+          </div>
+          <div>
+            <t-table :headers="headers" :data="details" variant="receipt">
+              <template v-slot:thead="props">
+                <thead :class="props.theadClass">
+                  <tr :class="props.trClass">
+                    <th class="text-left">
+                      {{ props.data[0].text }}
+                    </th>
+                    <th class="text-left">
+                      {{ props.data[1].text }}
+                    </th>
+                    <th class="text-right">
+                      {{ props.data[2].text }}
+                    </th>
+                  </tr>
+                </thead>
+              </template>
+              <template slot="row" slot-scope="props">
+                <tr @click="onSelectRow(props.row)" :class="[props.trClass]">
+                  <td :class="props.tdClass">
+                    {{ props.row.name }}
+                    <br />
+                    {{ props.row.price }}
+                  </td>
+                  <td :class="props.tdClass">
+                    {{ props.row.qty }}
+                  </td>
+                  <td :class="[props.tdClass, 'text-right']">
+                    {{ props.row.total_price }}
+                  </td>
+                </tr>
+              </template>
+            </t-table>
+          </div>
+          <hr class="my-1" />
+          <div class="flex flex-col">
+            <div class="flex justify-between">
+              <span class="text-sm">Total Item </span>
+              <span class="text-sm">{{ subTotalItemQty }} item</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm">Subtotal</span>
+              <span class="text-sm">{{ subTotal }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-xs">Discount </span>
+              <span class="text-xs"
+                >{{ discount }} % / Rp.{{ totalDiscount }}</span
+              >
+            </div>
+            <hr class="my-1" />
+            <div class="flex justify-between">
+              <span>Total</span>
+              <span>{{ finalTotal }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Cash</span>
+              <span>{{ cash }}</span>
+            </div>
+            <hr class="my-1" />
+            <div class="flex justify-between">
+              <span>Change</span>
+              <span>{{ change }}</span>
+            </div>
+          </div>
+        </div>
+
+        <t-button class="w-full" @click="onCheckout">
+          Proceed
+        </t-button>
+      </t-modal>
     </div>
+    <div id="printArea"></div>
   </dashboard-layouts>
 </template>
+<style>
+@media print {
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+}
+</style>
 <script>
 import DashboardLayouts from "../../components/DashboardLayouts.vue";
 import { mapActions, mapState, mapMutations } from "vuex";
@@ -187,6 +280,7 @@ export default {
   },
   data() {
     return {
+      receiptModal: null,
       discount: 0,
       changeDiscount: false,
       id: this.$route.params.id,
@@ -200,8 +294,23 @@ export default {
       minus: false,
       filteredList: [],
       productMenu: [],
+      headers: [
+        {
+          value: "name",
+          text: "Name",
+        },
+        {
+          value: "qty",
+          text: "Qty",
+        },
+        {
+          value: "subtotal",
+          text: "Subtotal",
+        },
+      ],
     };
   },
+
   onActive() {
     console.log("active");
   },
@@ -221,19 +330,65 @@ export default {
     ...mapActions("order", ["getOrder", "updateOrder"]),
     ...mapMutations("order", ["addSelectedProduct", "removeSelectedProduct"]),
 
-    syncData() {
-      this.updateOrder({ id: this.id, payload: this.orderData });
+    async syncData() {
+      await this.updateOrder({ id: this.id, payload: this.orderData });
+    },
+
+    openReceiptModal() {
+      this.receiptModal = true;
+    },
+
+    closeReceiptModal() {
+      this.receiptModal = false;
     },
 
     onCheckout() {
-      this.orderData.checkout = true;
-      this.updateOrder({ id: this.id, payload: this.orderData });
-      this.$router.push("/transaction");
-      this.$toast.success("Transaction success!");
+      // let printContent = document.getElementById("#printReceipt");
+      // console.log("print", this.$refs.printReceipt); =
+      let printContent = this.$refs.printReceipt.innerHTML;
+
+      // console.log(printContent);
+
+      const printArea = document.getElementById("printArea");
+
+      printArea.innerHTML = printContent;
+
+      window.print();
+
+      printArea.innerHTML = "";
+
+      // let originalContent = document.body.innerHTML;
+
+      // document.body.innerHTML = printContent;
+
+      // window.print();
+
+      // document.body.innerHTML = originalContent;
+
+      // Open the print window
+      // const WinPrint = window.open(
+      //   "",
+      //   "",
+      //   "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
+      // );
+
+      // WinPrint.document.write(`
+      //     ${printContent}
+      // `);
+
+      // WinPrint.document.close();
+      // WinPrint.focus();
+      // WinPrint.print();
+      // WinPrint.close();
+
+      // this.orderData.checkout = true;
+      // this.updateOrder({ id: this.id, payload: this.orderData });
+      // this.$router.push("/transaction");
+      // this.$toast.success("Transaction success!");
     },
 
-    onMove() {
-      this.syncData();
+    async onMove() {
+      await this.syncData();
       this.$router.push("/transaction");
       this.$toast.success("List Updated!");
     },

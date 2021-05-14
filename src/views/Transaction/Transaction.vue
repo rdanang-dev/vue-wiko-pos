@@ -47,10 +47,7 @@
                     <template slot="row" slot-scope="props">
                       <tr
                         @click="onSelectRow(props.row)"
-                        :class="[
-                          props.trClass,
-                          // props.rowIndex % 2 === 0 ? 'bg-gray-100' : ''
-                        ]"
+                        :class="[props.trClass]"
                       >
                         <td :class="props.tdClass">
                           {{ props.row.id }}

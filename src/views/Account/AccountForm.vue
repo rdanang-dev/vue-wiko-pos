@@ -165,7 +165,9 @@ export default {
           formData.append("image", this.selectedImage);
         }
         for (let key in this.userData) {
-          formData.append(key, this.userData[key]);
+          if (this.userData[key]) {
+            formData.append(key, this.userData[key]);
+          }
         }
 
         if (this.action == "create") {

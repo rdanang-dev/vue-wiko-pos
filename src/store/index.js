@@ -7,6 +7,7 @@ import menu from "./module/menu.module";
 import login from "./module/login.module";
 import user from "./module/user.module";
 import order from "./module/order.module";
+import category from "./module/category.module";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -33,15 +34,16 @@ export default new Vuex.Store({
     menu,
     login,
     user,
-    order
+    order,
+    category,
   },
-  plugins:[
-      createPersistedState({
-        storage:{
-          getItem: (key) => localStorage.getItem(key),
-          setItem: (key, value) => localStorage.setItem(key,value),
-          removeItem: (key) => localStorage.removeItem(key)
-        }
-      })
-  ]
+  plugins: [
+    createPersistedState({
+      storage: {
+        getItem: (key) => localStorage.getItem(key),
+        setItem: (key, value) => localStorage.setItem(key, value),
+        removeItem: (key) => localStorage.removeItem(key),
+      },
+    }),
+  ],
 });

@@ -130,6 +130,21 @@
               </span>
             </div>
             <div>
+              <label for="">Category</label>
+              <t-select
+                v-model="menuData.category_id"
+                :options="allCategory"
+                textAttribute="name"
+                valueAttribute="id"
+              />
+              <span
+                class="text-sm text-left text-red-600"
+                v-if="errorData.errors && errorData.errors.category_id"
+              >
+                {{ errorData.errors.category_id[0] }}
+              </span>
+            </div>
+            <div>
               <label for="">Nama</label>
               <t-input v-model="menuData.name" />
               <span
@@ -172,7 +187,7 @@
 </template>
 
 <script>
-import DashboardLayouts from "../components/DashboardLayouts.vue";
+import DashboardLayouts from "../../components/DashboardLayouts.vue";
 import { mapActions, mapState } from "vuex";
 import IconPlus from "vue-material-design-icons/Plus";
 import CloseThick from "vue-material-design-icons/CloseThick";
@@ -209,6 +224,7 @@ export default {
 
   computed: {
     ...mapState("menu", ["menuList", "menuData", "errorData"]),
+    ...mapState("category", ["allCategory"]),
     check() {
       return this.menuList.data.length;
     },
@@ -252,6 +268,7 @@ export default {
       "clearMenu",
       "clearError",
     ]),
+    ...mapActions("category", ["getAllCategory"]),
 
     clearImage() {
       this.selectedImage = null;
@@ -271,10 +288,11 @@ export default {
       this.onSearch();
     },
 
-    openFormModal(id = null) {
+    async openFormModal(id = null) {
       this.formModal = true;
       this.selectedImage = null;
       this.clearError();
+      await this.getAllCategory();
 
       if (id != null) {
         this.selectedId = id;
@@ -307,12 +325,11 @@ export default {
           confirmButtonColor: "rgba(52,211,153,1)",
           cancelButtonColor: "#d33",
           confirmButtonText: "Yes, delete it!",
-        }).then((result) => {
+        }).then(async (result) => {
           if (result.isConfirmed) {
             try {
-              this.deleteMenu({ id: this.selectedId }).then(() => {
-                this.fetchData();
-              });
+              await this.deleteMenu({ id: this.selectedId });
+              this.fetchData();
               this.$swal("Deleted!", "Your file has been deleted.", "success");
             } catch (error) {
               console.log(error);
@@ -330,8 +347,13 @@ export default {
         if (this.selectedImage != null) {
           formData.append("image", this.selectedImage);
         }
-        formData.append("name", this.menuData.name);
-        formData.append("price", this.menuData.price);
+        if (this.menuData.name) {
+          formData.append("name", this.menuData.name);
+        }
+
+        if (this.menuData.price) {
+          formData.append("price", this.menuData.price);
+        }
 
         if (this.selectedAction == "create") {
           try {
