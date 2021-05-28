@@ -37,6 +37,7 @@
           <div>
             <span>Weekly Income {{ weeklyCount }}</span>
           </div>
+
           <bar-chart :chartdata="weeklyData" :options="options" class="pt-2" />
         </div>
       </div>
@@ -128,6 +129,7 @@ export default {
       ],
     },
     options: {
+      animation: false,
       responsive: true,
       maintainAspectRatio: false,
       base: 0,
@@ -156,7 +158,6 @@ export default {
   async mounted() {
     await this.fetchData();
     this.getDashboardDailyReport();
-
     this.getDashboardYearlyReport();
     this.getDashboardRecentTransaction();
   },
@@ -170,7 +171,10 @@ export default {
 
     async fetchData() {
       await this.getDashboardWeeklyReport();
-      console.log(this.dashboardWeeklyReport);
+      await this.weeklyReportChart();
+      // console.log(this.dashboardWeeklyReport);
+    },
+    weeklyReportChart() {
       const weeklyLabels = this.dashboardWeeklyReport.data.map((value) => {
         return value.order_date;
       });
