@@ -1,6 +1,3 @@
-# WikoPOS-FrontEnd
+# Wiko Point of Sales - FrontEnd with Vue and TailwindCSS
 
-Aplikasi Point of Sales, untuk kedai wisata kopi
-
-Made with VUE and Tailwind
-
+Repo skripsi untuk pembuatan aplikasi point of sales pada wisata kopi
