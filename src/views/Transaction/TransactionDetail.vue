@@ -342,29 +342,41 @@ export default {
       this.receiptModal = false;
     },
 
-    onCheckout() {
+    async onCheckout() {
+      // this.$swal({
+      //   title: "Transaction Success",
+      //   text: "Transaction Completed",
+      //   icon: "success",
+      //   showCancelButton: false,
+      //   showDenyButton: true,
+      //   confirmButtonColor: "rgba(52,211,153,1)",
+      //   denyButtonColor: "#d33",
+      //   confirmButtonText: "Print Receipt",
+      //   denyButtonText: "No",
+      // }).then(async (result) => {
+      //   if (result.isConfirmed) {
+      //     await this.$swal.close().catch(async () => {
+      //       await this.printReceipt();
+      //     });
+      //   }
+      // });
+      await this.printReceipt();
+    },
+
+    async printReceipt() {
       // let printContent = document.getElementById("#printReceipt");
       // console.log("print", this.$refs.printReceipt); =
       let printContent = this.$refs.printReceipt.innerHTML;
-
-      // console.log(printContent);
-
       const printArea = document.getElementById("printArea");
 
       printArea.innerHTML = printContent;
-
       window.print();
-
       printArea.innerHTML = "";
 
       // let originalContent = document.body.innerHTML;
-
       // document.body.innerHTML = printContent;
-
       // window.print();
-
       // document.body.innerHTML = originalContent;
-
       // Open the print window
       // const WinPrint = window.open(
       //   "",
@@ -381,10 +393,10 @@ export default {
       // WinPrint.print();
       // WinPrint.close();
 
-      // this.orderData.checkout = true;
-      // this.updateOrder({ id: this.id, payload: this.orderData });
-      // this.$router.push("/transaction");
-      // this.$toast.success("Transaction success!");
+      this.orderData.checkout = true;
+      this.updateOrder({ id: this.id, payload: this.orderData });
+      this.$router.push("/transaction");
+      await this.$toast.success("Transaction success!");
     },
 
     async onMove() {

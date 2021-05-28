@@ -8,6 +8,7 @@ import login from "./module/login.module";
 import user from "./module/user.module";
 import order from "./module/order.module";
 import category from "./module/category.module";
+import report from "./module/report.module";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -36,6 +37,7 @@ export default new Vuex.Store({
     user,
     order,
     category,
+    report,
   },
   plugins: [
     createPersistedState({

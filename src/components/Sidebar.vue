@@ -6,23 +6,21 @@
     :class="sideBarOpen ? '' : 'hidden'"
     id="main-nav"
   >
-    <div class="w-full h-20 border-b flex px-4 items-center mb-8">
+    <div class="w-full h-16 border-b flex px-3 items-center">
       <img class="object-cover max-h-20" src="~@/assets/logo.png" />
     </div>
 
     <perfect-scrollbar>
-      <div class="mb-4 px-4">
-        <p class="pl-4 text-sm font-semibold mb-1">MAIN</p>
+      <div class="pt-4">
+        <p class="px-4 text-sm font-semibold">MAIN</p>
         <router-link
           to="/"
           exact
           exact-active-class="bg-gray-200"
-          class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
+          class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
         >
-          <span class="h-6 w-6 fill-current mr-2" viewBox="0 0 20 20">
-            <viewDashboard></viewDashboard>
-          </span>
-          <span class="text-gray-700">Dashboard</span>
+          <viewDashboard></viewDashboard>
+          <span class="text-gray-700 pl-2">Dashboard</span>
         </router-link>
 
         <router-link
@@ -30,76 +28,65 @@
           exact
           exact-active-class="bg-gray-200"
           v-if="profile.roles == 'admin'"
-          class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
+          class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
         >
-          <span class="h-6 w-6 fill-current mr-2" viewBox="0 0 20 20">
-            <accountSupervisorCircle></accountSupervisorCircle>
-          </span>
-          <span class="text-gray-700">Kelola Akun</span>
+          <accountSupervisorCircle></accountSupervisorCircle>
+          <span class="text-gray-700 pl-2">Kelola Akun</span>
         </router-link>
 
         <router-link
           to="/transaction"
           exact
           exact-active-class="bg-gray-200"
-          class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
+          class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
         >
-          <span class="h-6 w-6 fill-current mr-2" viewBox="0 0 20 20">
-            <cartVariant></cartVariant>
-          </span>
-          <span class="text-gray-700">Trasaction</span>
+          <cartVariant></cartVariant>
+
+          <span class="text-gray-700 pl-2">Trasaction</span>
         </router-link>
 
-        <div class="px-4">
-          <p class="text-sm font-semibold">Kelola Menu</p>
+        <div>
+          <p class="px-4 text-sm font-semibold">Kelola Menu</p>
           <router-link
             to="/menu"
             exact
             exact-active-class="bg-gray-200"
-            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
+            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
           >
-            <span class="h-6 w-6 fill-current mr-2" viewBox="0 0 20 20">
-              <food></food>
-            </span>
-            <span class="text-gray-700">Kelola Menu</span>
+            <food></food>
+            <span class="text-gray-700 pl-2">Kelola Menu</span>
           </router-link>
 
           <router-link
             to="/category"
             exact
             exact-active-class="bg-gray-200"
-            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
+            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
           >
-            <span class="h-6 w-6 fill-current mr-2" viewBox="0 0 20 20">
-              <ballot></ballot>
-            </span>
-            <span class="text-gray-700">Kelola Kategori</span>
+            <ballot></ballot>
+            <span class="text-gray-700 pl-2">Kelola Kategori</span>
           </router-link>
         </div>
 
-        <div class="px-4">
-          <p class="text-sm font-semibold">Kelola Laporan</p>
+        <div>
+          <p class="px-4 text-sm font-semibold">Kelola Laporan</p>
           <router-link
             to="/transaction-report"
             exact
             exact-active-class="bg-gray-200"
-            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
+            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
           >
-            <span class="h-6 w-6 fill-current mr-2">
-              <clipboardPulse></clipboardPulse>
-            </span>
-            <span class="text-gray-700">Laporan Transaksi</span>
+            <clipboardPulse></clipboardPulse>
+            <span class="text-gray-700 pl-2">Laporan Transaksi</span>
           </router-link>
           <router-link
             to="/employees-report"
             exact
             exact-active-class="bg-gray-200"
-            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 rounded-lg cursor-pointer"
+            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
           >
-            <span class="h-6 w-6 fill-current mr-2">
-              <clipboardList></clipboardList>
-            </span>
-            <span class="text-gray-700">Laporan Pegawai</span>
+            <clipboardList></clipboardList>
+            <span class="text-gray-700 pl-2">Laporan Pegawai</span>
           </router-link>
         </div>
       </div>

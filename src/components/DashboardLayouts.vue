@@ -10,11 +10,11 @@
       >
         <Navbar />
 
-        <div class="p-6 bg-gray-100 mb-20">
-          <slot />
+        <div class="p-4 bg-gray-100" id="main-layouts">
+          <perfect-scrollbar>
+            <slot />
+          </perfect-scrollbar>
         </div>
-
-        <!-- <Footer /> -->
       </div>
     </div>
   </div>
@@ -25,17 +25,15 @@ import { mapState } from "vuex";
 
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
-// import Footer from "./Footer";
 
 export default {
   name: "Dashboard",
   computed: {
-    ...mapState(["sideBarOpen"])
+    ...mapState(["sideBarOpen"]),
   },
   components: {
     Sidebar,
     Navbar,
-    // Footer
-  }
+  },
 };
 </script>

@@ -23,6 +23,9 @@ const routes = [
   {
     path: "/Menu",
     name: "menu",
+    meta: {
+      needAuth: true,
+    },
     component: () =>
       import(
         /* webpackChunkName: "JobVacancies" */ "../views/Product/Menu.vue"
@@ -31,6 +34,9 @@ const routes = [
   {
     path: "/Category",
     name: "category",
+    meta: {
+      needAuth: true,
+    },
     component: () =>
       import(
         /* webpackChunkName: "JobVacancies" */ "../views/Product/Category.vue"
