@@ -317,10 +317,12 @@ export default {
   async onIdle() {
     await this.syncData();
   },
-  mounted() {
-    this.fetchData();
-    this.countTransaction();
+
+  async mounted() {
+    await this.fetchData();
+    await this.countTransaction();
   },
+
   async beforeDestroy() {
     await this.syncData();
   },
@@ -418,6 +420,7 @@ export default {
       this.totalDiscount = (this.subTotal * this.discount) / 100;
       this.finalTotal = this.subTotal - this.totalDiscount;
     },
+
     onCashChange() {
       this.change = this.cash - this.finalTotal;
       if (this.cash < this.finalTotal) {

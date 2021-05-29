@@ -34,8 +34,9 @@
           </div>
         </div>
         <div class="w-full bg-white rounded-xl shadow p-3">
-          <div>
-            <span>Weekly Income {{ weeklyCount }}</span>
+          <div class="flex justify-between">
+            <span>Weekly Income </span>
+            <span>from {{ weeklyCount }}x Transactions</span>
           </div>
 
           <bar-chart :chartdata="weeklyData" :options="options" class="pt-2" />
@@ -129,7 +130,7 @@ export default {
       ],
     },
     options: {
-      animation: false,
+      // animation: false,
       responsive: true,
       maintainAspectRatio: false,
       base: 0,
@@ -171,26 +172,23 @@ export default {
 
     async fetchData() {
       await this.getDashboardWeeklyReport();
-      await this.weeklyReportChart();
-      // console.log(this.dashboardWeeklyReport);
+      this.weeklyReportChart();
     },
+
     weeklyReportChart() {
       const weeklyLabels = this.dashboardWeeklyReport.data.map((value) => {
         return value.order_date;
       });
-
       this.weeklyData.labels = weeklyLabels;
-
       const weeklyData = this.dashboardWeeklyReport.data.map((value) => {
         return value.order_total;
       });
-
       this.dashboardWeeklyReport.data.forEach((value) => {
         this.weeklyCount += value.total_transaction;
       });
-
       this.weeklyData.datasets[0].data = weeklyData;
     },
+
     onMore() {
       this.$router.push("/transaction-report");
     },

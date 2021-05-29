@@ -41,15 +41,22 @@ const mutations = {
   },
   updateField,
 };
+
 const actions = {
-  async getAllOrderList(context, { status } = { status: 1 }) {
+  async getAllOrderList(
+    context,
+    { status, filter } = { status: 1, filter: "" }
+  ) {
     try {
-      const param = new URLSearchParams();
+      const params = new URLSearchParams();
       if (status != null) {
-        param.append("status", status);
+        params.append("status", status);
+      }
+      if (filter != null && filter != "") {
+        params.append("filter", filter);
       }
       const response = await axios.get(
-        `${process.env.VUE_APP_BASE_URL}/api/order?${param}`
+        `${process.env.VUE_APP_BASE_URL}/api/order?${params}`
       );
       context.commit("setOrderList", response.data);
     } catch (error) {

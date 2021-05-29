@@ -3,7 +3,7 @@
     <div class="flex flex-wrap">
       <div class="w-full">
         <ul class="flex list-none flex-wrap pb-4 flex-row">
-          <li class="flex-auto text-center">
+          <li class="flex-auto text-center pr-1">
             <a
               class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal"
               v-on:click="toggleTabs(1)"
@@ -15,7 +15,7 @@
               Order List
             </a>
           </li>
-          <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
+          <li class="-mb-px last:mr-0 flex-auto text-center pl-1">
             <a
               class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal"
               v-on:click="toggleTabs(2)"
@@ -31,7 +31,7 @@
         <div
           class="relative flex flex-col min-w-0 break-words bg-white w-full shadow-lg rounded"
         >
-          <div class="px-4 py-5 flex-auto">
+          <div class="p-3 flex-auto">
             <div class="tab-content tab-space">
               <div
                 v-bind:class="{
@@ -39,40 +39,14 @@
                   block: openTab === 1,
                 }"
               >
-                <div class>
-                  <div class="flex">
-                    <div class="relative flex w-full flex-wrap max-h-6 pr-1">
-                      <t-input
-                        v-model="filter"
-                        @change="onSearch"
-                        placeholder="Search Here"
-                      />
-                      <span
-                        v-if="!!filter"
-                        @click="clearSearch"
-                        class="text-center absolute bg-transparent text-base items-center justify-center right-0 pr-2 py-2 text-gray-400"
-                      >
-                        <close-thick></close-thick>
-                      </span>
-                    </div>
-
-                    <div class="pr-1">
-                      <button
-                        @click="onSearch"
-                        class="py-2 px-3 bg-blue-500 rounded-md text-white focus:shadow-outline-none focus:shadow-xl"
-                      >
-                        <magnify></magnify>
-                      </button>
-                    </div>
-
-                    <div>
-                      <button
-                        @click="onCreateOrder"
-                        class="block text-white bg-blue-500 text-sm transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
-                      >
-                        New Order
-                      </button>
-                    </div>
+                <div>
+                  <div class="flex pb-3">
+                    <button
+                      @click="onCreateOrder"
+                      class="block py-3 w-full text-white bg-green-500 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+                    >
+                      New Order
+                    </button>
                   </div>
 
                   <t-table :headers="headers" :data="orderList.data">
@@ -119,6 +93,32 @@
                 }"
               >
                 <div>
+                  <div class="flex pb-3">
+                    <div class="relative flex w-full flex-wrap max-h-6 pr-1">
+                      <t-input
+                        v-model="filter"
+                        @change="onSearch"
+                        placeholder="Search by date (YYYYMMDD) or by Order_Code"
+                      />
+                      <span
+                        v-if="!!filter"
+                        @click="clearSearch"
+                        class="text-center absolute bg-transparent text-base items-center justify-center right-0 pr-2 py-2 text-gray-400"
+                      >
+                        <close-thick></close-thick>
+                      </span>
+                    </div>
+
+                    <div class="pr-1">
+                      <button
+                        @click="onSearch"
+                        class="py-2 px-3 bg-blue-500 rounded-md text-white focus:shadow-outline-none focus:shadow-xl"
+                      >
+                        <magnify></magnify>
+                      </button>
+                    </div>
+                  </div>
+
                   <t-table :headers="headers" :data="orderList.data">
                     <template slot="row" slot-scope="props">
                       <tr
@@ -240,12 +240,9 @@ export default {
       }
     },
     onSearch() {
-      this.currentPage = 1;
-      // this.getAllMenuList({
-      //   page: this.currentPage,
-      //   per_page: this.perPage,
-      //   filter: this.filter,
-      // });
+      this.getAllOrderList({
+        filter: this.filter,
+      });
     },
     clearSearch() {
       this.filter = "";
