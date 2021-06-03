@@ -1,9 +1,9 @@
 <template>
   <dashboard-layouts>
-    <div class="flex justify-center flex-grow h-full">
+    <div class="flex justify-center flex-grow h-full flex-col lg:flex-row">
       <div class="w-full lg:w-6/12 p-1">
         <div class="flex flex-col lg:flex-row flex-wrap">
-          <div class="w-full mb-2 lg:w-6/12 pr-1">
+          <div class="w-full mb-2 lg:w-6/12 lg:pr-1">
             <div class="flex bg-white rounded-xl shadow p-2">
               <div class="rounded-xl bg-blue-400 p-5">
                 Rp
@@ -18,7 +18,7 @@
               </div>
             </div>
           </div>
-          <div class="w-full lg:w-6/12 pl-1">
+          <div class="w-full lg:w-6/12 pb-3 lg:pl-1 lg:pb-0">
             <div class="flex bg-white rounded-xl shadow p-2">
               <div class="rounded-xl bg-blue-400 p-5">
                 Rp

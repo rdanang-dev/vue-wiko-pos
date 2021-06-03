@@ -39,14 +39,6 @@
               <icon-plus></icon-plus>
             </button>
           </div>
-
-          <select
-            class="transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            v-model.number="perPage"
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-          </select>
         </div>
 
         <div class="text-black overflow-x-auto py-1">
@@ -76,16 +68,6 @@
               </tr>
             </template>
           </t-table>
-
-          <t-pagination
-            class="mt-2"
-            :total-items="
-              !!categoryList.meta.total ? categoryList.meta.total : 1
-            "
-            :per-page="perPage"
-            :hideEllipsis="true"
-            v-model="currentPage"
-          />
 
           <t-modal v-model="formModal" header="Manage Category">
             <div>
@@ -132,8 +114,6 @@ export default {
       selectedId: null,
       selectedImage: null,
       selectedAction: "create",
-      currentPage: 1,
-      perPage: 5,
       errors: {},
       headers: [
         {

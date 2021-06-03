@@ -29,10 +29,20 @@ const actions = {
     context.commit("setError", payload);
   },
 
-  async getAllUserList(context) {
+  async getAllUserList(
+    context,
+    { filter, privileges } = { filter: "", privileges: "All" }
+  ) {
     try {
+      const params = new URLSearchParams();
+      if (filter != null && filter != "") {
+        params.append("filter", filter);
+      }
+      if (privileges != "All") {
+        params.append("privileges", privileges);
+      }
       const response = await axios.get(
-        `${process.env.VUE_APP_BASE_URL}/api/user`
+        `${process.env.VUE_APP_BASE_URL}/api/user?${params}`
       );
       context.commit("setUserList", response.data);
     } catch (error) {
@@ -50,6 +60,7 @@ const actions = {
       console.log(error);
     }
   },
+
   async createUser(context, { payload }) {
     try {
       const response = await axios.post(
@@ -100,6 +111,7 @@ const actions = {
       return error.message;
     }
   },
+
   async deleteUser(context, { id }) {
     try {
       const response = await axios.delete(
