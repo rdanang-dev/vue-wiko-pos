@@ -1,6 +1,7 @@
 import axios from "axios";
 const state = {
   userList: [],
+  roleList: [],
   userData: {},
   errorData: {
     errors: [],
@@ -11,7 +12,9 @@ const mutations = {
   setUserList(state, payload) {
     state.userList = payload;
   },
-
+  setRoleList(state, payload) {
+    state.roleList = payload;
+  },
   setUser(state, payload) {
     state.userData = payload;
   },
@@ -67,21 +70,28 @@ const actions = {
         `${process.env.VUE_APP_BASE_URL}/api/user`,
         payload
       );
-
       return response.data;
     } catch (error) {
       let errorMessage = "";
       if (error.response) {
         errorMessage = error.response.data.message;
       }
-      if (error.response.status == 401) {
+      if (error.response.status >= 400) {
         console.error("masuk error", error.response);
-        throw new Error(errorMessage);
-      } else if (error.response.status == 400) {
         context.commit("setError", error.response.data);
         throw new Error(errorMessage);
       }
       return error.message;
+      // if (error.response) {
+      //   errorMessage = error.response.data.message;
+      // }
+      // if (error.response.status == 401) {
+      //   console.error("masuk error", error.response);
+      //   throw new Error(errorMessage);
+      // } else if (error.response.status == 400) {
+      //   context.commit("setError", error.response.data);
+      //   throw new Error(errorMessage);
+      // }
     }
   },
 
@@ -101,10 +111,8 @@ const actions = {
       if (error.response) {
         errorMessage = error.response.data.message;
       }
-      if (error.response.status == 401) {
+      if (error.response.status >= 400) {
         console.error("masuk error", error.response);
-        throw new Error(errorMessage);
-      } else if (error.response.status == 400) {
         context.commit("setError", error.response.data);
         throw new Error(errorMessage);
       }
@@ -117,10 +125,20 @@ const actions = {
       const response = await axios.delete(
         `${process.env.VUE_APP_BASE_URL}/api/user/${id}`
       );
-
       return response.data;
     } catch (error) {
       console.log(error);
+    }
+  },
+
+  async getAllRoles(context) {
+    try {
+      const response = await axios.get(
+        `${process.env.VUE_APP_BASE_URL}/api/roles`
+      );
+      context.commit("setRoleList", response.data.roles);
+    } catch (error) {
+      console.error(error);
     }
   },
 };

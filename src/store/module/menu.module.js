@@ -86,7 +86,8 @@ const actions = {
       if (error.response) {
         errorMessage = error.response.data.message;
       }
-      if (error.response.status == 422) {
+      if (error.response.status >= 400) {
+        console.error("masuk error", error.response);
         context.commit("setError", error.response.data);
         throw new Error(errorMessage);
       }
@@ -107,14 +108,9 @@ const actions = {
       if (error.response) {
         errorMessage = error.response.data.message;
       }
-      if (error.response.status == 401) {
+      if (error.response.status >= 400) {
         console.error("masuk error", error.response);
-        throw new Error(errorMessage);
-      } else if (error.response.status == 422) {
         context.commit("setError", error.response.data);
-        throw new Error(errorMessage);
-      } else if (error.response.status == 413) {
-        context.commit("setError", error.response.data.message);
         throw new Error(errorMessage);
       }
       return error.message;

@@ -61,7 +61,11 @@
         </div>
         <div>
           <label for="">Nama</label>
-          <t-input v-model="userData.name" />
+          <t-input
+            class="w-full pl-3 py-4 rounded-lg text-xs font-semibold leading-none outline-none"
+            placeholder="Insert your name"
+            v-model="userData.name"
+          />
           <span
             class="text-sm text-left text-red-600"
             v-if="errorData.errors && errorData.errors.name"
@@ -71,7 +75,11 @@
         </div>
         <div class="mt-5">
           <label for="">E-Mail</label>
-          <t-input v-model="userData.email" />
+          <t-input
+            class="w-full pl-3 py-4 rounded-lg text-xs font-semibold leading-none outline-none"
+            placeholder="blablabla@blabla.com"
+            v-model="userData.email"
+          />
           <span
             class="text-sm text-left text-red-600"
             v-if="errorData.errors && errorData.errors.email"
@@ -91,14 +99,44 @@
         </div>
         <div class="mt-5">
           <label for="">Password</label>
-          <t-input
-            v-model="userData.password"
-            :placeholder="
-              action == 'create'
-                ? 'insert your password'
-                : 'type for changing password'
-            "
-          />
+          <div class="flex flex-row">
+            <input
+              v-model="userData.password"
+              class="w-full pl-3 py-4 rounded-lg text-xs font-semibold leading-none outline-none"
+              :placeholder="
+                action == 'create'
+                  ? 'insert your password'
+                  : 'type for changing password'
+              "
+              :type="passwordField"
+            />
+
+            <button
+              class="ml-4 focus:shadow focus:bg-white focus:border-none focus:outline-none"
+              @click="onShowPassword"
+            >
+              <svg
+                class="h-6 w-6 my-auto text-blueGray-300"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewbox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                ></path>
+              </svg>
+            </button>
+          </div>
           <span
             class="text-sm text-left text-red-600"
             v-if="errorData.errors && errorData.errors.password"
@@ -130,6 +168,7 @@ export default {
   },
   data() {
     return {
+      passwordField: "password",
       action: this.$route.params.action,
       id: this.$route.params.id,
       selectedImage: null,
@@ -154,44 +193,50 @@ export default {
       "clearError",
     ]),
 
+    onShowPassword() {
+      if (this.passwordField === "password") {
+        this.passwordField = "text";
+      } else {
+        this.passwordField = "password";
+      }
+    },
+
     clearImage() {
       this.selectedImage = null;
     },
 
-    submitForm() {
-      try {
-        const formData = new FormData();
-        if (this.selectedImage != null) {
-          formData.append("image", this.selectedImage);
+    async submitForm() {
+      const formData = new FormData();
+      if (this.selectedImage != null) {
+        formData.append("image", this.selectedImage);
+      }
+      for (let key in this.userData) {
+        if (this.userData[key]) {
+          formData.append(key, this.userData[key]);
         }
-        for (let key in this.userData) {
-          if (this.userData[key]) {
-            formData.append(key, this.userData[key]);
-          }
-        }
+      }
 
-        if (this.action == "create") {
-          try {
-            this.createUser({ payload: formData });
-            this.$toast.success("User Created");
-            this.selectedImage = null;
-            this.clearError();
-          } catch (error) {
-            console.log(error);
-            this.$toast.error(error.message);
-          }
-        } else if (this.action == "edit") {
-          try {
-            this.updateUser({ id: this.id, payload: formData });
-            this.$toast.success("User Updated!");
-            this.clearError();
-          } catch (error) {
-            console.log(error);
-            this.$toast.error(error.message);
-          }
+      if (this.action == "create") {
+        try {
+          await this.createUser({ payload: formData });
+          this.selectedImage = null;
+          this.clearError();
+          this.$toast.success("User Created");
+          this.$router.push("/account");
+        } catch (error) {
+          console.log(error);
+          this.$toast.error(error.message);
         }
-      } catch (error) {
-        this.$toast.error("error");
+      } else if (this.action == "edit") {
+        try {
+          await this.updateUser({ id: this.id, payload: formData });
+          this.$toast.success("User Updated!");
+          this.$router.push("/account");
+          this.clearError();
+        } catch (error) {
+          console.log(error);
+          this.$toast.error(error.message);
+        }
       }
     },
 

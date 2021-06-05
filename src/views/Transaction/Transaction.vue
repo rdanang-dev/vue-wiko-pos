@@ -92,13 +92,13 @@
                   block: openTab === 2,
                 }"
               >
-                <div>
-                  <div class="flex pb-3">
+                <div class="flex flex-col lg:flex-row">
+                  <div class="flex flex-row lg:w-9/12">
                     <div class="relative flex w-full flex-wrap max-h-6 pr-1">
                       <t-input
                         v-model="filter"
                         @change="onSearch"
-                        placeholder="Search by date (YYYYMMDD) or by Order_Code"
+                        placeholder="Search by Order_Code"
                       />
                       <span
                         v-if="!!filter"
@@ -109,7 +109,7 @@
                       </span>
                     </div>
 
-                    <div class="pr-1">
+                    <div class="lg:pr-1">
                       <button
                         @click="onSearch"
                         class="py-2 px-3 bg-blue-500 rounded-md text-white focus:shadow-outline-none focus:shadow-xl"
@@ -118,43 +118,52 @@
                       </button>
                     </div>
                   </div>
-
-                  <t-table :headers="headers" :data="orderList.data">
-                    <template slot="row" slot-scope="props">
-                      <tr
-                        @click="onSelectRow(props.row)"
-                        :class="[props.trClass]"
-                      >
-                        <td :class="props.tdClass">
-                          {{ props.row.created_at }}
-                        </td>
-                        <td :class="props.tdClass">
-                          {{ props.row.order_number }}
-                        </td>
-                        <td :class="props.tdClass">
-                          {{ props.row.order_code }}
-                        </td>
-                        <td :class="props.tdClass">
-                          <button
-                            v-if="props.row.status == 1"
-                            class="block px-4 py-1 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed bg-yellow-300"
-                          >
-                            Pending
-                          </button>
-                          <button
-                            v-else-if="props.row.status == 2"
-                            class="block px-4 py-1 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed bg-green-300"
-                          >
-                            Success
-                          </button>
-                        </td>
-                        <td :class="props.tdClass">
-                          {{ props.row.total_price }}
-                        </td>
-                      </tr>
-                    </template>
-                  </t-table>
+                  <t-datepicker
+                    range
+                    v-model="date"
+                    placeholder="Filter by Date"
+                    class="py-2 lg:py-0 lg:w-3/12"
+                    date-format="Y-m-d"
+                    user-format="j F, y"
+                    @change="onDateChange"
+                  />
                 </div>
+
+                <t-table :headers="headers" :data="orderList.data">
+                  <template slot="row" slot-scope="props">
+                    <tr
+                      @click="onSelectRow(props.row)"
+                      :class="[props.trClass]"
+                    >
+                      <td :class="props.tdClass">
+                        {{ props.row.created_at }}
+                      </td>
+                      <td :class="props.tdClass">
+                        {{ props.row.order_number }}
+                      </td>
+                      <td :class="props.tdClass">
+                        {{ props.row.order_code }}
+                      </td>
+                      <td :class="props.tdClass">
+                        <button
+                          v-if="props.row.status == 1"
+                          class="block px-4 py-1 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed bg-yellow-300"
+                        >
+                          Pending
+                        </button>
+                        <button
+                          v-else-if="props.row.status == 2"
+                          class="block px-4 py-1 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed bg-green-300"
+                        >
+                          Success
+                        </button>
+                      </td>
+                      <td :class="props.tdClass">
+                        {{ props.row.total_price }}
+                      </td>
+                    </tr>
+                  </template>
+                </t-table>
               </div>
             </div>
           </div>
@@ -173,6 +182,7 @@ export default {
   components: { DashboardLayouts, CloseThick, Magnify },
   data() {
     return {
+      date: "",
       filter: "",
       openTab: 1,
       status: 1,
@@ -203,6 +213,7 @@ export default {
   computed: {
     ...mapState("order", ["orderList"]),
   },
+  watch: {},
   mounted() {
     this.fetchData();
   },
@@ -213,6 +224,9 @@ export default {
     }),
     fetchData() {
       this.getAllOrderList();
+    },
+    onDateChange() {
+      console.log(this.date);
     },
     toggleTabs: function(tabNumber) {
       this.openTab = tabNumber;
