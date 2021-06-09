@@ -45,7 +45,12 @@ const mutations = {
 const actions = {
   async getAllOrderList(
     context,
-    { status, filter } = { status: 1, filter: "" }
+    { status, filter, fromdate, todate } = {
+      status: 1,
+      filter: "",
+      fromdate: "",
+      todate: "",
+    }
   ) {
     try {
       const params = new URLSearchParams();
@@ -54,6 +59,12 @@ const actions = {
       }
       if (filter != null && filter != "") {
         params.append("filter", filter);
+      }
+      if (fromdate != null) {
+        params.append("fromdate", fromdate);
+      }
+      if (todate != null) {
+        params.append("todate", todate);
       }
       const response = await axios.get(
         `${process.env.VUE_APP_BASE_URL}/api/order?${params}`

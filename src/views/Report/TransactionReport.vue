@@ -18,16 +18,40 @@
     </div>
     <div class="flex justify-center py-1 flex-grow h-full">
       <div class="p-5 bg-white rounded-xl w-full">
-        <div class="flex lg:flex-row">
-          <t-input class="lg:w-9/12" placeholder="Search Data Here" />
+        <div class="flex flex-col lg:flex-row">
+          <div class="flex flex-row lg:w-9/12">
+            <div class="relative flex w-full flex-wrap max-h-6 pr-1">
+              <t-input
+                v-model="filter"
+                @change="onSearch"
+                placeholder="Search by Price/Order_Code"
+              />
+              <span
+                v-if="!!filter"
+                @click="clearSearch"
+                class="text-center absolute bg-transparent text-base items-center justify-center right-0 pr-2 py-2 text-gray-400"
+              >
+                <close-thick></close-thick>
+              </span>
+            </div>
+
+            <div class="lg:pr-1">
+              <button
+                @click="onSearch"
+                class="py-2 px-3 bg-blue-500 rounded-md text-white focus:shadow-outline-none focus:shadow-xl"
+              >
+                <magnify></magnify>
+              </button>
+            </div>
+          </div>
           <t-datepicker
             range
+            v-model="date"
             placeholder="Filter by Date"
-            class="lg:w-3/12 pl-2"
-            :date-formatter="dateFormatter"
-            :date-parser="dateParser"
-            date-format="DD-MM-YYYY"
-            user-format="d-m-Y"
+            class="py-2 lg:py-0 lg:w-3/12"
+            date-format="Y-m-d"
+            user-format="j F, y"
+            @change="onDateChange"
           />
         </div>
       </div>
@@ -36,17 +60,23 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
 import DashboardLayouts from "../../components/DashboardLayouts.vue";
 import LineChart from "../../components/LineChart.vue";
-// @ is an alias to /src
+import CloseThick from "vue-material-design-icons/CloseThick";
+import Magnify from "vue-material-design-icons/Magnify";
 
 export default {
   name: "TransactionReport",
   components: {
     DashboardLayouts,
     LineChart,
+    CloseThick,
+    Magnify,
   },
   data: () => ({
+    date: "",
+    filter: "",
     chartdata: {
       labels: ["January", "February", "Maret"],
       datasets: [
@@ -75,5 +105,71 @@ export default {
       },
     },
   }),
+  computed: {
+    ...mapState("order", ["orderList"]),
+    check() {
+      return this.date;
+    },
+  },
+  watch: {
+    check(date) {
+      if (date == "") {
+        this.clearDate();
+      }
+    },
+  },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    ...mapActions("order", {
+      getAllOrderList: "getAllOrderList",
+      createOrder: "createOrder",
+    }),
+
+    fetchData() {
+      this.getAllOrderList();
+    },
+
+    clearDate() {
+      this.onSearch();
+    },
+
+    onDateChange() {
+      if (this.date) {
+        if (this.date.length == 1) {
+          this.getAllOrderList({
+            filter: this.filter,
+            fromdate: this.date[0],
+          });
+        }
+        if (this.date.length > 1) {
+          this.getAllOrderList({
+            filter: this.filter,
+            fromdate: this.date[0],
+            todate: this.date[1],
+          });
+        }
+      }
+    },
+
+    onSearch() {
+      if (this.date) {
+        this.getAllOrderList({
+          filter: this.filter,
+        });
+        this.onDateChange();
+      } else {
+        this.getAllOrderList({
+          filter: this.filter,
+        });
+      }
+    },
+
+    clearSearch() {
+      this.filter = "";
+      this.onSearch();
+    },
+  },
 };
 </script>
