@@ -6,6 +6,9 @@ const state = {
   dashboardRecentTransaction: {
     data: [],
   },
+  allTransaction: {
+    data: [],
+  },
 };
 const getters = {};
 const mutations = {
@@ -20,6 +23,9 @@ const mutations = {
   },
   setDashboardRecentTransaction(state, payload) {
     state.dashboardRecentTransaction = payload;
+  },
+  setAllTransaction(state, payload) {
+    state.allTransaction = payload;
   },
 };
 const actions = {
@@ -59,6 +65,16 @@ const actions = {
         `${process.env.VUE_APP_BASE_URL}/api/report/dashboardrecenttransaction`
       );
       context.commit("setDashboardRecentTransaction", response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async getAllTransaction(context) {
+    try {
+      const response = await axios.get(
+        `${process.env.VUE_APP_BASE_URL}/api/report/alltransaction`
+      );
+      context.commit("setAllTransaction", response.data);
     } catch (error) {
       console.log(error);
     }

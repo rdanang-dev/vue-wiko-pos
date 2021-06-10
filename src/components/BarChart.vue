@@ -19,17 +19,17 @@ export default {
     },
   },
   mounted() {
-    this.renderLineChart();
+    this.renderBarChart();
   },
   methods: {
-    renderLineChart() {
+    renderBarChart() {
       this.renderChart(this.renderData, this.options);
     },
   },
   watch: {
     chartdata: {
       handler: function() {
-        this.renderLineChart();
+        this.renderBarChart();
       },
       deep: true,
     },

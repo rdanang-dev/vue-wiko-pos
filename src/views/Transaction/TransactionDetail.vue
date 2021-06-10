@@ -165,6 +165,7 @@
           </div>
         </div>
       </div>
+
       <t-modal v-model="receiptModal" ref="testing" hideCloseButton:true>
         <div id="printReceipt" ref="printReceipt">
           <div class="flex justify-center text-center flex-col">

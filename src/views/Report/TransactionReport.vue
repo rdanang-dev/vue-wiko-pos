@@ -54,6 +54,122 @@
             @change="onDateChange"
           />
         </div>
+
+        <div class="pt-4">
+          <div>
+            <div class="flex flex-col">
+              <div
+                class="flex justify-between pb-2"
+                v-for="(trans, key) in allTransaction.data"
+                :key="key"
+              >
+                <div class="flex flex-row">
+                  <div class="bg-gray-300 rounded-lg p-4">
+                    <swap-horizontal></swap-horizontal>
+                  </div>
+                  <div class="flex flex-col pl-2 py-1">
+                    <span class="text">
+                      {{ trans.order_code }}
+                    </span>
+                    <div class="flex flex-row text-xs">
+                      <span>
+                        Total:
+                        {{ trans.order_total }}
+                      </span>
+                      <span>, Handled by:</span>
+                      <span>
+                        {{ " " + trans.employee.name }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <span>{{ trans.order_date }}</span>
+                  <span
+                    class="text-right text-blue-400"
+                    @click="openReceiptModal(trans.details)"
+                    >Details</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <t-modal v-model="receiptModal" hideCloseButton:true>
+          <div class="flex justify-center text-center flex-col">
+            <img
+              class="h-12 w-12 mx-auto"
+              src="~@/assets/small_ico.jpg"
+              alt="logo"
+            />
+            <div class="text-xl">Wisata Kopi</div>
+            <hr class="my-1" />
+          </div>
+          <div>
+            <t-table :headers="headers" :data="transDetails" variant="receipt">
+              <template v-slot:thead="props">
+                <thead :class="props.theadClass">
+                  <tr :class="props.trClass">
+                    <th class="text-left">
+                      {{ props.data[0].text }}
+                    </th>
+                    <th class="text-left">
+                      {{ props.data[1].text }}
+                    </th>
+                    <th class="text-right">
+                      {{ props.data[2].text }}
+                    </th>
+                  </tr>
+                </thead>
+              </template>
+              <template slot="row" slot-scope="props">
+                <tr @click="onSelectRow(props.row)" :class="[props.trClass]">
+                  <td :class="props.tdClass">
+                    {{ props.row.name }}
+                    <br />
+                    {{ props.row.price }}
+                  </td>
+                  <td :class="props.tdClass">
+                    {{ props.row.qty }}
+                  </td>
+                  <td :class="[props.tdClass, 'text-right']">
+                    {{ props.row.total_price }}
+                  </td>
+                </tr>
+              </template>
+            </t-table>
+          </div>
+          <hr class="my-1" />
+          <div class="flex flex-col">
+            <div class="flex justify-between">
+              <span class="text-sm">Total Item </span>
+              <span class="text-sm"> item</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm">Subtotal</span>
+              <span class="text-sm"></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-xs">Discount </span>
+              <span class="text-xs"> % / Rp.</span>
+            </div>
+            <hr class="my-1" />
+            <div class="flex justify-between">
+              <span>Total</span>
+              <span></span>
+            </div>
+            <div class="flex justify-between">
+              <span>Cash</span>
+              <span></span>
+            </div>
+            <hr class="my-1" />
+            <div class="flex justify-between">
+              <span>Change</span>
+              <span></span>
+            </div>
+          </div>
+        </t-modal>
       </div>
     </div>
   </dashboard-layouts>
@@ -65,6 +181,7 @@ import DashboardLayouts from "../../components/DashboardLayouts.vue";
 import LineChart from "../../components/LineChart.vue";
 import CloseThick from "vue-material-design-icons/CloseThick";
 import Magnify from "vue-material-design-icons/Magnify";
+import SwapHorizontal from "vue-material-design-icons/SwapHorizontal";
 
 export default {
   name: "TransactionReport",
@@ -73,8 +190,25 @@ export default {
     LineChart,
     CloseThick,
     Magnify,
+    SwapHorizontal,
   },
   data: () => ({
+    receiptModal: null,
+    transDetails: null,
+    headers: [
+      {
+        value: "name",
+        text: "Name",
+      },
+      {
+        value: "qty",
+        text: "Qty",
+      },
+      {
+        value: "subtotal",
+        text: "Subtotal",
+      },
+    ],
     date: "",
     filter: "",
     chartdata: {
@@ -107,6 +241,7 @@ export default {
   }),
   computed: {
     ...mapState("order", ["orderList"]),
+    ...mapState("report", ["allTransaction"]),
     check() {
       return this.date;
     },
@@ -126,9 +261,11 @@ export default {
       getAllOrderList: "getAllOrderList",
       createOrder: "createOrder",
     }),
+    ...mapActions("report", ["getAllTransaction"]),
 
     fetchData() {
       this.getAllOrderList();
+      this.getAllTransaction();
     },
 
     clearDate() {
@@ -169,6 +306,15 @@ export default {
     clearSearch() {
       this.filter = "";
       this.onSearch();
+    },
+
+    openReceiptModal(detail) {
+      this.transDetails = detail;
+      this.receiptModal = true;
+    },
+
+    closeReceiptModal() {
+      this.receiptModal = false;
     },
   },
 };
