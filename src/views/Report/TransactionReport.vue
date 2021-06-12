@@ -1,19 +1,34 @@
 <template>
   <dashboard-layouts>
+    <div class="flex flex-grow justify-center pb-2">
+      <div class="p-1 w-full">
+        <div class="flex justify-between pb-1">
+          <span class="text-black text-3xl">Report</span>
+          <t-button>Export</t-button>
+        </div>
+        <hr />
+      </div>
+    </div>
     <div class="flex justify-center pb-1 flex-grow h-full">
       <div class="p-5 bg-white rounded-xl w-full">
         <div class="flex justify-between">
           <span>Income Statistic</span>
-          <span>from x Transaction</span>
+          <span
+            >Rp.{{ totalIncome | formatRupiah }} from {{ totalTrans }}x
+            Transaction</span
+          >
           <select
             class="transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            v-model="lineChartData"
+            @change="onLineChartDataChange"
           >
             <option value="Daily">Daily</option>
+            <option value="Weekly">Weekly</option>
             <option value="Monthly">Monthly</option>
             <option value="Yearly">Yearly</option>
           </select>
         </div>
-        <line-chart :chartdata="chartdata" :options="options" />
+        <line-chart :chartdata="chartData" :options="options" />
       </div>
     </div>
     <div class="flex justify-center py-1 flex-grow h-full">
@@ -84,12 +99,27 @@
                   </div>
                 </div>
                 <div class="flex flex-col">
-                  <span>{{ trans.order_date }}</span>
-                  <span
-                    class="text-right text-blue-400"
-                    @click="openReceiptModal(trans.details)"
-                    >Details</span
-                  >
+                  <span class="text-right">{{ trans.order_date }}</span>
+                  <div class="flex flex-row">
+                    <span
+                      class="text-right text-blue-600 hover:text-blue-400 underline"
+                      @click="
+                        openReceiptModal(
+                          trans.details,
+                          trans.employee.name,
+                          trans.order_date,
+                          trans.discount_percentage,
+                          trans.discount_value,
+                          trans.total_price,
+                          trans.cash,
+                          trans.change
+                        )
+                      "
+                      >Details</span
+                    >
+                    <span class="px-1">|</span>
+                    <span>Print</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -104,6 +134,10 @@
               alt="logo"
             />
             <div class="text-xl">Wisata Kopi</div>
+            <div class="flex justify-between">
+              <span class="text-sm">Cashier: {{ cashierName }}</span>
+              <span class="text-sm">{{ orderDate }}</span>
+            </div>
             <hr class="my-1" />
           </div>
           <div>
@@ -126,7 +160,7 @@
               <template slot="row" slot-scope="props">
                 <tr @click="onSelectRow(props.row)" :class="[props.trClass]">
                   <td :class="props.tdClass">
-                    {{ props.row.name }}
+                    {{ props.row.menu.name }}
                     <br />
                     {{ props.row.price }}
                   </td>
@@ -134,7 +168,7 @@
                     {{ props.row.qty }}
                   </td>
                   <td :class="[props.tdClass, 'text-right']">
-                    {{ props.row.total_price }}
+                    {{ props.row.price * props.row.qty }}
                   </td>
                 </tr>
               </template>
@@ -144,29 +178,33 @@
           <div class="flex flex-col">
             <div class="flex justify-between">
               <span class="text-sm">Total Item </span>
-              <span class="text-sm"> item</span>
+              <span class="text-sm">{{ totalItem }} item</span>
             </div>
             <div class="flex justify-between">
               <span class="text-sm">Subtotal</span>
-              <span class="text-sm"></span>
+              <span class="text-sm">{{ subSubTotal }}</span>
             </div>
             <div class="flex justify-between">
               <span class="text-xs">Discount </span>
-              <span class="text-xs"> % / Rp.</span>
+              <span class="text-xs"
+                >{{ discountPercentage }} % / Rp.{{
+                  discountValue | formatRupiah
+                }}
+              </span>
             </div>
             <hr class="my-1" />
             <div class="flex justify-between">
               <span>Total</span>
-              <span></span>
+              <span>{{ total | formatRupiah }}</span>
             </div>
             <div class="flex justify-between">
               <span>Cash</span>
-              <span></span>
+              <span>{{ cash | formatRupiah }}</span>
             </div>
             <hr class="my-1" />
             <div class="flex justify-between">
               <span>Change</span>
-              <span></span>
+              <span>{{ change | formatRupiah }}</span>
             </div>
           </div>
         </t-modal>
@@ -193,8 +231,22 @@ export default {
     SwapHorizontal,
   },
   data: () => ({
+    chartData: {},
+    lineChartData: "Daily",
+    totalIncome: 0,
+    totalTrans: 0,
     receiptModal: null,
     transDetails: null,
+    cashierName: "",
+    orderDate: null,
+    discountPercentage: 0,
+    discountValue: 0,
+    totalItem: 0,
+    subTotal: 0,
+    subSubTotal: 0,
+    total: 0,
+    cash: 0,
+    change: 0,
     headers: [
       {
         value: "name",
@@ -211,13 +263,37 @@ export default {
     ],
     date: "",
     filter: "",
-    chartdata: {
-      labels: ["January", "February", "Maret"],
+    dailyCount: 0,
+    dailyTotal: 0,
+    dailyData: {
+      labels: [],
       datasets: [
         {
           label: "Data",
           backgroundColor: "#f87979",
-          data: [40, 20, 10],
+          data: [],
+        },
+      ],
+    },
+    weeklyTotal: 0,
+    weeklyCount: 0,
+    weeklyData: {
+      labels: [],
+      datasets: [
+        {
+          label: "Data",
+          backgroundColor: "#f87979",
+          data: [],
+        },
+      ],
+    },
+    yearlyData: {
+      labels: [],
+      datasets: [
+        {
+          label: "Data",
+          backgroundColor: "#f87979",
+          data: [],
         },
       ],
     },
@@ -240,14 +316,18 @@ export default {
     },
   }),
   computed: {
-    ...mapState("order", ["orderList"]),
-    ...mapState("report", ["allTransaction"]),
-    check() {
+    ...mapState("report", [
+      "allTransaction",
+      "dailyReport",
+      "weeklyReport",
+      "yearlyReport",
+    ]),
+    checkDate() {
       return this.date;
     },
   },
   watch: {
-    check(date) {
+    checkDate(date) {
       if (date == "") {
         this.clearDate();
       }
@@ -257,15 +337,18 @@ export default {
     this.fetchData();
   },
   methods: {
-    ...mapActions("order", {
-      getAllOrderList: "getAllOrderList",
-      createOrder: "createOrder",
-    }),
-    ...mapActions("report", ["getAllTransaction"]),
+    ...mapActions("report", [
+      "getAllTransaction",
+      "getDailyReport",
+      "getWeeklyReport",
+      "getYearlyReport",
+    ]),
 
-    fetchData() {
-      this.getAllOrderList();
+    async fetchData() {
       this.getAllTransaction();
+      await this.getDailyReport();
+      await this.getWeeklyReport();
+      await this.getYearlyReport();
     },
 
     clearDate() {
@@ -275,30 +358,34 @@ export default {
     onDateChange() {
       if (this.date) {
         if (this.date.length == 1) {
-          this.getAllOrderList({
-            filter: this.filter,
+          this.getAllTransaction({
             fromdate: this.date[0],
+            filter: this.filter,
           });
         }
         if (this.date.length > 1) {
-          this.getAllOrderList({
-            filter: this.filter,
+          this.getAllTransaction({
             fromdate: this.date[0],
             todate: this.date[1],
+            filter: this.filter,
           });
         }
       }
     },
 
     onSearch() {
-      if (this.date) {
-        this.getAllOrderList({
+      if (this.date == "") {
+        this.getAllTransaction({
           filter: this.filter,
+          fromdate: this.date[0],
+          todate: this.date[1],
         });
         this.onDateChange();
       } else {
-        this.getAllOrderList({
+        this.getAllTransaction({
           filter: this.filter,
+          fromdate: this.date[0],
+          todate: this.date[1],
         });
       }
     },
@@ -308,13 +395,85 @@ export default {
       this.onSearch();
     },
 
-    openReceiptModal(detail) {
+    openReceiptModal(
+      detail,
+      ename,
+      odate,
+      dpercent,
+      dvalue,
+      total,
+      cash,
+      change
+    ) {
       this.transDetails = detail;
+      this.cashierName = ename;
+      this.orderDate = odate;
+      this.totalItem = 0;
+      this.subTotal = 0;
+      this.subSubTotal = 0;
+      this.transDetails.forEach((value) => {
+        this.totalItem += value.qty;
+        this.subTotal = value.price * value.qty;
+        this.subSubTotal += this.subTotal;
+      });
+      this.discount = this.transDetails.discount;
+      this.discountPercentage = dpercent;
+      this.discountValue = dvalue;
+      this.total = total;
+      this.cash = cash;
+      this.change = change;
       this.receiptModal = true;
     },
 
     closeReceiptModal() {
       this.receiptModal = false;
+    },
+
+    async onLineChartDataChange() {
+      if (this.lineChartData == "Daily") {
+        this.chartData = this.dailyData;
+        await this.dailyReportChart();
+        this.totalIncome = this.dailyTotal;
+        this.totalTrans = this.dailyCount;
+      }
+      if (this.lineChartData == "Weekly") {
+        this.chartData = this.weeklyData;
+        await this.weeklyReportChart();
+        this.totalIncome = this.weeklyTotal;
+        this.totalTrans = this.weeklyCount;
+      }
+      // if (this.lineChartData == "Monthly") {
+      //   this.chartData = this.weeklyData;
+      // }
+      if (this.lineChartData == "Yearly") {
+        this.chartData = this.yearlyData;
+        await this.yearlyReportChart();
+      }
+    },
+
+    dailyReportChart() {
+      this.dailyCount += this.dailyReport.data.total_transaction;
+      this.dailyTotal += this.dailyReport.data.order_total;
+      this.dailyData.labels = this.dailyReport.data.order_date;
+      this.dailyData.datasets[0].data = this.dailyReport.data.order_total;
+    },
+
+    weeklyReportChart() {
+      this.weeklyReport.data.forEach((value) => {
+        this.weeklyCount += value.total_transaction;
+        this.weeklyTotal += parseInt(value.order_total);
+      });
+      const weeklyLabels = this.weeklyReport.data.map((value) => {
+        return value.order_date;
+      });
+      this.weeklyData.labels = weeklyLabels;
+      const weeklyData = this.weeklyReport.data.map((value) => {
+        return value.order_total;
+      });
+      this.weeklyData.datasets[0].data = weeklyData;
+    },
+    yearlyReportChart() {
+      console.log("yearly");
     },
   },
 };

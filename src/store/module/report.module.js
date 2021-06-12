@@ -9,6 +9,9 @@ const state = {
   allTransaction: {
     data: [],
   },
+  dailyReport: {},
+  weeklyReport: {},
+  yearlyReport: {},
 };
 const getters = {};
 const mutations = {
@@ -26,6 +29,15 @@ const mutations = {
   },
   setAllTransaction(state, payload) {
     state.allTransaction = payload;
+  },
+  setDailyReport(state, payload) {
+    state.dailyReport = payload;
+  },
+  setWeeklyReport(state, payload) {
+    state.weeklyReport = payload;
+  },
+  setYearlyReport(state, payload) {
+    state.yearlyReport = payload;
   },
 };
 const actions = {
@@ -69,12 +81,55 @@ const actions = {
       console.log(error);
     }
   },
-  async getAllTransaction(context) {
+  async getAllTransaction(
+    context,
+    { filter, fromdate, todate } = { filter: "", fromdate: "", todate: "" }
+  ) {
     try {
+      const params = new URLSearchParams();
+      if (filter != null && filter != "") {
+        params.append("filter", filter);
+      }
+      if (fromdate != null && fromdate != "") {
+        params.append("fromdate", fromdate);
+      }
+      if (todate != null && todate != "") {
+        params.append("todate", todate);
+      }
       const response = await axios.get(
-        `${process.env.VUE_APP_BASE_URL}/api/report/alltransaction`
+        `${process.env.VUE_APP_BASE_URL}/api/report/alltransaction?${params}`
       );
       context.commit("setAllTransaction", response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async getDailyReport(context) {
+    try {
+      const response = await axios.get(
+        `${process.env.VUE_APP_BASE_URL}/api/report/daily`
+      );
+      context.commit("setDailyReport", response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async getWeeklyReport(context) {
+    try {
+      const response = await axios.get(
+        `${process.env.VUE_APP_BASE_URL}/api/report/weekly`
+      );
+      context.commit("setWeeklyReport", response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async getYearlyReport(context) {
+    try {
+      const response = await axios.get(
+        `${process.env.VUE_APP_BASE_URL}/api/report/yearly`
+      );
+      context.commit("setYearlyReport", response.data);
     } catch (error) {
       console.log(error);
     }

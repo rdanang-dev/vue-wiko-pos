@@ -419,6 +419,8 @@ export default {
         this.subTotalItemQty += parseInt(value.qty);
       });
       this.totalDiscount = (this.subTotal * this.discount) / 100;
+      this.orderData.discount_value = this.totalDiscount;
+      this.orderData.discount_percentage = this.discount;
       this.finalTotal = this.subTotal - this.totalDiscount;
     },
 
@@ -429,6 +431,8 @@ export default {
       } else {
         this.minus = false;
       }
+      this.orderData.cash = this.cash;
+      this.orderData.change = this.change;
     },
 
     async fetchData() {

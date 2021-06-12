@@ -31,7 +31,6 @@ const mutations = {
     state.orderData = payload;
   },
   addSelectedProduct(state, payload) {
-    console.log(payload);
     state.orderData.details.push(payload);
   },
   removeSelectedProduct(state, id) {
@@ -60,10 +59,10 @@ const actions = {
       if (filter != null && filter != "") {
         params.append("filter", filter);
       }
-      if (fromdate != null) {
+      if (fromdate != null && fromdate != "") {
         params.append("fromdate", fromdate);
       }
-      if (todate != null) {
+      if (todate != null && todate != "") {
         params.append("todate", todate);
       }
       const response = await axios.get(

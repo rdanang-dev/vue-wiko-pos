@@ -130,7 +130,6 @@ export default {
       ],
     },
     options: {
-      // animation: false,
       responsive: true,
       maintainAspectRatio: false,
       base: 0,
