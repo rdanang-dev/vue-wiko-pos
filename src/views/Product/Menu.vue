@@ -57,7 +57,7 @@
                   {{ props.row.name }}
                 </td>
                 <td :class="props.tdClass">
-                  {{ props.row.price }}
+                  Rp.{{ props.row.price | formatRupiah }},-
                 </td>
                 <td :class="props.tdClass" class="flex flex-row">
                   <t-button
@@ -350,7 +350,9 @@ export default {
         if (this.menuData.name) {
           formData.append("name", this.menuData.name);
         }
-
+        if (this.menuData.category_id) {
+          formData.append("category_id", this.menuData.category_id);
+        }
         if (this.menuData.price) {
           formData.append("price", this.menuData.price);
         }
