@@ -3,7 +3,7 @@
     <div class="flex justify-center flex-grow h-full">
       <div class="pt-1 px-5 pb-5 bg-white rounded-xl w-full">
         <div class="text-2xl text-black mt-5 font-bold text-center">
-          Daftar Product
+          Product Lists
         </div>
 
         <div class="flex py-1">
@@ -145,8 +145,8 @@
               </span>
             </div>
             <div>
-              <label for="">Nama</label>
-              <t-input v-model="menuData.name" />
+              <label for="">Name</label>
+              <t-input v-model="menuData.name" placeholder="Insert Menu Name" />
               <span
                 class="text-sm text-left text-red-600"
                 v-if="errorData.errors && errorData.errors.name"
@@ -155,8 +155,8 @@
               </span>
             </div>
             <div>
-              <label for="">Harga</label>
-              <t-input v-model="menuData.price" />
+              <label for="">Price</label>
+              <t-input v-model="menuData.price" placeholder="Insert Price" />
               <span
                 class="text-sm text-left text-red-600"
                 v-if="errorData.errors && errorData.errors.price"
@@ -208,11 +208,11 @@ export default {
       headers: [
         {
           value: "name",
-          text: "Nama",
+          text: "Name",
         },
         {
           value: "price",
-          text: "Harga",
+          text: "Price",
         },
         {
           value: "actions",
@@ -225,9 +225,9 @@ export default {
   computed: {
     ...mapState("menu", ["menuList", "menuData", "errorData"]),
     ...mapState("category", ["allCategory"]),
-    check() {
-      return this.menuList.data.length;
-    },
+    // check() {
+    //   return this.menuList.data.length;
+    // },
   },
 
   mounted() {
@@ -236,13 +236,13 @@ export default {
   },
 
   watch: {
-    check(menu) {
-      if (!menu) {
-        this.$toast.error("Data not Found!", {
-          duration: 3000,
-        });
-      }
-    },
+    // check(menu) {
+    //   if (!menu) {
+    //     this.$toast.error("Data not Found!", {
+    //       duration: 3000,
+    //     });
+    //   }
+    // },
     currentPage(newVal) {
       this.getAllMenuList({
         page: newVal,
@@ -281,12 +281,19 @@ export default {
         per_page: this.perPage,
         filter: this.filter,
       });
+      // this.checkDataLength();
     },
 
     clearSearch() {
       this.filter = "";
       this.onSearch();
     },
+
+    // checkDataLength() {
+    //   if (!this.menuList.data.length) {
+    //     this.$toast.error("Data not Found!");
+    //   }
+    // },
 
     async openFormModal(id = null) {
       this.formModal = true;
@@ -404,8 +411,12 @@ export default {
       }
     },
 
-    fetchData() {
-      this.getAllMenuList({ page: this.currentPage, per_page: this.perPage });
+    async fetchData() {
+      await this.getAllMenuList({
+        page: this.currentPage,
+        per_page: this.perPage,
+        filter: this.filter,
+      });
     },
   },
 };

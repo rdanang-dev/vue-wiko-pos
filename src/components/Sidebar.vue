@@ -31,7 +31,7 @@
           class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
         >
           <accountSupervisorCircle></accountSupervisorCircle>
-          <span class="text-gray-700 pl-2">Kelola Akun</span>
+          <span class="text-gray-700 pl-2">Manage Users</span>
         </router-link>
 
         <router-link
@@ -46,7 +46,7 @@
         </router-link>
 
         <div>
-          <p class="px-4 text-sm font-semibold">Kelola Menu</p>
+          <p class="px-4 text-sm font-semibold">Products</p>
           <router-link
             to="/menu"
             exact
@@ -54,7 +54,7 @@
             class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
           >
             <food></food>
-            <span class="text-gray-700 pl-2">Kelola Menu</span>
+            <span class="text-gray-700 pl-2">Manage Menus</span>
           </router-link>
 
           <router-link
@@ -64,12 +64,12 @@
             class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
           >
             <ballot></ballot>
-            <span class="text-gray-700 pl-2">Kelola Kategori</span>
+            <span class="text-gray-700 pl-2">Manage Categories</span>
           </router-link>
         </div>
 
         <div>
-          <p class="px-4 text-sm font-semibold">Kelola Laporan</p>
+          <p class="px-4 text-sm font-semibold">Report</p>
           <router-link
             to="/transaction-report"
             exact
@@ -77,16 +77,7 @@
             class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
           >
             <clipboardPulse></clipboardPulse>
-            <span class="text-gray-700 pl-2">Laporan Transaksi</span>
-          </router-link>
-          <router-link
-            to="/employees-report"
-            exact
-            exact-active-class="bg-gray-200"
-            class="w-full flex items-center text-blue-400 h-10 pl-4 hover:bg-gray-200 cursor-pointer"
-          >
-            <clipboardList></clipboardList>
-            <span class="text-gray-700 pl-2">Laporan Pegawai</span>
+            <span class="text-gray-700 pl-2">Manage Report</span>
           </router-link>
         </div>
       </div>
@@ -101,7 +92,6 @@ import viewDashboard from "vue-material-design-icons/ViewDashboard";
 import food from "vue-material-design-icons/Food";
 import accountSupervisorCircle from "vue-material-design-icons/AccountSupervisorCircle";
 import clipboardPulse from "vue-material-design-icons/ClipboardPulse";
-import clipboardList from "vue-material-design-icons/ClipboardList";
 import ballot from "vue-material-design-icons/Ballot";
 export default {
   name: "Sidebar",
@@ -111,7 +101,6 @@ export default {
     food,
     accountSupervisorCircle,
     clipboardPulse,
-    clipboardList,
     ballot,
   },
   computed: {

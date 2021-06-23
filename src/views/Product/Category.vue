@@ -3,7 +3,7 @@
     <div class="flex justify-center flex-grow h-full">
       <div class="pt-1 px-5 pb-5 bg-white rounded-xl w-full">
         <div class="text-2xl text-black mt-5 font-bold text-center">
-          Daftar Kategori
+          Category List
         </div>
 
         <div class="flex py-1">
