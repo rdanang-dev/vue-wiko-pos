@@ -1,17 +1,17 @@
 <template>
-  <div class="min-h-screen w-full background-login">
-    <div class="py-32 container mx-auto">
-      <div
-        class="flex bg-gray-50 rounded-lg max-w-md mx-auto flex-col text-center shadow-2xl"
-      >
-        <div class="mt-5 font-bold flex flex-row">
+  <div
+    class="min-h-screen w-full flex justify-center items-center background-login"
+  >
+    <div class="bg-gray-50 rounded-lg shadow-2xl">
+      <div class="flex flex-col p-5">
+        <div class="flex flex-row px-16">
           <img
-            class="ml-5 mr-1 h-14"
+            class="h-16"
             src="~@/assets/small_logo.png"
-            alt=""
+            alt="wiko logo"
             width="auto"
           />
-          <span class="text-gray-900 text-md mt-4"
+          <span class="text-gray-900 font-bold pt-4 pl-2 text-xl"
             >Wisata Kopi Point of Sales</span
           >
         </div>
@@ -33,7 +33,7 @@
               {{ errorData.errors.email[0] }}
             </span>
           </div>
-          <div class="flex flex-col mb-6 px-4 rounded">
+          <div class="flex flex-col px-4 rounded">
             <label class="text-gray-900 text-left">
               Password
             </label>
@@ -46,7 +46,7 @@
                 @keyup.enter="onLogin"
               />
               <button
-                class="ml-4 focus:shadow focus:bg-white focus:border-none focus:outline-none"
+                class="pl-3 focus:shadow focus:bg-white focus:border-none focus:outline-none"
                 @click="onShowPassword"
               >
                 <svg
@@ -78,7 +78,7 @@
               {{ errorData.errors.password[0] }}
             </span>
             <button
-              class="mt-3 block w-full p-4 text-center text-xs text-white font-semibold leading-none bg-green-600 hover:bg-green-500 rounded"
+              class="mt-4 block w-full p-4 text-center text-xs text-white font-semibold leading-none bg-green-600 hover:bg-green-500 rounded"
               @click="onLogin"
             >
               Sign In
