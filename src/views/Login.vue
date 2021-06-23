@@ -45,31 +45,14 @@
                 v-model="login.password"
                 @keyup.enter="onLogin"
               />
-              <button
-                class="pl-3 focus:shadow focus:bg-white focus:border-none focus:outline-none"
-                @click="onShowPassword"
-              >
-                <svg
-                  class="h-6 w-6 my-auto text-blueGray-300"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewbox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  ></path>
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                  ></path>
-                </svg>
-              </button>
+              <a class="pl-2 pr-1 py-2" @click="onShowPassword">
+                <div v-if="passwordField === 'password'">
+                  <lock></lock>
+                </div>
+                <div v-else>
+                  <lockOpenVariant></lockOpenVariant>
+                </div>
+              </a>
             </div>
             <span
               class="text-sm text-left text-red-600"
@@ -92,8 +75,15 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import lock from "vue-material-design-icons/Lock";
+import lockOpenVariant from "vue-material-design-icons/LockOpenVariant";
+
 export default {
   name: "Login",
+  components: {
+    lock,
+    lockOpenVariant,
+  },
   data() {
     return {
       passwordField: "password",

@@ -23,7 +23,15 @@
                   <t-button
                     variant="secondary"
                     class="mr-2 bg-blue-300 rounded-md"
-                    @click="openModalDetails(user.id)"
+                    @click="
+                      openModalDetails(
+                        user.image_url,
+                        user.name,
+                        user.email,
+                        user.created_at,
+                        user.id
+                      )
+                    "
                     >Details</t-button
                   >
                 </div>
@@ -42,7 +50,7 @@
                   <t-button
                     variant="error"
                     class="mr-2 bg-red-700 rounded-md text-white"
-                    @click="openDeleteModal(user.id)"
+                    @click="confirmDelete(user.name, user.id)"
                     >Delete</t-button
                   >
                 </div>
@@ -103,31 +111,18 @@
       </div>
     </div>
 
-    <t-modal v-model="modalDetails" header="Details">
+    <t-modal v-model="modalDetails">
       <div>
         <img
-          :src="userData.image_url"
+          :src="userDetails.image"
           class="w-40 h-40 rounded-full shadow-lg m-auto"
         />
       </div>
-      <div class="mt-5">
-        <p>Nama : {{ userData.name }}</p>
-        <p>Email : {{ userData.email }}</p>
+      <div class="mt-5 text-center flex flex-col">
+        <span>{{ userDetails.name }}</span>
+        <span>{{ userDetails.email }}</span>
+        <span>Joined Since : {{ userDetails.createdat }}</span>
       </div>
-    </t-modal>
-
-    <t-modal v-model="deleteModal" header="Delete">
-      The data you have been deleted wont be revert.
-      <template v-slot:footer>
-        <div class="flex justify-between">
-          <t-button @click="closeDeleteModal" type="button">
-            Cancel
-          </t-button>
-          <t-button @click="onDeleteUser" type="button">
-            Ok
-          </t-button>
-        </div>
-      </template>
     </t-modal>
   </dashboard-layouts>
 </template>
@@ -145,8 +140,13 @@ export default {
       filter: "",
       privileges: "All",
       modalDetails: false,
-      deleteModal: false,
-      selectedId: null,
+      userDetails: {
+        id: "",
+        name: "",
+        email: "",
+        createdat: "",
+        image: null,
+      },
     };
   },
   computed: {
@@ -156,36 +156,15 @@ export default {
     this.fetchData();
   },
   methods: {
-    ...mapActions("user", [
-      "getAllUserList",
-      "getUser",
-      // "createMenu",
-      "deleteUser",
-    ]),
-    openModalDetails(id) {
-      this.selectedId = id;
+    ...mapActions("user", ["getAllUserList", "deleteUser"]),
+
+    openModalDetails(image, name, email, createdat, id) {
       this.modalDetails = true;
-      this.getUser({ id });
-    },
-
-    openDeleteModal(id) {
-      this.deleteModal = true;
-      this.selectedId = id;
-    },
-
-    closeDeleteModal() {
-      this.deleteModal = false;
-    },
-
-    async onDeleteUser() {
-      try {
-        await this.deleteUser({ id: this.selectedId });
-        this.fetchData();
-        this.closeDeleteModal();
-        this.$toast.success("Data Delete Successfully", { duration: 3000 });
-      } catch (error) {
-        console.log(error);
-      }
+      this.userDetails.id = id;
+      this.userDetails.name = name;
+      this.userDetails.email = email;
+      this.userDetails.createdat = createdat;
+      this.userDetails.image = image;
     },
 
     onSearch() {
@@ -203,6 +182,35 @@ export default {
       this.filter = "";
       this.privileges = "All";
       this.onSearch();
+    },
+
+    confirmDelete(name, id) {
+      try {
+        this.$swal({
+          title: "Are you sure?",
+          text:
+            name +
+            " " +
+            "will be Deleted, And you won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "rgba(52,211,153,1)",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              await this.deleteUser({ id: id });
+              this.fetchData();
+              this.$swal("Deleted!", "user has been deleted.", "success");
+            } catch (error) {
+              console.log(error);
+            }
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     fetchData() {

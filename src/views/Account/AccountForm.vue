@@ -2,24 +2,6 @@
   <dashboard-layouts>
     <div class="flex justify-center p-5  flex-grow h-full">
       <form @submit.prevent="submitForm" class="p-5 bg-white rounded-xl w-full">
-        <!-- <div class="flex flex-col">
-          <div class="justify-items-center">
-            <img
-              v-if="userData.image_url"
-              :src="userData.image_url"
-              class="h-40 w-72 max-w-xs max-h-40"
-            />
-          </div>
-          <div>
-            <button
-              v-if="!!userData.image_url"
-              class="block w-full rounded text-md text-white bg-red-500 px-4 py-1 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              @click="userData.image_url = null"
-            >
-              Remove Image
-            </button>
-          </div>
-        </div> -->
         <div class="flex justify-center">
           <img
             v-if="userData.image_url"
@@ -58,9 +40,15 @@
           >
             Remove Image
           </button>
+          <span
+            class="text-sm text-left text-red-600"
+            v-if="errorData.errors && errorData.errors.image"
+          >
+            {{ errorData.errors.image[0] }}
+          </span>
         </div>
-        <div>
-          <label for="">Nama</label>
+        <div class="pt-5">
+          <label for="">Name</label>
           <t-input
             class="w-full pl-3 py-4 rounded-lg text-xs font-semibold leading-none outline-none"
             placeholder="Insert your name"
@@ -73,7 +61,7 @@
             {{ errorData.errors.name[0] }}
           </span>
         </div>
-        <div class="mt-5">
+        <div class="pt-5">
           <label for="">E-Mail</label>
           <t-input
             class="w-full pl-3 py-4 rounded-lg text-xs font-semibold leading-none outline-none"
@@ -87,22 +75,28 @@
             {{ errorData.errors.email[0] }}
           </span>
         </div>
-        <div class="mt-5">
+        <div class="pt-5">
           <label for="">Roles</label>
           <t-select
             class="bg-white border-gray-300 focus:border-blue-500 placeholder-gray-300"
             v-model="userData.role_id"
-            :options="roleList"
+            :options="action == 'create' ? createRoleList : roleList"
             value-attribute="id"
             text-attribute="name"
+            placeholder="Select Role"
           ></t-select>
+          <span
+            class="text-sm text-left text-red-600"
+            v-if="errorData.errors && errorData.errors.role_id"
+          >
+            {{ errorData.errors.role_id[0] }}
+          </span>
         </div>
-        <div class="mt-5">
+        <div class="pt-5">
           <label for="">Password</label>
           <div class="flex flex-row">
-            <input
+            <t-input
               v-model="userData.password"
-              class="w-full pl-3 py-4 rounded-lg text-xs font-semibold leading-none outline-none"
               :placeholder="
                 action == 'create'
                   ? 'insert your password'
@@ -111,31 +105,17 @@
               :type="passwordField"
             />
 
-            <button
-              class="ml-4 focus:shadow focus:bg-white focus:border-none focus:outline-none"
+            <a
+              class="px-2 py-2 focus:shadow focus:bg-white border-black"
               @click="onShowPassword"
             >
-              <svg
-                class="h-6 w-6 my-auto text-blueGray-300"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewbox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                ></path>
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                ></path>
-              </svg>
-            </button>
+              <div v-if="passwordField === 'password'">
+                <lock></lock>
+              </div>
+              <div v-else>
+                <lockOpenVariant></lockOpenVariant>
+              </div>
+            </a>
           </div>
           <span
             class="text-sm text-left text-red-600"
@@ -160,11 +140,15 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import DashboardLayouts from "../../components/DashboardLayouts.vue";
+import lock from "vue-material-design-icons/Lock";
+import lockOpenVariant from "vue-material-design-icons/LockOpenVariant";
 
 export default {
   name: "AccountForm",
   components: {
     DashboardLayouts,
+    lock,
+    lockOpenVariant,
   },
   data() {
     return {
@@ -173,6 +157,10 @@ export default {
       id: this.$route.params.id,
       selectedImage: null,
       errors: {},
+      createRoleList: [
+        { id: 1, name: "admin" },
+        { id: 2, name: "kasir" },
+      ],
     };
   },
   computed: {
@@ -181,7 +169,7 @@ export default {
   mounted() {
     this.fetchData();
     this.clearError();
-    console.log(this.selectedImage);
+    // console.log(this.selectedImage);
   },
   methods: {
     ...mapActions("user", [

@@ -69,7 +69,7 @@
                   <t-button
                     variant="secondary"
                     class="bg-red-400"
-                    @click="confirmDelete(props.row.id)"
+                    @click="confirmDelete(props.row.name, props.row.id)"
                     >Delete</t-button
                   >
                 </td>
@@ -317,14 +317,13 @@ export default {
       this.clearError();
     },
 
-    async confirmDelete(id) {
+    confirmDelete(name, id) {
       this.selectedId = id;
       try {
-        await this.getMenu({ id });
         this.$swal({
           title: "Are you sure?",
           text:
-            this.menuData.name +
+            name +
             " " +
             "will be Deleted, And you won't be able to revert this!",
           icon: "warning",
@@ -337,7 +336,11 @@ export default {
             try {
               await this.deleteMenu({ id: this.selectedId });
               this.fetchData();
-              this.$swal("Deleted!", "Your file has been deleted.", "success");
+              this.$swal(
+                "Deleted!",
+                "The menu data has been deleted.",
+                "success"
+              );
             } catch (error) {
               console.log(error);
             }
