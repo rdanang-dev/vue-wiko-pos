@@ -108,17 +108,6 @@ const routes = [
         /* webpackChunkName: "JobVacancies" */ "../views/Report/TransactionReport.vue"
       ),
   },
-  {
-    path: "/employees-report",
-    name: "EmployeesReport",
-    meta: {
-      needAuth: true,
-    },
-    component: () =>
-      import(
-        /* webpackChunkName: "JobVacancies" */ "../views/Report/EmployeesReport.vue"
-      ),
-  },
 ];
 
 const router = new VueRouter({
@@ -135,14 +124,12 @@ router.beforeEach(async (to, from, next) => {
       console.log("gagal");
       next("/login");
     } else if (requiredAuth && isAuthenticated) {
-      console.log("berhasil");
       await store.dispatch("login/getProfile");
       next();
     } else {
       next();
     }
   } catch (error) {
-    // console.log(error.message);
     if (error.message == 401) {
       next("/login");
     } else {

@@ -112,8 +112,7 @@ export default {
     },
     async onLogin() {
       try {
-        const response = await this.handleLogin({ payload: this.login });
-        console.log("berhasil", response);
+        await this.handleLogin({ payload: this.login });
         this.$router.push("/");
         this.clearError();
       } catch (error) {

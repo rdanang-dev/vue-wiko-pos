@@ -10,7 +10,12 @@ const state = {
     data: [],
   },
   dailyReport: {},
-  weeklyReport: {},
+  weeklyReport: {
+    data: [],
+  },
+  monthlyReport: {
+    data: [],
+  },
   yearlyReport: {},
 };
 const getters = {};
@@ -35,6 +40,9 @@ const mutations = {
   },
   setWeeklyReport(state, payload) {
     state.weeklyReport = payload;
+  },
+  setMonthlyReport(state, payload) {
+    state.monthlyReport = payload;
   },
   setYearlyReport(state, payload) {
     state.yearlyReport = payload;
@@ -120,6 +128,16 @@ const actions = {
         `${process.env.VUE_APP_BASE_URL}/api/report/weekly`
       );
       context.commit("setWeeklyReport", response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async getMonthlyReport(context) {
+    try {
+      const response = await axios.get(
+        `${process.env.VUE_APP_BASE_URL}/api/report/monthly`
+      );
+      context.commit("setMonthlyReport", response.data);
     } catch (error) {
       console.log(error);
     }

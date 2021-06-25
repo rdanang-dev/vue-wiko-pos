@@ -28,7 +28,12 @@
             <option value="Yearly">Yearly</option>
           </select>
         </div>
-        <line-chart :chartdata="chartData" :options="options" />
+        <div v-if="lineChartData === 'Daily' || lineChartData === 'Yearly'">
+          <bar-chart :chartdata="chartData" :options="options" />
+        </div>
+        <div v-else>
+          <line-chart :chartdata="chartData" :options="options" />
+        </div>
       </div>
     </div>
     <div class="flex justify-center py-1 flex-grow h-full">
@@ -105,6 +110,8 @@
                       class="text-right text-blue-600 hover:text-blue-400 underline"
                       @click="
                         openReceiptModal(
+                          trans.order_code,
+                          trans.order_number,
                           trans.details,
                           trans.employee.name,
                           trans.order_date,
@@ -134,6 +141,8 @@
               alt="logo"
             />
             <div class="text-xl">Wisata Kopi</div>
+            <span class="text-md">{{ orderCode }}</span>
+            <span class="text-sm">no antrian: {{ orderNumber }}</span>
             <div class="flex justify-between">
               <span class="text-sm">Cashier: {{ cashierName }}</span>
               <span class="text-sm">{{ orderDate }}</span>
@@ -216,6 +225,7 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import DashboardLayouts from "../../components/DashboardLayouts.vue";
+import BarChart from "../../components/BarChart.vue";
 import LineChart from "../../components/LineChart.vue";
 import CloseThick from "vue-material-design-icons/CloseThick";
 import Magnify from "vue-material-design-icons/Magnify";
@@ -225,17 +235,20 @@ export default {
   name: "TransactionReport",
   components: {
     DashboardLayouts,
+    BarChart,
     LineChart,
     CloseThick,
     Magnify,
     SwapHorizontal,
   },
   data: () => ({
-    chartData: {},
+    chartData: null,
     lineChartData: "Daily",
     totalIncome: 0,
     totalTrans: 0,
     receiptModal: null,
+    orderCode: null,
+    orderNumber: null,
     transDetails: null,
     cashierName: "",
     orderDate: null,
@@ -287,6 +300,18 @@ export default {
         },
       ],
     },
+    monthlyTotal: 0,
+    monthlyCount: 0,
+    monthlyData: {
+      labels: [],
+      datasets: [
+        {
+          label: "Data",
+          backgroundColor: "#f87979",
+          data: [],
+        },
+      ],
+    },
     yearlyData: {
       labels: [],
       datasets: [
@@ -320,6 +345,7 @@ export default {
       "allTransaction",
       "dailyReport",
       "weeklyReport",
+      "monthlyReport",
       "yearlyReport",
     ]),
     checkDate() {
@@ -335,12 +361,14 @@ export default {
   },
   mounted() {
     this.fetchData();
+    this.onLineChartDataChange();
   },
   methods: {
     ...mapActions("report", [
       "getAllTransaction",
       "getDailyReport",
       "getWeeklyReport",
+      "getMonthlyReport",
       "getYearlyReport",
     ]),
 
@@ -348,6 +376,7 @@ export default {
       this.getAllTransaction();
       await this.getDailyReport();
       await this.getWeeklyReport();
+      await this.getMonthlyReport();
       await this.getYearlyReport();
     },
 
@@ -396,6 +425,8 @@ export default {
     },
 
     openReceiptModal(
+      ocode,
+      onumb,
       detail,
       ename,
       odate,
@@ -405,6 +436,8 @@ export default {
       cash,
       change
     ) {
+      this.orderCode = ocode;
+      this.orderNumber = onumb;
       this.transDetails = detail;
       this.cashierName = ename;
       this.orderDate = odate;
@@ -442,25 +475,43 @@ export default {
         this.totalIncome = this.weeklyTotal;
         this.totalTrans = this.weeklyCount;
       }
-      // if (this.lineChartData == "Monthly") {
-      //   this.chartData = this.weeklyData;
-      // }
+      if (this.lineChartData == "Monthly") {
+        this.chartData = this.monthlyData;
+        await this.monthlyReportChart();
+        this.totalIncome = this.monthlyTotal;
+        this.totalTrans = this.monthlyCount;
+      }
       if (this.lineChartData == "Yearly") {
         this.chartData = this.yearlyData;
         await this.yearlyReportChart();
+        this.totalIncome = this.yearlyTotal;
+        this.totalTrans = this.yearlyCount;
       }
     },
 
     dailyReportChart() {
-      this.dailyCount += this.dailyReport.data.total_transaction;
-      this.dailyTotal += this.dailyReport.data.order_total;
-      this.dailyData.labels = this.dailyReport.data.order_date;
-      this.dailyData.datasets[0].data = this.dailyReport.data.order_total;
+      this.dailyCount = 0;
+      this.dailyTotal = 0;
+      this.dailyReport.data.forEach((value, index) => {
+        this.dailyTotal += parseInt(value.total_price);
+        this.dailyCount += index;
+      });
+      const dailyLabel = this.dailyReport.data.map((value) => {
+        return value.order_code;
+      });
+      this.dailyData.labels = dailyLabel;
+      console.log(dailyLabel);
+      const dailyData = this.dailyReport.data.map((value) => {
+        return value.total_price;
+      });
+      this.dailyData.datasets[0].data = dailyData;
     },
 
     weeklyReportChart() {
+      this.weeklyCount = 0;
+      this.weeklyTotal = 0;
       this.weeklyReport.data.forEach((value) => {
-        this.weeklyCount += value.total_transaction;
+        this.weeklyCount += parseInt(value.total_transaction);
         this.weeklyTotal += parseInt(value.order_total);
       });
       const weeklyLabels = this.weeklyReport.data.map((value) => {
@@ -472,8 +523,39 @@ export default {
       });
       this.weeklyData.datasets[0].data = weeklyData;
     },
+
+    monthlyReportChart() {
+      this.monthlyCount = 0;
+      this.monthlyTotal = 0;
+      this.monthlyReport.data.forEach((value) => {
+        this.monthlyCount += parseInt(value.total_transaction);
+        this.monthlyTotal += parseInt(value.order_total);
+      });
+      const monthlyLabels = this.monthlyReport.data.map((value) => {
+        return value.order_date;
+      });
+      this.monthlyData.labels = monthlyLabels;
+      const monthlyData = this.monthlyReport.data.map((value) => {
+        return value.order_total;
+      });
+      this.monthlyData.datasets[0].data = monthlyData;
+    },
+
     yearlyReportChart() {
-      console.log("yearly");
+      this.yearlyCount = 0;
+      this.yearlyTotal = 0;
+      this.yearlyReport.data.forEach((value) => {
+        this.yearlyCount += parseInt(value.total_transaction);
+        this.yearlyTotal += parseInt(value.order_total);
+      });
+      const yearlyLabels = this.yearlyReport.data.map((value) => {
+        return value.month_formatted;
+      });
+      this.yearlyData.labels = yearlyLabels;
+      const yearlyData = this.yearlyReport.data.map((value) => {
+        return value.order_total;
+      });
+      this.yearlyData.datasets[0].data = yearlyData;
     },
   },
 };

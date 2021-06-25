@@ -175,6 +175,10 @@
               alt="logo"
             />
             <div class="text-xl">Wisata Kopi</div>
+            <span class="text-md">{{ orderData.order_code }}</span>
+            <span class="text-sm"
+              >no antrian: {{ orderData.order_number }}</span
+            >
             <hr class="my-1" />
           </div>
           <div>
