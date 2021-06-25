@@ -21,7 +21,7 @@
           <div class="w-full lg:w-6/12 pb-3 lg:pl-1 lg:pb-0">
             <div class="flex bg-white rounded-xl shadow p-2">
               <div class="rounded-xl bg-blue-400 p-5">
-                Rp
+                <swap-horizontal></swap-horizontal>
               </div>
               <div class="flex flex-col py-3 px-2">
                 <span class="text-sm">Daily Transacion</span>

@@ -28,7 +28,7 @@
             <option value="Yearly">Yearly</option>
           </select>
         </div>
-        <div v-if="lineChartData === 'Daily' || lineChartData === 'Yearly'">
+        <div v-if="lineChartData === 'Daily'">
           <bar-chart :chartdata="chartData" :options="options" />
         </div>
         <div v-else>
@@ -283,7 +283,8 @@ export default {
       datasets: [
         {
           label: "Data",
-          backgroundColor: "#f87979",
+          backgroundColor: "rgba(116, 198, 157, 0.5)",
+          borderColor: "#081c15",
           data: [],
         },
       ],
@@ -295,8 +296,15 @@ export default {
       datasets: [
         {
           label: "Data",
-          backgroundColor: "#f87979",
+          backgroundColor: "rgba(116, 198, 157, 0.5)",
+          borderColor: "#52b788",
           data: [],
+          fill: true,
+          pointBackgroundColor: "#fff",
+          radius: 8,
+          interaction: {
+            intersect: false,
+          },
         },
       ],
     },
@@ -307,8 +315,15 @@ export default {
       datasets: [
         {
           label: "Data",
-          backgroundColor: "#f87979",
+          backgroundColor: "rgba(116, 198, 157, 0.5)",
+          borderColor: "#52b788",
           data: [],
+          fill: true,
+          pointBackgroundColor: "#fff",
+          radius: 8,
+          interaction: {
+            intersect: false,
+          },
         },
       ],
     },
@@ -317,8 +332,15 @@ export default {
       datasets: [
         {
           label: "Data",
-          backgroundColor: "#f87979",
+          backgroundColor: "rgba(116, 198, 157, 0.5)",
+          borderColor: "#52b788",
           data: [],
+          fill: true,
+          pointBackgroundColor: "#fff",
+          radius: 8,
+          interaction: {
+            intersect: false,
+          },
         },
       ],
     },

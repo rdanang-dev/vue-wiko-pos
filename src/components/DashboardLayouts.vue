@@ -4,13 +4,13 @@
       <Sidebar />
 
       <div
-        class="w-full bg-gray-100 pl-0 lg:pl-64 min-h-screen"
+        class="w-full bg-white pl-0 lg:pl-64 min-h-screen"
         :class="sideBarOpen ? 'overlay' : ''"
         id="main-content"
       >
         <Navbar />
 
-        <div class="p-4 bg-gray-100" id="main-layouts">
+        <div class="p-4 bg-white min-h-full" id="main-layouts">
           <perfect-scrollbar>
             <slot />
           </perfect-scrollbar>
@@ -37,3 +37,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* .mainContainer {
+  background-color: #fdffb6;
+} */
+</style>
