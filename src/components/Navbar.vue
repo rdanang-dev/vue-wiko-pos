@@ -1,12 +1,12 @@
 <template>
-  <div class="sticky top-0 z-40 no-print">
+  <div class="sticky top-0 z-40 no-print lg:hidden">
     <div
       class="w-full h-16 px-6 navbarcolor noborder flex items-center justify-between"
     >
       <!-- left navbar -->
       <div class="flex">
         <!-- mobile hamburger -->
-        <div class="lg:hidden flex items-center mr-4">
+        <div class="flex items-center mr-4">
           <button
             class="hover:text-blue-500 hover:border-white focus:outline-none navbar-burger"
             @click="toggleSidebar()"
@@ -80,6 +80,6 @@ export default {
 <style scoped>
 .navbarcolor {
   /* background-color: rgba(173, 116, 117, 1); */
-  background-color: #fdffb6;
+  background-color: #faedcd;
 }
 </style>

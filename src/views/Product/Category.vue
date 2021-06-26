@@ -53,14 +53,14 @@
                 </td>
                 <td :class="props.tdClass" class="flex flex-row">
                   <t-button
-                    variant="secondary"
-                    class="mr-2 bg-green-400"
+                    variant="editable"
+                    class="mr-2 bg-custom-color2 font-medium"
                     @click="openFormModal(props.row.id)"
                     >Edit</t-button
                   >
                   <t-button
-                    variant="secondary"
-                    class="bg-red-400"
+                    variant="editable"
+                    class="bg-red-500 font-medium"
                     @click="confirmDelete(props.row.id)"
                     >Delete</t-button
                   >

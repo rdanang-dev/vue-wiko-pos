@@ -476,6 +476,10 @@ const MyTheme = {
           input: "border-red-300 bg-red-50 placeholder-red-200 text-red-900",
           clearButton: "hover:bg-red-200 text-red-500",
         },
+        editable: {
+          input: "border bg-white text-black",
+          clearButton: "hover:bg-white text-black",
+        },
       },
     },
   },

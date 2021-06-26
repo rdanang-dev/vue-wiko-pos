@@ -4,14 +4,14 @@
       class="flex flex-col lg:flex-row justify-center flex-grow h-full no-print"
     >
       <div class="w-full flex flex-row flex-wrap lg:w-8/12 pr-2">
-        <div class="p-3 bg-white rounded-xl shadow-xl">
+        <div class="p-3 bg-white rounded-xl shadow-xl w-full">
           <t-input
             v-model="searchMenu"
             class="mb-5"
             placeholder="Search disini"
           />
           <perfect-scrollbar
-            style="max-height: 435px;width:100%"
+            style="max-height: 515px;"
             class="flex flex-row flex-wrap"
           >
             <div
@@ -36,7 +36,7 @@
         </div>
       </div>
       <div class="w-full lg:w-4/12 sticky pl-2">
-        <div class="p-5 bg-white rounded-xl shadow-xl" style="height: 530px;">
+        <div class="p-5 bg-white rounded-xl shadow-xl" style="height: 610px;">
           <div class="flex">
             <span class="w-7 fill-current">
               <cartVariant></cartVariant>
@@ -45,7 +45,7 @@
           </div>
           <perfect-scrollbar
             class="mt-1"
-            style="min-height:145px; max-height:145px;"
+            style="min-height:210px; max-height:210px;"
           >
             <div
               class="py-2 px-2 flex flex-row justify-between"
@@ -91,7 +91,7 @@
             </div>
           </perfect-scrollbar>
 
-          <div class="mt-2 flex flex-col">
+          <div class="mt-3 flex flex-col">
             <div class="flex justify-between">
               <div class="flex flex-col">
                 <span class="text-sm">Sub Total</span>
@@ -166,7 +166,7 @@
         </div>
       </div>
 
-      <t-modal v-model="receiptModal" ref="testing" hideCloseButton:true>
+      <t-modal v-model="receiptModal" ref="testing">
         <div id="printReceipt" ref="printReceipt">
           <div class="flex justify-center text-center flex-col">
             <img
@@ -247,10 +247,31 @@
             </div>
           </div>
         </div>
-
-        <t-button class="w-full" @click="onCheckout">
-          Proceed
-        </t-button>
+        <div class="flex flex-col">
+          <div class="flex flex-row justify-between pb-1">
+            <t-button
+              variant="editable"
+              class="color2 text-black w-full font-medium mr-1"
+              @click="withReceipt"
+            >
+              Proceed and Print
+            </t-button>
+            <t-button
+              variant="editable"
+              class="color2 text-black w-full font-medium ml-1"
+              @click="withoutReceipt"
+            >
+              Proceed without Print
+            </t-button>
+          </div>
+          <t-button
+            variant="editable"
+            class="bg-red-500 text-black font-medium"
+            @click="closeReceiptModal"
+          >
+            Cancel
+          </t-button>
+        </div>
       </t-modal>
     </div>
     <div id="printArea"></div>
@@ -316,9 +337,9 @@ export default {
     };
   },
 
-  onActive() {
-    console.log("active");
-  },
+  // onActive() {
+  //   console.log("active");
+  // },
   async onIdle() {
     await this.syncData();
   },
@@ -349,24 +370,14 @@ export default {
       this.receiptModal = false;
     },
 
-    async onCheckout() {
-      // this.$swal({
-      //   title: "Transaction Success",
-      //   text: "Transaction Completed",
-      //   icon: "success",
-      //   showCancelButton: false,
-      //   showDenyButton: true,
-      //   confirmButtonColor: "rgba(52,211,153,1)",
-      //   denyButtonColor: "#d33",
-      //   confirmButtonText: "Print Receipt",
-      //   denyButtonText: "No",
-      // }).then(async (result) => {
-      //   if (result.isConfirmed) {
-      //     await this.$swal.close().catch(async () => {
-      //       await this.printReceipt();
-      //     });
-      //   }
-      // });
+    async withoutReceipt() {
+      this.orderData.checkout = true;
+      this.updateOrder({ id: this.id, payload: this.orderData });
+      this.$router.push("/transaction");
+      await this.$toast.success("Transaction success!");
+    },
+
+    async withReceipt() {
       await this.printReceipt();
     },
 

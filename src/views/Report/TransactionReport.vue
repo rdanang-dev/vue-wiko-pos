@@ -3,8 +3,12 @@
     <div class="flex flex-grow justify-center pb-2">
       <div class="p-1 w-full">
         <div class="flex justify-between pb-1">
-          <span class="text-black text-3xl">Report</span>
-          <t-button>Export</t-button>
+          <span class="text-white text-3xl">Report</span>
+          <t-button
+            variant="editable"
+            class="font-medium bg-custom-color2 text-white"
+            >Export</t-button
+          >
         </div>
         <hr />
       </div>
@@ -105,35 +109,31 @@
                 </div>
                 <div class="flex flex-col">
                   <span class="text-right">{{ trans.order_date }}</span>
-                  <div class="flex flex-row">
-                    <span
-                      class="text-right text-blue-600 hover:text-blue-400 underline"
-                      @click="
-                        openReceiptModal(
-                          trans.order_code,
-                          trans.order_number,
-                          trans.details,
-                          trans.employee.name,
-                          trans.order_date,
-                          trans.discount_percentage,
-                          trans.discount_value,
-                          trans.total_price,
-                          trans.cash,
-                          trans.change
-                        )
-                      "
-                      >Details</span
-                    >
-                    <span class="px-1">|</span>
-                    <span>Print</span>
-                  </div>
+                  <span
+                    class="text-blue-600 hover:text-blue-400 underline text-right"
+                    @click="
+                      openReceiptModal(
+                        trans.order_code,
+                        trans.order_number,
+                        trans.details,
+                        trans.employee.name,
+                        trans.order_date,
+                        trans.discount_percentage,
+                        trans.discount_value,
+                        trans.total_price,
+                        trans.cash,
+                        trans.change
+                      )
+                    "
+                    >Details</span
+                  >
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <t-modal v-model="receiptModal" hideCloseButton:true>
+        <t-modal v-model="receiptModal" hideCloseButton="true">
           <div class="flex justify-center text-center flex-col">
             <img
               class="h-12 w-12 mx-auto"
@@ -284,7 +284,7 @@ export default {
         {
           label: "Data",
           backgroundColor: "rgba(116, 198, 157, 0.5)",
-          borderColor: "#081c15",
+          borderColor: "#081c16",
           data: [],
         },
       ],
@@ -381,9 +381,12 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
     this.fetchData();
-    this.onLineChartDataChange();
+    this.chartData = this.dailyData;
+    await this.dailyReportChart();
+    this.totalIncome = this.dailyTotal;
+    this.totalTrans = this.dailyCount;
   },
   methods: {
     ...mapActions("report", [
@@ -516,13 +519,12 @@ export default {
       this.dailyTotal = 0;
       this.dailyReport.data.forEach((value, index) => {
         this.dailyTotal += parseInt(value.total_price);
-        this.dailyCount += index;
+        this.dailyCount = index + 1;
       });
       const dailyLabel = this.dailyReport.data.map((value) => {
         return value.order_code;
       });
       this.dailyData.labels = dailyLabel;
-      console.log(dailyLabel);
       const dailyData = this.dailyReport.data.map((value) => {
         return value.total_price;
       });
