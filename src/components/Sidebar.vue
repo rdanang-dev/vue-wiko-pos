@@ -12,7 +12,7 @@
 
     <perfect-scrollbar>
       <div
-        class="sm:hidden sm:invisible md:hidden md:invisible lg:visible lg:flex justify-center pt-3 displayxs"
+        class="xs:hidden xs:invisible sm:hidden sm:invisible md:hidden md:invisible lg:visible lg:flex justify-center pt-3"
       >
         <div class="flex flex-col">
           <img
@@ -166,10 +166,10 @@ export default {
 /* .iconColor {
   color: #5e2618;
 } */
-.displayxs {
+/* .displayxs {
   @media screen and (min-width: 1) and (max-width: 639) {
     display: none;
     visibility: hidden;
   }
-}
+} */
 </style>

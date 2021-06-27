@@ -1,8 +1,15 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
 module.exports = {
   purge: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      screens: {
+        xs: "400px",
+      },
+      fontFamily: {
+        sans: ["Balsamiq", defaultTheme.fontFamily.sans],
+      },
       colors: {
         custom: {
           color: "#c98860",

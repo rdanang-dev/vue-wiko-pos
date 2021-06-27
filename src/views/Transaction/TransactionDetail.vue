@@ -166,7 +166,7 @@
         </div>
       </div>
 
-      <t-modal v-model="receiptModal" ref="testing">
+      <t-modal v-model="receiptModal">
         <div id="printReceipt" ref="printReceipt">
           <div class="flex justify-center text-center flex-col">
             <img
@@ -251,14 +251,14 @@
           <div class="flex flex-row justify-between pb-1">
             <t-button
               variant="editable"
-              class="color2 text-black w-full font-medium mr-1"
+              class="bg-custom-color2 text-black w-full font-medium mr-1"
               @click="withReceipt"
             >
               Proceed and Print
             </t-button>
             <t-button
               variant="editable"
-              class="color2 text-black w-full font-medium ml-1"
+              class="bg-custom-color2 text-black w-full font-medium ml-1"
               @click="withoutReceipt"
             >
               Proceed without Print

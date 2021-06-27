@@ -69,10 +69,18 @@
             </template>
           </t-table>
 
-          <t-modal v-model="formModal" header="Manage Category">
+          <t-modal v-model="formModal">
+            <template v-slot:header>
+              {{
+                selectedAction == "create" ? "Create Category" : "Edit Category"
+              }}
+            </template>
             <div>
               <label for="">Nama Kategori</label>
-              <t-input v-model="categoryData.name" />
+              <t-input
+                v-model="categoryData.name"
+                placeholder="Insert Category Name"
+              />
               <span
                 class="text-sm text-left text-red-600"
                 v-if="errorData.errors && errorData.errors.name"
@@ -83,10 +91,20 @@
 
             <template v-slot:footer>
               <div class="flex justify-between">
-                <t-button @click="closeFormModal" type="button">
+                <t-button
+                  variant="editable"
+                  class="bg-red-500"
+                  @click="closeFormModal"
+                  type="button"
+                >
                   Cancel
                 </t-button>
-                <t-button @click="submitCategory" type="button">
+                <t-button
+                  variant="editable"
+                  class="bg-custom-color2"
+                  @click="submitCategory"
+                  type="button"
+                >
                   Save
                 </t-button>
               </div>

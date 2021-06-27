@@ -91,7 +91,13 @@ const actions = {
   },
   async getAllTransaction(
     context,
-    { filter, fromdate, todate } = { filter: "", fromdate: "", todate: "" }
+    { filter, fromdate, todate, page, per_page } = {
+      filter: "",
+      fromdate: "",
+      todate: "",
+      page: 1,
+      per_page: null,
+    }
   ) {
     try {
       const params = new URLSearchParams();
@@ -103,6 +109,12 @@ const actions = {
       }
       if (todate != null && todate != "") {
         params.append("todate", todate);
+      }
+      if (page != null) {
+        params.append("page", page);
+      }
+      if (per_page != null) {
+        params.append("per_page", per_page);
       }
       const response = await axios.get(
         `${process.env.VUE_APP_BASE_URL}/api/report/alltransaction?${params}`

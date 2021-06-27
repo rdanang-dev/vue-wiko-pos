@@ -32,7 +32,7 @@
             <option value="Yearly">Yearly</option>
           </select>
         </div>
-        <div v-if="lineChartData === 'Daily'">
+        <div v-if="lineChartData === 'Daily' || lineChartData === 'Yearly'">
           <bar-chart :chartdata="chartData" :options="options" />
         </div>
         <div v-else>
@@ -67,6 +67,17 @@
                 <magnify></magnify>
               </button>
             </div>
+            <div class="lg:pr-2">
+              <select
+                class="transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                v-model.number="perPage"
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+            </div>
           </div>
           <t-datepicker
             range
@@ -88,8 +99,10 @@
                 :key="key"
               >
                 <div class="flex flex-row">
-                  <div class="bg-gray-300 rounded-lg p-4">
-                    <swap-horizontal></swap-horizontal>
+                  <div class="bg-custom-color1 rounded-lg p-4">
+                    <div class="text-white">
+                      <swap-horizontal></swap-horizontal>
+                    </div>
                   </div>
                   <div class="flex flex-col pl-2 py-1">
                     <span class="text">
@@ -129,59 +142,76 @@
                   >
                 </div>
               </div>
+
+              <t-pagination
+                class="mt-2"
+                :total-items="
+                  allTransaction.meta.total ? allTransaction.meta.total : 1
+                "
+                :per-page="perPage"
+                :hideEllipsis="true"
+                v-model="currentPage"
+              />
             </div>
           </div>
         </div>
 
-        <t-modal v-model="receiptModal" hideCloseButton="true">
-          <div class="flex justify-center text-center flex-col">
-            <img
-              class="h-12 w-12 mx-auto"
-              src="~@/assets/small_ico.jpg"
-              alt="logo"
-            />
-            <div class="text-xl">Wisata Kopi</div>
-            <span class="text-md">{{ orderCode }}</span>
-            <span class="text-sm">no antrian: {{ orderNumber }}</span>
-            <div class="flex justify-between">
-              <span class="text-sm">Cashier: {{ cashierName }}</span>
-              <span class="text-sm">{{ orderDate }}</span>
+        <t-modal v-model="receiptModal" ref="testing" hideCloseButton="true">
+          <div id="printReceipt" ref="printReceipt">
+            <div class="flex justify-center text-center flex-col">
+              <img
+                class="h-12 w-12 mx-auto"
+                src="~@/assets/small_ico.jpg"
+                alt="logo"
+              />
+              <div class="text-xl">Wisata Kopi</div>
+              <span class="text-md">{{ orderCode }}</span>
+              <span class="text-sm">no antrian: {{ orderNumber }}</span>
+              <div class="flex justify-between">
+                <span class="text-sm">Cashier: {{ cashierName }}</span>
+                <span class="text-sm">{{ orderDate }}</span>
+              </div>
+              <hr class="my-1" />
             </div>
-            <hr class="my-1" />
-          </div>
-          <div>
-            <t-table :headers="headers" :data="transDetails" variant="receipt">
-              <template v-slot:thead="props">
-                <thead :class="props.theadClass">
-                  <tr :class="props.trClass">
-                    <th class="text-left">
-                      {{ props.data[0].text }}
-                    </th>
-                    <th class="text-left">
-                      {{ props.data[1].text }}
-                    </th>
-                    <th class="text-right">
-                      {{ props.data[2].text }}
-                    </th>
+
+            <div>
+              <t-table
+                :headers="headers"
+                :data="transDetails"
+                variant="receipt"
+              >
+                <template v-slot:thead="props">
+                  <thead :class="props.theadClass">
+                    <tr :class="props.trClass">
+                      <th class="text-left">
+                        {{ props.data[0].text }}
+                      </th>
+                      <th class="text-left">
+                        {{ props.data[1].text }}
+                      </th>
+                      <th class="text-right">
+                        {{ props.data[2].text }}
+                      </th>
+                    </tr>
+                  </thead>
+                </template>
+                <template slot="row" slot-scope="props">
+                  <tr @click="onSelectRow(props.row)" :class="[props.trClass]">
+                    <td :class="props.tdClass">
+                      {{ props.row.menu.name }}
+                      <br />
+                      {{ props.row.price }}
+                    </td>
+                    <td :class="props.tdClass">
+                      {{ props.row.qty }}
+                    </td>
+                    <td :class="[props.tdClass, 'text-right']">
+                      {{ props.row.price * props.row.qty }}
+                    </td>
                   </tr>
-                </thead>
-              </template>
-              <template slot="row" slot-scope="props">
-                <tr @click="onSelectRow(props.row)" :class="[props.trClass]">
-                  <td :class="props.tdClass">
-                    {{ props.row.menu.name }}
-                    <br />
-                    {{ props.row.price }}
-                  </td>
-                  <td :class="props.tdClass">
-                    {{ props.row.qty }}
-                  </td>
-                  <td :class="[props.tdClass, 'text-right']">
-                    {{ props.row.price * props.row.qty }}
-                  </td>
-                </tr>
-              </template>
-            </t-table>
+                </template>
+              </t-table>
+            </div>
           </div>
           <hr class="my-1" />
           <div class="flex flex-col">
@@ -215,10 +245,29 @@
               <span>Change</span>
               <span>{{ change | formatRupiah }}</span>
             </div>
+            <div class="pt-1">
+              <t-button
+                variant="editable"
+                class="bg-custom-color2 text-black w-full font-medium mr-1"
+                @click="printReceipt"
+              >
+                Print Receipt
+              </t-button>
+            </div>
+            <div class="pt-1">
+              <t-button
+                variant="editable"
+                class="bg-red-500 text-black w-full font-medium mr-1"
+                @click="closeReceiptModal"
+              >
+                Close
+              </t-button>
+            </div>
           </div>
         </t-modal>
       </div>
     </div>
+    <div id="printArea"></div>
   </dashboard-layouts>
 </template>
 
@@ -242,6 +291,8 @@ export default {
     SwapHorizontal,
   },
   data: () => ({
+    currentPage: 1,
+    perPage: 5,
     chartData: null,
     lineChartData: "Daily",
     totalIncome: 0,
@@ -380,6 +431,25 @@ export default {
         this.clearDate();
       }
     },
+    currentPage(newVal) {
+      this.getAllTransaction({
+        page: newVal,
+        per_page: this.perPage,
+        filter: this.filter,
+        fromdate: this.date[0],
+        todate: this.date[1],
+      });
+    },
+    perPage(newVal) {
+      this.currentPage = 1;
+      this.getAllTransaction({
+        page: this.currentPage,
+        per_page: newVal,
+        filter: this.filter,
+        fromdate: this.date[0],
+        todate: this.date[1],
+      });
+    },
   },
   async mounted() {
     this.fetchData();
@@ -398,7 +468,11 @@ export default {
     ]),
 
     async fetchData() {
-      this.getAllTransaction();
+      this.getAllTransaction({
+        page: this.currentPage,
+        per_page: this.perPage,
+        filter: this.filter,
+      });
       await this.getDailyReport();
       await this.getWeeklyReport();
       await this.getMonthlyReport();
@@ -411,14 +485,19 @@ export default {
 
     onDateChange() {
       if (this.date) {
+        this.currentPage = 1;
         if (this.date.length == 1) {
           this.getAllTransaction({
+            page: this.currentPage,
+            per_page: this.perPage,
             fromdate: this.date[0],
             filter: this.filter,
           });
         }
         if (this.date.length > 1) {
           this.getAllTransaction({
+            page: this.currentPage,
+            per_page: this.perPage,
             fromdate: this.date[0],
             todate: this.date[1],
             filter: this.filter,
@@ -428,8 +507,11 @@ export default {
     },
 
     onSearch() {
+      this.currentPage = 1;
       if (this.date == "") {
         this.getAllTransaction({
+          page: this.currentPage,
+          per_page: this.perPage,
           filter: this.filter,
           fromdate: this.date[0],
           todate: this.date[1],
@@ -437,6 +519,8 @@ export default {
         this.onDateChange();
       } else {
         this.getAllTransaction({
+          page: this.currentPage,
+          per_page: this.perPage,
           filter: this.filter,
           fromdate: this.date[0],
           todate: this.date[1],
@@ -485,6 +569,16 @@ export default {
 
     closeReceiptModal() {
       this.receiptModal = false;
+    },
+
+    printReceipt() {
+      let printContent = this.$refs.printReceipt.innerHTML;
+      const printArea = document.getElementById("printArea");
+
+      printArea.innerHTML = printContent;
+      window.print();
+      printArea.innerHTML = "";
+      this.closeReceiptModal();
     },
 
     async onLineChartDataChange() {

@@ -14,8 +14,9 @@ import router from "./router";
 
 // Tailwind
 import VueTailwind from "vue-tailwind";
-import MyTheme from "./myTheme.js";
+import MyTheme from "././assets/js/main.js";
 import "tailwindcss/tailwind.css";
+import "././assets/css/main.css";
 
 // Perfect Scrollbar
 import PerfectScrollbar from "vue2-perfect-scrollbar";
