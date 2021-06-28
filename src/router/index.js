@@ -108,6 +108,14 @@ const routes = [
         /* webpackChunkName: "JobVacancies" */ "../views/Report/TransactionReport.vue"
       ),
   },
+  {
+    path: "/exportreport",
+    name: "ExportReport",
+    component: () =>
+      import(
+        /* webpackChunkName: "Information" */ "../views/Report/ExportReport.vue"
+      ),
+  },
 ];
 
 const router = new VueRouter({

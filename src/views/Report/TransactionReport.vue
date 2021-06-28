@@ -1,5 +1,6 @@
 <template>
   <dashboard-layouts>
+    <!-- Top Menu -->
     <div class="flex flex-grow justify-center pb-2">
       <div class="p-1 w-full">
         <div class="flex justify-between pb-1">
@@ -7,12 +8,16 @@
           <t-button
             variant="editable"
             class="font-medium bg-custom-color2 text-white"
+            @click="openExportModal"
             >Export</t-button
           >
         </div>
         <hr />
       </div>
     </div>
+    <!-- Top Menu -->
+
+    <!-- Chart -->
     <div class="flex justify-center pb-1 flex-grow h-full">
       <div class="p-5 bg-white rounded-xl w-full">
         <div class="flex justify-between">
@@ -40,8 +45,11 @@
         </div>
       </div>
     </div>
+    <!-- Chart -->
+
     <div class="flex justify-center py-1 flex-grow h-full">
       <div class="p-5 bg-white rounded-xl w-full">
+        <!-- Search Perpage and Date Picker -->
         <div class="flex flex-col lg:flex-row">
           <div class="flex flex-row lg:w-9/12">
             <div class="relative flex w-full flex-wrap max-h-6 pr-1">
@@ -58,7 +66,6 @@
                 <close-thick></close-thick>
               </span>
             </div>
-
             <div class="lg:pr-1">
               <button
                 @click="onSearch"
@@ -89,7 +96,9 @@
             @change="onDateChange"
           />
         </div>
+        <!-- Search Perpage and Date Picker -->
 
+        <!-- Table Data -->
         <div class="pt-4">
           <div>
             <div class="flex flex-col">
@@ -155,118 +164,209 @@
             </div>
           </div>
         </div>
-
-        <t-modal v-model="receiptModal" ref="testing" hideCloseButton="true">
-          <div id="printReceipt" ref="printReceipt">
-            <div class="flex justify-center text-center flex-col">
-              <img
-                class="h-12 w-12 mx-auto"
-                src="~@/assets/small_ico.jpg"
-                alt="logo"
-              />
-              <div class="text-xl">Wisata Kopi</div>
-              <span class="text-md">{{ orderCode }}</span>
-              <span class="text-sm">no antrian: {{ orderNumber }}</span>
-              <div class="flex justify-between">
-                <span class="text-sm">Cashier: {{ cashierName }}</span>
-                <span class="text-sm">{{ orderDate }}</span>
-              </div>
-              <hr class="my-1" />
-            </div>
-
-            <div>
-              <t-table
-                :headers="headers"
-                :data="transDetails"
-                variant="receipt"
-              >
-                <template v-slot:thead="props">
-                  <thead :class="props.theadClass">
-                    <tr :class="props.trClass">
-                      <th class="text-left">
-                        {{ props.data[0].text }}
-                      </th>
-                      <th class="text-left">
-                        {{ props.data[1].text }}
-                      </th>
-                      <th class="text-right">
-                        {{ props.data[2].text }}
-                      </th>
-                    </tr>
-                  </thead>
-                </template>
-                <template slot="row" slot-scope="props">
-                  <tr @click="onSelectRow(props.row)" :class="[props.trClass]">
-                    <td :class="props.tdClass">
-                      {{ props.row.menu.name }}
-                      <br />
-                      {{ props.row.price }}
-                    </td>
-                    <td :class="props.tdClass">
-                      {{ props.row.qty }}
-                    </td>
-                    <td :class="[props.tdClass, 'text-right']">
-                      {{ props.row.price * props.row.qty }}
-                    </td>
-                  </tr>
-                </template>
-              </t-table>
-            </div>
-          </div>
-          <hr class="my-1" />
-          <div class="flex flex-col">
-            <div class="flex justify-between">
-              <span class="text-sm">Total Item </span>
-              <span class="text-sm">{{ totalItem }} item</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-sm">Subtotal</span>
-              <span class="text-sm">{{ subSubTotal }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-xs">Discount </span>
-              <span class="text-xs"
-                >{{ discountPercentage }} % / Rp.{{
-                  discountValue | formatRupiah
-                }}
-              </span>
-            </div>
-            <hr class="my-1" />
-            <div class="flex justify-between">
-              <span>Total</span>
-              <span>{{ total | formatRupiah }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span>Cash</span>
-              <span>{{ cash | formatRupiah }}</span>
-            </div>
-            <hr class="my-1" />
-            <div class="flex justify-between">
-              <span>Change</span>
-              <span>{{ change | formatRupiah }}</span>
-            </div>
-            <div class="pt-1">
-              <t-button
-                variant="editable"
-                class="bg-custom-color2 text-black w-full font-medium mr-1"
-                @click="printReceipt"
-              >
-                Print Receipt
-              </t-button>
-            </div>
-            <div class="pt-1">
-              <t-button
-                variant="editable"
-                class="bg-red-500 text-black w-full font-medium mr-1"
-                @click="closeReceiptModal"
-              >
-                Close
-              </t-button>
-            </div>
-          </div>
-        </t-modal>
+        <!-- Table Data -->
       </div>
     </div>
+
+    <!-- Export Modal -->
+    <t-modal v-model="exportModal" header="Export">
+      <ul class="flex list-none flex-wrap pb-4 flex-row">
+        <li class="flex-auto text-center pr-1">
+          <a
+            class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal"
+            v-on:click="toggleTabs(1)"
+            v-bind:class="{
+              'text-black text-medium bg-white': openTab !== 1,
+              'text-black text-medium bg-custom-color2': openTab === 1,
+            }"
+          >
+            Default
+          </a>
+        </li>
+        <li class="-mb-px last:mr-0 flex-auto text-center pl-1">
+          <a
+            class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal"
+            v-on:click="toggleTabs(2)"
+            v-bind:class="{
+              'text-black text-medium bg-white': openTab !== 2,
+              'text-black text-medium bg-custom-color2': openTab === 2,
+            }"
+          >
+            Custom
+          </a>
+        </li>
+      </ul>
+      <div class="p-3 flex-auto">
+        <div class="tab-content tab-space">
+          <div
+            v-bind:class="{
+              hidden: openTab !== 1,
+              block: openTab === 1,
+            }"
+          >
+            <span>Export Data</span>
+            <select
+              class="w-full transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              v-model="exportData"
+            >
+              <option value="Daily">Daily</option>
+              <option value="Weekly">Weekly</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Yearly">Yearly</option>
+            </select>
+          </div>
+          <div
+            v-bind:class="{
+              hidden: openTab !== 2,
+              block: openTab === 2,
+            }"
+          >
+            <span>Choose Range</span>
+            <t-datepicker
+              range
+              v-model="exportDate"
+              placeholder="Filter by Date"
+              class="w-full"
+              date-format="Y-m-d"
+              user-format="j F, y"
+              @change="onExportDateChange"
+            />
+          </div>
+        </div>
+      </div>
+      <template v-slot:footer>
+        <div class="flex justify-between">
+          <t-button
+            variant="editable"
+            class="bg-red-500"
+            @click="closeExportModal"
+            type="button"
+          >
+            Cancel
+          </t-button>
+          <t-button
+            :to="{
+              name: 'ExportReport',
+              params: {
+                default: exportData ? exportData : '',
+                custom: exportDate ? exportDate : '',
+              },
+            }"
+            variant="editable"
+            class="bg-custom-color2"
+            type="button"
+          >
+            Export
+          </t-button>
+        </div>
+      </template>
+    </t-modal>
+    <!-- Export Modal -->
+
+    <!-- Receipt Modal -->
+    <t-modal v-model="receiptModal" ref="testing" hideCloseButton="true">
+      <div id="printReceipt" ref="printReceipt">
+        <div class="flex justify-center text-center flex-col">
+          <img
+            class="h-12 w-12 mx-auto"
+            src="~@/assets/small_ico.jpg"
+            alt="logo"
+          />
+          <div class="text-xl">Wisata Kopi</div>
+          <span class="text-md">{{ orderCode }}</span>
+          <span class="text-sm">no antrian: {{ orderNumber }}</span>
+          <div class="flex justify-between">
+            <span class="text-sm">Cashier: {{ cashierName }}</span>
+            <span class="text-sm">{{ orderDate }}</span>
+          </div>
+          <hr class="my-1" />
+        </div>
+        <div>
+          <t-table :headers="headers" :data="transDetails" variant="receipt">
+            <template v-slot:thead="props">
+              <thead :class="props.theadClass">
+                <tr :class="props.trClass">
+                  <th class="text-left">
+                    {{ props.data[0].text }}
+                  </th>
+                  <th class="text-left">
+                    {{ props.data[1].text }}
+                  </th>
+                  <th class="text-right">
+                    {{ props.data[2].text }}
+                  </th>
+                </tr>
+              </thead>
+            </template>
+            <template slot="row" slot-scope="props">
+              <tr @click="onSelectRow(props.row)" :class="[props.trClass]">
+                <td :class="props.tdClass">
+                  {{ props.row.menu.name }}
+                  <br />
+                  {{ props.row.price }}
+                </td>
+                <td :class="props.tdClass">
+                  {{ props.row.qty }}
+                </td>
+                <td :class="[props.tdClass, 'text-right']">
+                  {{ props.row.price * props.row.qty }}
+                </td>
+              </tr>
+            </template>
+          </t-table>
+        </div>
+      </div>
+      <hr class="my-1" />
+      <div class="flex flex-col">
+        <div class="flex justify-between">
+          <span class="text-sm">Total Item </span>
+          <span class="text-sm">{{ totalItem }} item</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-sm">Subtotal</span>
+          <span class="text-sm">{{ subSubTotal }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-xs">Discount </span>
+          <span class="text-xs"
+            >{{ discountPercentage }} % / Rp.{{ discountValue | formatRupiah }}
+          </span>
+        </div>
+        <hr class="my-1" />
+        <div class="flex justify-between">
+          <span>Total</span>
+          <span>{{ total | formatRupiah }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Cash</span>
+          <span>{{ cash | formatRupiah }}</span>
+        </div>
+        <hr class="my-1" />
+        <div class="flex justify-between">
+          <span>Change</span>
+          <span>{{ change | formatRupiah }}</span>
+        </div>
+        <div class="pt-1">
+          <t-button
+            variant="editable"
+            class="bg-custom-color2 text-black w-full font-medium mr-1"
+            @click="printReceipt"
+          >
+            Print Receipt
+          </t-button>
+        </div>
+        <div class="pt-1">
+          <t-button
+            variant="editable"
+            class="bg-red-500 text-black w-full font-medium mr-1"
+            @click="closeReceiptModal"
+          >
+            Close
+          </t-button>
+        </div>
+      </div>
+    </t-modal>
+    <!-- Receipt Modal -->
     <div id="printArea"></div>
   </dashboard-layouts>
 </template>
@@ -291,12 +391,19 @@ export default {
     SwapHorizontal,
   },
   data: () => ({
+    //pagination
     currentPage: 1,
     perPage: 5,
-    chartData: null,
-    lineChartData: "Daily",
-    totalIncome: 0,
-    totalTrans: 0,
+
+    //export modal
+    exportModal: null,
+    exportData: "Daily",
+    exportDate: "",
+
+    //openTab
+    openTab: 1,
+
+    //receipt modal
     receiptModal: null,
     orderCode: null,
     orderNumber: null,
@@ -311,6 +418,8 @@ export default {
     total: 0,
     cash: 0,
     change: 0,
+
+    //table header
     headers: [
       {
         value: "name",
@@ -325,8 +434,18 @@ export default {
         text: "Subtotal",
       },
     ],
+
+    //search and filter
     date: "",
     filter: "",
+
+    //chart data
+    chartData: null,
+    lineChartData: "Daily",
+    totalIncome: 0,
+    totalTrans: 0,
+
+    //daily chart data
     dailyCount: 0,
     dailyTotal: 0,
     dailyData: {
@@ -340,6 +459,8 @@ export default {
         },
       ],
     },
+
+    //weekly chartdata
     weeklyTotal: 0,
     weeklyCount: 0,
     weeklyData: {
@@ -359,6 +480,8 @@ export default {
         },
       ],
     },
+
+    //monthly chart data
     monthlyTotal: 0,
     monthlyCount: 0,
     monthlyData: {
@@ -378,6 +501,8 @@ export default {
         },
       ],
     },
+
+    //yearly chart data
     yearlyData: {
       labels: [],
       datasets: [
@@ -395,6 +520,8 @@ export default {
         },
       ],
     },
+
+    //chart data options
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -452,7 +579,7 @@ export default {
     },
   },
   async mounted() {
-    this.fetchData();
+    await this.fetchData();
     this.chartData = this.dailyData;
     await this.dailyReportChart();
     this.totalIncome = this.dailyTotal;
@@ -570,6 +697,20 @@ export default {
     closeReceiptModal() {
       this.receiptModal = false;
     },
+
+    toggleTabs: function(tabNumber) {
+      this.openTab = tabNumber;
+    },
+
+    openExportModal() {
+      this.exportModal = true;
+    },
+
+    closeExportModal() {
+      this.exportModal = false;
+    },
+
+    onExportDateChange() {},
 
     printReceipt() {
       let printContent = this.$refs.printReceipt.innerHTML;

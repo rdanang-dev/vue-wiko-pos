@@ -382,34 +382,11 @@ export default {
     },
 
     async printReceipt() {
-      // let printContent = document.getElementById("#printReceipt");
-      // console.log("print", this.$refs.printReceipt); =
       let printContent = this.$refs.printReceipt.innerHTML;
       const printArea = document.getElementById("printArea");
-
       printArea.innerHTML = printContent;
       window.print();
       printArea.innerHTML = "";
-
-      // let originalContent = document.body.innerHTML;
-      // document.body.innerHTML = printContent;
-      // window.print();
-      // document.body.innerHTML = originalContent;
-      // Open the print window
-      // const WinPrint = window.open(
-      //   "",
-      //   "",
-      //   "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
-      // );
-
-      // WinPrint.document.write(`
-      //     ${printContent}
-      // `);
-
-      // WinPrint.document.close();
-      // WinPrint.focus();
-      // WinPrint.print();
-      // WinPrint.close();
 
       this.orderData.checkout = true;
       this.updateOrder({ id: this.id, payload: this.orderData });
