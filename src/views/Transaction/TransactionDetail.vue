@@ -179,6 +179,12 @@
             <span class="text-sm"
               >no antrian: {{ orderData.order_number }}</span
             >
+            <div class="flex justify-between">
+              <span class="text-sm"
+                >Cashier: {{ orderData.employee_name }}</span
+              >
+              <span class="text-sm">{{ orderData.trans_date }}</span>
+            </div>
             <hr class="my-1" />
           </div>
           <div>
@@ -336,10 +342,6 @@ export default {
       ],
     };
   },
-
-  // onActive() {
-  //   console.log("active");
-  // },
   async onIdle() {
     await this.syncData();
   },
@@ -429,7 +431,6 @@ export default {
 
     async fetchData() {
       await this.getAllMenuList();
-
       this.productMenu = this.menuList.data.map((value) => {
         return {
           menu_id: value.id,
@@ -441,7 +442,6 @@ export default {
           total_price: value.total_price,
         };
       });
-
       await this.getOrder({ id: this.id });
     },
 

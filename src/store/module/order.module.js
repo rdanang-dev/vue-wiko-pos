@@ -9,12 +9,10 @@ const state = {
     data: [],
   },
   orderData: {
-    customer_id: "",
     details: [],
   },
   cart: [
     {
-      customer_id: "",
       selectedProduct: [],
     },
   ],

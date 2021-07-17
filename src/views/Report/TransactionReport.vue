@@ -262,7 +262,7 @@
     <!-- Export Modal -->
 
     <!-- Receipt Modal -->
-    <t-modal v-model="receiptModal" hideCloseButton:true>
+    <t-modal class="no-print" v-model="receiptModal" hideCloseButton:true>
       <div id="printReceipt" ref="printReceipt">
         <div class="flex justify-center text-center flex-col">
           <img
@@ -279,72 +279,72 @@
           </div>
           <hr class="my-1" />
         </div>
-        <div>
-          <t-table :headers="headers" :data="transDetails" variant="receipt">
-            <template v-slot:thead="props">
-              <thead :class="props.theadClass">
-                <tr :class="props.trClass">
-                  <th class="text-left">
-                    {{ props.data[0].text }}
-                  </th>
-                  <th class="text-left">
-                    {{ props.data[1].text }}
-                  </th>
-                  <th class="text-right">
-                    {{ props.data[2].text }}
-                  </th>
-                </tr>
-              </thead>
-            </template>
-            <template slot="row" slot-scope="props">
-              <tr @click="onSelectRow(props.row)" :class="[props.trClass]">
-                <td :class="props.tdClass">
-                  {{ props.row.menu.name }}
-                  <br />
-                  {{ props.row.price }}
-                </td>
-                <td :class="props.tdClass">
-                  {{ props.row.qty }}
-                </td>
-                <td :class="[props.tdClass, 'text-right']">
-                  {{ props.row.price * props.row.qty }}
-                </td>
+        <t-table :headers="headers" :data="transDetails" variant="receipt">
+          <template v-slot:thead="props">
+            <thead :class="props.theadClass">
+              <tr :class="props.trClass">
+                <th class="text-left">
+                  {{ props.data[0].text }}
+                </th>
+                <th class="text-left">
+                  {{ props.data[1].text }}
+                </th>
+                <th class="text-right">
+                  {{ props.data[2].text }}
+                </th>
               </tr>
-            </template>
-          </t-table>
-        </div>
-      </div>
-      <hr class="my-1" />
-      <div class="flex flex-col">
-        <div class="flex justify-between">
-          <span class="text-sm">Total Item </span>
-          <span class="text-sm">{{ totalItem }} item</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-sm">Subtotal</span>
-          <span class="text-sm">{{ subSubTotal }}</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-xs">Discount </span>
-          <span class="text-xs"
-            >{{ discountPercentage }} % / Rp.{{ discountValue | formatRupiah }}
-          </span>
-        </div>
+            </thead>
+          </template>
+          <template slot="row" slot-scope="props">
+            <tr @click="onSelectRow(props.row)" :class="[props.trClass]">
+              <td :class="props.tdClass">
+                {{ props.row.menu.name }}
+                <br />
+                {{ props.row.price }}
+              </td>
+              <td :class="props.tdClass">
+                {{ props.row.qty }}
+              </td>
+              <td :class="[props.tdClass, 'text-right']">
+                {{ props.row.price * props.row.qty }}
+              </td>
+            </tr>
+          </template>
+        </t-table>
         <hr class="my-1" />
-        <div class="flex justify-between">
-          <span>Total</span>
-          <span>{{ total | formatRupiah }}</span>
+        <div class="flex flex-col">
+          <div class="flex justify-between">
+            <span class="text-sm">Total Item </span>
+            <span class="text-sm">{{ totalItem }} item</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-sm">Subtotal</span>
+            <span class="text-sm">{{ subSubTotal }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-xs">Discount </span>
+            <span class="text-xs"
+              >{{ discountPercentage }} % / Rp.{{
+                discountValue | formatRupiah
+              }}
+            </span>
+          </div>
+          <hr class="my-1" />
+          <div class="flex justify-between">
+            <span>Total</span>
+            <span>{{ total | formatRupiah }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Cash</span>
+            <span>{{ cash | formatRupiah }}</span>
+          </div>
+          <hr class="my-1" />
+          <div class="flex justify-between">
+            <span>Change</span>
+            <span>{{ change | formatRupiah }}</span>
+          </div>
         </div>
-        <div class="flex justify-between">
-          <span>Cash</span>
-          <span>{{ cash | formatRupiah }}</span>
-        </div>
-        <hr class="my-1" />
-        <div class="flex justify-between">
-          <span>Change</span>
-          <span>{{ change | formatRupiah }}</span>
-        </div>
-        <div class="pt-1">
+        <div class="no-print pt-1">
           <t-button
             variant="editable"
             class="bg-custom-color2 text-black w-full font-medium mr-1"
@@ -353,7 +353,7 @@
             Print Receipt
           </t-button>
         </div>
-        <div class="pt-1">
+        <div class="no-print pt-1">
           <t-button
             variant="editable"
             class="bg-red-500 text-black w-full font-medium mr-1"
@@ -749,7 +749,6 @@ export default {
       await this.fillExportData({
         data: this.bindExportData,
       });
-      // console.log(this.bindExportData.data);
       this.$router.push("/ExportReport");
     },
 
@@ -885,3 +884,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+@media print {
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+}
+</style>
