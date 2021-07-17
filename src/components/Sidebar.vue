@@ -73,6 +73,11 @@
           <cartVariant></cartVariant>
         </div>
         <span class="pl-2">Trasaction</span>
+        <div v-if="unfinish">
+          <div class="ml-2 h-6 px-3 rounded-full bg-red-500 text-black">
+            {{ unfinish }}
+          </div>
+        </div>
       </router-link>
 
       <div>
@@ -141,14 +146,31 @@ export default {
   computed: {
     ...mapState(["sideBarOpen"]),
     ...mapState("login", ["profile"]),
+    ...mapState("order", ["orderList"]),
+    count() {
+      return this.orderList.data.length;
+    },
   },
   data() {
     return {
       menu: [],
+      unfinish: 0,
     };
+  },
+  async mounted() {
+    await this.getAllOrderList({
+      status: 1,
+    });
+    this.unfinish = this.orderList.data.length;
+  },
+  watch: {
+    count(newVal) {
+      this.unfinish = newVal;
+    },
   },
   methods: {
     ...mapActions("login", ["handleLogOut"]),
+    ...mapActions("order", ["getAllOrderList"]),
     toggleSidebar() {
       this.$store.dispatch("toggleSidebar");
     },

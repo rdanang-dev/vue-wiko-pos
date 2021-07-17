@@ -17,6 +17,9 @@ const state = {
     },
   ],
   selectedProduct: [],
+  unfinishTrans: {
+    amount: "",
+  },
 };
 const getters = {
   getField,
@@ -35,6 +38,9 @@ const mutations = {
     state.orderData.details = state.orderData.details.filter((value) => {
       return value.menu_id !== id;
     });
+  },
+  setUnfinishedTrans(state, payload) {
+    state.unfinishTrans = payload;
   },
   updateField,
 };
@@ -114,6 +120,13 @@ const actions = {
       );
 
       return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async fillUnfinishTrans(context, { data }) {
+    try {
+      context.commit("setUnfinishedTrans", data);
     } catch (error) {
       console.log(error);
     }

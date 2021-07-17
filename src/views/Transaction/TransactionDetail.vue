@@ -357,7 +357,7 @@ export default {
 
   methods: {
     ...mapActions("menu", ["getAllMenuList"]),
-    ...mapActions("order", ["getOrder", "updateOrder"]),
+    ...mapActions("order", ["getOrder", "updateOrder", "getAllOrderList"]),
     ...mapMutations("order", ["addSelectedProduct", "removeSelectedProduct"]),
 
     async syncData() {

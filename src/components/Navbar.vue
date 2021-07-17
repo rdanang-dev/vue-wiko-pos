@@ -40,7 +40,7 @@
 
     <!-- dropdown menu -->
     <div
-      class="absolute bg-gray-100 border border-t-0 shadow-xl text-gray-700 rounded-b-lg w-48 top-20 right-0 mr-6"
+      class="absolute bg-gray-100 border border-t-0 shadow-xl text-gray-700 rounded-b-lg w-48 top-16 right-0"
       :class="dropDownOpen ? '' : 'hidden'"
     >
       <a href="#" class="block px-4 py-2 hover:bg-gray-200">Account</a>
