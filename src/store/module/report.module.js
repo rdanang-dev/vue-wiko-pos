@@ -17,6 +17,12 @@ const state = {
     data: [],
   },
   yearlyReport: {},
+  exportData: {
+    data: [],
+  },
+  exportCustom: {
+    data: [],
+  },
 };
 const getters = {};
 const mutations = {
@@ -46,6 +52,12 @@ const mutations = {
   },
   setYearlyReport(state, payload) {
     state.yearlyReport = payload;
+  },
+  setExportData(state, payload) {
+    state.exportData = payload;
+  },
+  setExportCustom(state, payload) {
+    state.exportCustom = payload;
   },
 };
 const actions = {
@@ -160,6 +172,36 @@ const actions = {
         `${process.env.VUE_APP_BASE_URL}/api/report/yearly`
       );
       context.commit("setYearlyReport", response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async fillExportData(context, { data }) {
+    try {
+      context.commit("setExportData", data);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async getExportCustom(
+    context,
+    { fromdate, todate } = {
+      fromdate: "",
+      todate: "",
+    }
+  ) {
+    try {
+      const params = new URLSearchParams();
+      if (fromdate != null && fromdate != "") {
+        params.append("fromdate", fromdate);
+      }
+      if (todate != null && todate != "") {
+        params.append("todate", todate);
+      }
+      const response = await axios.get(
+        `${process.env.VUE_APP_BASE_URL}/api/report/exportcustom?${params}`
+      );
+      context.commit("setExportCustom", response.data);
     } catch (error) {
       console.log(error);
     }

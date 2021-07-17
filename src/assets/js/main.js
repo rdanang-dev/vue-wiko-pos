@@ -253,6 +253,12 @@ const MyTheme = {
           theadTh: "border-b bg-gray-100",
           tbody: "divide-y divide-gray-100",
         },
+        report: {
+          table: "min-w-full border border-black",
+          theadTh:
+            "font-medium text-left text-md bg-white border-b border-black",
+          td: "text-sm",
+        },
         receipt: {
           theadTh: "px-0 py-0 font-semibold text-left text-sm bg-white",
           td: "px-0 py-0 text-sm",

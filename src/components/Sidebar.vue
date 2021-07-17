@@ -11,8 +11,9 @@
     </div>
 
     <perfect-scrollbar>
+      <!-- xs:hidden xs:invisible sm:hidden sm:invisible md:hidden md:invisible  -->
       <div
-        class="xs:hidden xs:invisible sm:hidden sm:invisible md:hidden md:invisible lg:visible lg:flex justify-center pt-3"
+        class="visible flex lg:visible lg:flex xs:hidden xs:invisible sm:hidden sm:invisible md:hidden md:invisible justify-center pt-3"
       >
         <div class="flex flex-col">
           <img
@@ -158,18 +159,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-/* .sidebarcolor {
-  background-color: rgba(173, 116, 117, 1);
-  background-color: #faedcd;
-} */
-/* .iconColor {
-  color: #5e2618;
-} */
-/* .displayxs {
-  @media screen and (min-width: 1) and (max-width: 639) {
-    display: none;
-    visibility: hidden;
-  }
-} */
-</style>

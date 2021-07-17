@@ -37,19 +37,3 @@ export default {
   },
 };
 </script>
-
-<style>
-/* .color {
-  background-color: #c6beab;
-  background-color: #c98860;
-} */
-/* .color1 {
-  background-color: #c08552;
-} */
-/* .color2 {
-  background-color: #94d2bd;
-}
-.color3 {
-  background-color: #ee9b00;
-} */
-</style>

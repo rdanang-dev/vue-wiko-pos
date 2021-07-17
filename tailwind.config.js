@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        xs: "400px",
+        xs: "<400px",
       },
       fontFamily: {
         sans: ["Balsamiq", defaultTheme.fontFamily.sans],

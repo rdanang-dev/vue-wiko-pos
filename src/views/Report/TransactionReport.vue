@@ -173,7 +173,7 @@
       <ul class="flex list-none flex-wrap pb-4 flex-row">
         <li class="flex-auto text-center pr-1">
           <a
-            class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal"
+            class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal border border-black"
             v-on:click="toggleTabs(1)"
             v-bind:class="{
               'text-black text-medium bg-white': openTab !== 1,
@@ -185,7 +185,7 @@
         </li>
         <li class="-mb-px last:mr-0 flex-auto text-center pl-1">
           <a
-            class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal"
+            class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal border border-black"
             v-on:click="toggleTabs(2)"
             v-bind:class="{
               'text-black text-medium bg-white': openTab !== 2,
@@ -206,9 +206,11 @@
           >
             <span>Export Data</span>
             <select
-              class="w-full transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              v-model="exportData"
+              class="w-full transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed "
+              v-model="bindExportData.label"
+              @change="onBindExportDataRange"
             >
+              <option value="">Select Range</option>
               <option value="Daily">Daily</option>
               <option value="Weekly">Weekly</option>
               <option value="Monthly">Monthly</option>
@@ -224,12 +226,12 @@
             <span>Choose Range</span>
             <t-datepicker
               range
-              v-model="exportDate"
+              v-model="bindExportData.date"
               placeholder="Filter by Date"
               class="w-full"
               date-format="Y-m-d"
               user-format="j F, y"
-              @change="onExportDateChange"
+              @change="onBindExportDataDate"
             />
           </div>
         </div>
@@ -245,16 +247,12 @@
             Cancel
           </t-button>
           <t-button
-            :to="{
-              name: 'ExportReport',
-              params: {
-                default: exportData ? exportData : '',
-                custom: exportDate ? exportDate : '',
-              },
-            }"
             variant="editable"
             class="bg-custom-color2"
-            type="button"
+            @click="onExport"
+            :disabled="
+              openTab == 1 ? !bindExportData.label : bindExportData.date == ''
+            "
           >
             Export
           </t-button>
@@ -264,7 +262,7 @@
     <!-- Export Modal -->
 
     <!-- Receipt Modal -->
-    <t-modal v-model="receiptModal" ref="testing" hideCloseButton="true">
+    <t-modal v-model="receiptModal" hideCloseButton:true>
       <div id="printReceipt" ref="printReceipt">
         <div class="flex justify-center text-center flex-col">
           <img
@@ -397,8 +395,13 @@ export default {
 
     //export modal
     exportModal: null,
-    exportData: "Daily",
-    exportDate: "",
+    bindExportData: {
+      label: "",
+      date: "",
+      fromDate: "",
+      toDate: "",
+      data: [],
+    },
 
     //openTab
     openTab: 1,
@@ -547,6 +550,8 @@ export default {
       "weeklyReport",
       "monthlyReport",
       "yearlyReport",
+      "exportData",
+      "exportCustom",
     ]),
     checkDate() {
       return this.date;
@@ -592,6 +597,8 @@ export default {
       "getWeeklyReport",
       "getMonthlyReport",
       "getYearlyReport",
+      "fillExportData",
+      "getExportCustom",
     ]),
 
     async fetchData() {
@@ -700,17 +707,76 @@ export default {
 
     toggleTabs: function(tabNumber) {
       this.openTab = tabNumber;
+      if (this.openTab == 1) {
+        this.bindExportData.date = "";
+      }
+      if (this.openTab == 2) {
+        this.bindExportData.data = "";
+        this.bindExportData.label = "";
+      }
     },
 
     openExportModal() {
+      this.bindExportData.data = "";
+      this.bindExportData.label = "";
+      this.bindExportData.date = "";
       this.exportModal = true;
     },
 
     closeExportModal() {
+      this.bindExportData.data = "";
+      this.bindExportData.label = "";
+      this.bindExportData.date = "";
       this.exportModal = false;
     },
 
-    onExportDateChange() {},
+    async onExport() {
+      if (this.bindExportData.date) {
+        this.bindExportData.label = "Custom";
+        if (this.bindExportData.date.length == 1) {
+          await this.getExportCustom({
+            fromdate: this.bindExportData.fromDate,
+          });
+        }
+        if (this.bindExportData.date.length > 1) {
+          await this.getExportCustom({
+            fromdate: this.bindExportData.fromDate,
+            todate: this.bindExportData.toDate,
+          });
+        }
+        this.bindExportData.data = this.exportCustom.data;
+      }
+      await this.fillExportData({
+        data: this.bindExportData,
+      });
+      // console.log(this.bindExportData.data);
+      this.$router.push("/ExportReport");
+    },
+
+    onBindExportDataDate() {
+      if (this.bindExportData.date.length == 1) {
+        this.bindExportData.fromDate = this.bindExportData.date[0];
+      }
+      if (this.bindExportData.date.length > 1) {
+        this.bindExportData.fromDate = this.bindExportData.date[0];
+        this.bindExportData.toDate = this.bindExportData.date[1];
+      }
+    },
+
+    onBindExportDataRange() {
+      if (this.bindExportData.label == "Daily") {
+        this.bindExportData.data = this.dailyReport;
+      }
+      if (this.bindExportData.label == "Weekly") {
+        this.bindExportData.data = this.weeklyReport;
+      }
+      if (this.bindExportData.label == "Monthly") {
+        this.bindExportData.data = this.monthlyReport;
+      }
+      if (this.bindExportData.label == "Yearly") {
+        this.bindExportData.data = this.yearlyReport;
+      }
+    },
 
     printReceipt() {
       let printContent = this.$refs.printReceipt.innerHTML;

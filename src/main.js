@@ -51,6 +51,36 @@ Vue.filter("formatRupiah", (value) => {
   return new Intl.NumberFormat("id-ID").format(value);
 });
 
+// Vue.filter("formatTanggal", (value) => {
+// let date = value;
+// let dateFiltered = date.toLocalDateString("id-ID", options);
+// let options = {
+//   day: "numeric",
+//   month: "short",
+//   year: "numeric",
+// };
+// return dateFiltered;
+
+// var month = [
+//   "Jan",
+//   "Feb",
+//   "Mar",
+//   "Apr",
+//   "May",
+//   "Jun",
+//   "Jul",
+//   "Aug",
+//   "Sep",
+//   "Oct",
+//   "Nov",
+//   "Dec",
+// ];
+// return (
+//   value.getDate() + " " + month[value.getMonth()] + ", " + value.getFullYear()
+// );
+// return value;
+// });
+
 Vue.config.productionTip = false;
 
 new Vue({
