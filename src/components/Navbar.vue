@@ -1,5 +1,5 @@
 <template>
-  <div class="sticky top-0 z-40 no-print lg:hidden">
+  <div class="sticky top-0 z-40 no-print lg:hidden no-print">
     <div
       class="w-full h-16 px-6 navbarcolor noborder flex items-center justify-between"
     >

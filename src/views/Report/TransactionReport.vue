@@ -1,370 +1,372 @@
 <template>
   <dashboard-layouts>
-    <!-- Top Menu -->
-    <div class="flex flex-grow justify-center pb-2">
-      <div class="p-1 w-full">
-        <div class="flex justify-between pb-1">
-          <span class="text-white text-3xl">Report</span>
-          <t-button
-            variant="editable"
-            class="font-medium bg-custom-color2 text-white"
-            @click="openExportModal"
-            >Export</t-button
-          >
-        </div>
-        <hr />
-      </div>
-    </div>
-    <!-- Top Menu -->
-
-    <!-- Chart -->
-    <div class="flex justify-center pb-1 flex-grow h-full">
-      <div class="p-5 bg-white rounded-xl w-full">
-        <div class="flex justify-between">
-          <span>Income Statistic</span>
-          <span
-            >Rp.{{ totalIncome | formatRupiah }} from {{ totalTrans }}x
-            Transaction</span
-          >
-          <select
-            class="transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            v-model="lineChartData"
-            @change="onLineChartDataChange"
-          >
-            <option value="Daily">Daily</option>
-            <option value="Weekly">Weekly</option>
-            <option value="Monthly">Monthly</option>
-            <option value="Yearly">Yearly</option>
-          </select>
-        </div>
-        <div v-if="lineChartData === 'Daily' || lineChartData === 'Yearly'">
-          <bar-chart :chartdata="chartData" :options="options" />
-        </div>
-        <div v-else>
-          <line-chart :chartdata="chartData" :options="options" />
-        </div>
-      </div>
-    </div>
-    <!-- Chart -->
-
-    <div class="flex justify-center py-1 flex-grow h-full">
-      <div class="p-5 bg-white rounded-xl w-full">
-        <!-- Search Perpage and Date Picker -->
-        <div class="flex flex-col lg:flex-row">
-          <div class="flex flex-row lg:w-9/12">
-            <div class="relative flex w-full flex-wrap max-h-6 pr-1">
-              <t-input
-                v-model="filter"
-                @change="onSearch"
-                placeholder="Search by Price/Order_Code"
-              />
-              <span
-                v-if="!!filter"
-                @click="clearSearch"
-                class="text-center absolute bg-transparent text-base items-center justify-center right-0 pr-2 py-2 text-gray-400"
-              >
-                <close-thick></close-thick>
-              </span>
-            </div>
-            <div class="lg:pr-1">
-              <button
-                @click="onSearch"
-                class="py-2 px-3 bg-blue-500 rounded-md text-white focus:shadow-outline-none focus:shadow-xl"
-              >
-                <magnify></magnify>
-              </button>
-            </div>
-            <div class="lg:pr-2">
-              <select
-                class="transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                v-model.number="perPage"
-              >
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-              </select>
-            </div>
-          </div>
-          <t-datepicker
-            range
-            v-model="date"
-            placeholder="Filter by Date"
-            class="py-2 lg:py-0 lg:w-3/12"
-            date-format="Y-m-d"
-            user-format="j F, y"
-            @change="onDateChange"
-          />
-        </div>
-        <!-- Search Perpage and Date Picker -->
-
-        <!-- Table Data -->
-        <div class="pt-4">
-          <div>
-            <div class="flex flex-col">
-              <div
-                class="flex justify-between pb-2"
-                v-for="(trans, key) in allTransaction.data"
-                :key="key"
-              >
-                <div class="flex flex-row">
-                  <div class="bg-custom-color1 rounded-lg p-4">
-                    <div class="text-white">
-                      <swap-horizontal></swap-horizontal>
-                    </div>
-                  </div>
-                  <div class="flex flex-col pl-2 py-1">
-                    <span class="text">
-                      {{ trans.order_code }}
-                    </span>
-                    <div class="flex flex-row text-xs">
-                      <span>
-                        Total:
-                        {{ trans.order_total }}
-                      </span>
-                      <span>, Handled by:</span>
-                      <span>
-                        {{ " " + trans.employee.name }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex flex-col">
-                  <span class="text-right">{{ trans.order_date }}</span>
-                  <span
-                    class="text-blue-600 hover:text-blue-400 underline text-right"
-                    @click="
-                      openReceiptModal(
-                        trans.order_code,
-                        trans.order_number,
-                        trans.details,
-                        trans.employee.name,
-                        trans.order_date,
-                        trans.discount_percentage,
-                        trans.discount_value,
-                        trans.total_price,
-                        trans.cash,
-                        trans.change
-                      )
-                    "
-                    >Details</span
-                  >
-                </div>
-              </div>
-
-              <t-pagination
-                class="mt-2"
-                :total-items="
-                  allTransaction.meta.total ? allTransaction.meta.total : 1
-                "
-                :per-page="perPage"
-                :hideEllipsis="true"
-                v-model="currentPage"
-              />
-            </div>
-          </div>
-        </div>
-        <!-- Table Data -->
-      </div>
-    </div>
-
-    <!-- Export Modal -->
-    <t-modal v-model="exportModal" header="Export">
-      <ul class="flex list-none flex-wrap pb-4 flex-row">
-        <li class="flex-auto text-center pr-1">
-          <a
-            class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal border border-black"
-            v-on:click="toggleTabs(1)"
-            v-bind:class="{
-              'text-black text-medium bg-white': openTab !== 1,
-              'text-black text-medium bg-custom-color2': openTab === 1,
-            }"
-          >
-            Default
-          </a>
-        </li>
-        <li class="-mb-px last:mr-0 flex-auto text-center pl-1">
-          <a
-            class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal border border-black"
-            v-on:click="toggleTabs(2)"
-            v-bind:class="{
-              'text-black text-medium bg-white': openTab !== 2,
-              'text-black text-medium bg-custom-color2': openTab === 2,
-            }"
-          >
-            Custom
-          </a>
-        </li>
-      </ul>
-      <div class="p-3 flex-auto">
-        <div class="tab-content tab-space">
-          <div
-            v-bind:class="{
-              hidden: openTab !== 1,
-              block: openTab === 1,
-            }"
-          >
-            <span>Export Data</span>
-            <select
-              class="w-full transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed "
-              v-model="bindExportData.label"
-              @change="onBindExportDataRange"
+    <div class="no-print">
+      <!-- Top Menu -->
+      <div class="flex flex-grow justify-center pb-2">
+        <div class="p-1 w-full">
+          <div class="flex justify-between pb-1">
+            <span class="text-white text-3xl">Report</span>
+            <t-button
+              variant="editable"
+              class="font-medium bg-custom-color2 text-white"
+              @click="openExportModal"
+              >Export</t-button
             >
-              <option value="">Select Range</option>
+          </div>
+          <hr />
+        </div>
+      </div>
+      <!-- Top Menu -->
+
+      <!-- Chart -->
+      <div class="flex justify-center pb-1 flex-grow h-full">
+        <div class="p-5 bg-white rounded-xl w-full">
+          <div class="flex justify-between">
+            <span>Income Statistic</span>
+            <span
+              >Rp.{{ totalIncome | formatRupiah }} from {{ totalTrans }}x
+              Transaction</span
+            >
+            <select
+              class="transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              v-model="lineChartData"
+              @change="onLineChartDataChange"
+            >
               <option value="Daily">Daily</option>
               <option value="Weekly">Weekly</option>
               <option value="Monthly">Monthly</option>
               <option value="Yearly">Yearly</option>
             </select>
           </div>
-          <div
-            v-bind:class="{
-              hidden: openTab !== 2,
-              block: openTab === 2,
-            }"
-          >
-            <span>Choose Range</span>
+          <div v-if="lineChartData === 'Daily' || lineChartData === 'Yearly'">
+            <bar-chart :chartdata="chartData" :options="options" />
+          </div>
+          <div v-else>
+            <line-chart :chartdata="chartData" :options="options" />
+          </div>
+        </div>
+      </div>
+      <!-- Chart -->
+
+      <div class="flex justify-center py-1 flex-grow h-full">
+        <div class="p-5 bg-white rounded-xl w-full">
+          <!-- Search Perpage and Date Picker -->
+          <div class="flex flex-col lg:flex-row">
+            <div class="flex flex-row lg:w-9/12">
+              <div class="relative flex w-full flex-wrap max-h-6 pr-1">
+                <t-input
+                  v-model="filter"
+                  @change="onSearch"
+                  placeholder="Search by Price/Order_Code"
+                />
+                <span
+                  v-if="!!filter"
+                  @click="clearSearch"
+                  class="text-center absolute bg-transparent text-base items-center justify-center right-0 pr-2 py-2 text-gray-400"
+                >
+                  <close-thick></close-thick>
+                </span>
+              </div>
+              <div class="lg:pr-1">
+                <button
+                  @click="onSearch"
+                  class="py-2 px-3 bg-blue-500 rounded-md text-white focus:shadow-outline-none focus:shadow-xl"
+                >
+                  <magnify></magnify>
+                </button>
+              </div>
+              <div class="lg:pr-2">
+                <select
+                  class="transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  v-model.number="perPage"
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
             <t-datepicker
               range
-              v-model="bindExportData.date"
+              v-model="date"
               placeholder="Filter by Date"
-              class="w-full"
+              class="py-2 lg:py-0 lg:w-3/12"
               date-format="Y-m-d"
               user-format="j F, y"
-              @change="onBindExportDataDate"
+              @change="onDateChange"
             />
           </div>
-        </div>
-      </div>
-      <template v-slot:footer>
-        <div class="flex justify-between">
-          <t-button
-            variant="editable"
-            class="bg-red-500"
-            @click="closeExportModal"
-            type="button"
-          >
-            Cancel
-          </t-button>
-          <t-button
-            variant="editable"
-            class="bg-custom-color2"
-            @click="onExport"
-            :disabled="
-              openTab == 1 ? !bindExportData.label : bindExportData.date == ''
-            "
-          >
-            Export
-          </t-button>
-        </div>
-      </template>
-    </t-modal>
-    <!-- Export Modal -->
+          <!-- Search Perpage and Date Picker -->
 
-    <!-- Receipt Modal -->
-    <t-modal class="no-print" v-model="receiptModal" hideCloseButton:true>
-      <div id="printReceipt" ref="printReceipt">
-        <div class="flex justify-center text-center flex-col">
-          <img
-            class="h-12 w-12 mx-auto"
-            src="~@/assets/small_ico.jpg"
-            alt="logo"
-          />
-          <div class="text-xl">Wisata Kopi</div>
-          <span class="text-md">{{ orderCode }}</span>
-          <span class="text-sm">no antrian: {{ orderNumber }}</span>
-          <div class="flex justify-between">
-            <span class="text-sm">Cashier: {{ cashierName }}</span>
-            <span class="text-sm">{{ orderDate }}</span>
+          <!-- Table Data -->
+          <div class="pt-4">
+            <div>
+              <div class="flex flex-col">
+                <div
+                  class="flex justify-between pb-2"
+                  v-for="(trans, key) in allTransaction.data"
+                  :key="key"
+                >
+                  <div class="flex flex-row">
+                    <div class="bg-custom-color1 rounded-lg p-4">
+                      <div class="text-white">
+                        <swap-horizontal></swap-horizontal>
+                      </div>
+                    </div>
+                    <div class="flex flex-col pl-2 py-1">
+                      <span class="text">
+                        {{ trans.order_code }}
+                      </span>
+                      <div class="flex flex-row text-xs">
+                        <span>
+                          Total:
+                          {{ trans.order_total }}
+                        </span>
+                        <span>, Handled by:</span>
+                        <span>
+                          {{ " " + trans.employee.name }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-right">{{ trans.order_date }}</span>
+                    <span
+                      class="text-blue-600 hover:text-blue-400 underline text-right"
+                      @click="
+                        openReceiptModal(
+                          trans.order_code,
+                          trans.order_number,
+                          trans.details,
+                          trans.employee.name,
+                          trans.order_date,
+                          trans.discount_percentage,
+                          trans.discount_value,
+                          trans.total_price,
+                          trans.cash,
+                          trans.change
+                        )
+                      "
+                      >Details</span
+                    >
+                  </div>
+                </div>
+
+                <t-pagination
+                  class="mt-2"
+                  :total-items="
+                    allTransaction.meta.total ? allTransaction.meta.total : 1
+                  "
+                  :per-page="perPage"
+                  :hideEllipsis="true"
+                  v-model="currentPage"
+                />
+              </div>
+            </div>
           </div>
-          <hr class="my-1" />
-        </div>
-        <t-table :headers="headers" :data="transDetails" variant="receipt">
-          <template v-slot:thead="props">
-            <thead :class="props.theadClass">
-              <tr :class="props.trClass">
-                <th class="text-left">
-                  {{ props.data[0].text }}
-                </th>
-                <th class="text-left">
-                  {{ props.data[1].text }}
-                </th>
-                <th class="text-right">
-                  {{ props.data[2].text }}
-                </th>
-              </tr>
-            </thead>
-          </template>
-          <template slot="row" slot-scope="props">
-            <tr @click="onSelectRow(props.row)" :class="[props.trClass]">
-              <td :class="props.tdClass">
-                {{ props.row.menu.name }}
-                <br />
-                {{ props.row.price }}
-              </td>
-              <td :class="props.tdClass">
-                {{ props.row.qty }}
-              </td>
-              <td :class="[props.tdClass, 'text-right']">
-                {{ props.row.price * props.row.qty }}
-              </td>
-            </tr>
-          </template>
-        </t-table>
-        <hr class="my-1" />
-        <div class="flex flex-col">
-          <div class="flex justify-between">
-            <span class="text-sm">Total Item </span>
-            <span class="text-sm">{{ totalItem }} item</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-sm">Subtotal</span>
-            <span class="text-sm">{{ subSubTotal }}</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-xs">Discount </span>
-            <span class="text-xs"
-              >{{ discountPercentage }} % / Rp.{{
-                discountValue | formatRupiah
-              }}
-            </span>
-          </div>
-          <hr class="my-1" />
-          <div class="flex justify-between">
-            <span>Total</span>
-            <span>{{ total | formatRupiah }}</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Cash</span>
-            <span>{{ cash | formatRupiah }}</span>
-          </div>
-          <hr class="my-1" />
-          <div class="flex justify-between">
-            <span>Change</span>
-            <span>{{ change | formatRupiah }}</span>
-          </div>
-        </div>
-        <div class="no-print pt-1">
-          <t-button
-            variant="editable"
-            class="bg-custom-color2 text-black w-full font-medium mr-1"
-            @click="printReceipt"
-          >
-            Print Receipt
-          </t-button>
-        </div>
-        <div class="no-print pt-1">
-          <t-button
-            variant="editable"
-            class="bg-red-500 text-black w-full font-medium mr-1"
-            @click="closeReceiptModal"
-          >
-            Close
-          </t-button>
+          <!-- Table Data -->
         </div>
       </div>
-    </t-modal>
-    <!-- Receipt Modal -->
+
+      <!-- Export Modal -->
+      <t-modal v-model="exportModal" header="Export">
+        <ul class="flex list-none flex-wrap pb-4 flex-row">
+          <li class="flex-auto text-center pr-1">
+            <a
+              class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal border border-black"
+              v-on:click="toggleTabs(1)"
+              v-bind:class="{
+                'text-black text-medium bg-white': openTab !== 1,
+                'text-black text-medium bg-custom-color2': openTab === 1,
+              }"
+            >
+              Default
+            </a>
+          </li>
+          <li class="-mb-px last:mr-0 flex-auto text-center pl-1">
+            <a
+              class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal border border-black"
+              v-on:click="toggleTabs(2)"
+              v-bind:class="{
+                'text-black text-medium bg-white': openTab !== 2,
+                'text-black text-medium bg-custom-color2': openTab === 2,
+              }"
+            >
+              Custom
+            </a>
+          </li>
+        </ul>
+        <div class="p-3 flex-auto">
+          <div class="tab-content tab-space">
+            <div
+              v-bind:class="{
+                hidden: openTab !== 1,
+                block: openTab === 1,
+              }"
+            >
+              <span>Export Data</span>
+              <select
+                class="w-full transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed "
+                v-model="bindExportData.label"
+                @change="onBindExportDataRange"
+              >
+                <option value="">Select Range</option>
+                <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Yearly">Yearly</option>
+              </select>
+            </div>
+            <div
+              v-bind:class="{
+                hidden: openTab !== 2,
+                block: openTab === 2,
+              }"
+            >
+              <span>Choose Range</span>
+              <t-datepicker
+                range
+                v-model="bindExportData.date"
+                placeholder="Filter by Date"
+                class="w-full"
+                date-format="Y-m-d"
+                user-format="j F, y"
+                @change="onBindExportDataDate"
+              />
+            </div>
+          </div>
+        </div>
+        <template v-slot:footer>
+          <div class="flex justify-between">
+            <t-button
+              variant="editable"
+              class="bg-red-500"
+              @click="closeExportModal"
+              type="button"
+            >
+              Cancel
+            </t-button>
+            <t-button
+              variant="editable"
+              class="bg-custom-color2"
+              @click="onExport"
+              :disabled="
+                openTab == 1 ? !bindExportData.label : bindExportData.date == ''
+              "
+            >
+              Export
+            </t-button>
+          </div>
+        </template>
+      </t-modal>
+      <!-- Export Modal -->
+
+      <!-- Receipt Modal -->
+      <t-modal class="no-print" v-model="receiptModal" hideCloseButton:true>
+        <div id="printReceipt" ref="printReceipt">
+          <div class="flex justify-center text-center flex-col">
+            <img
+              class="h-12 w-12 mx-auto"
+              src="~@/assets/small_ico.jpg"
+              alt="logo"
+            />
+            <div class="text-xl">Wisata Kopi</div>
+            <span class="text-md">{{ orderCode }}</span>
+            <span class="text-sm">no antrian: {{ orderNumber }}</span>
+            <div class="flex justify-between">
+              <span class="text-sm">Cashier: {{ cashierName }}</span>
+              <span class="text-sm">{{ orderDate }}</span>
+            </div>
+            <hr class="my-1" />
+          </div>
+          <t-table :headers="headers" :data="transDetails" variant="receipt">
+            <template v-slot:thead="props">
+              <thead :class="props.theadClass">
+                <tr :class="props.trClass">
+                  <th class="text-left">
+                    {{ props.data[0].text }}
+                  </th>
+                  <th class="text-left">
+                    {{ props.data[1].text }}
+                  </th>
+                  <th class="text-right">
+                    {{ props.data[2].text }}
+                  </th>
+                </tr>
+              </thead>
+            </template>
+            <template slot="row" slot-scope="props">
+              <tr @click="onSelectRow(props.row)" :class="[props.trClass]">
+                <td :class="props.tdClass">
+                  {{ props.row.menu.name }}
+                  <br />
+                  {{ props.row.price }}
+                </td>
+                <td :class="props.tdClass">
+                  {{ props.row.qty }}
+                </td>
+                <td :class="[props.tdClass, 'text-right']">
+                  {{ props.row.price * props.row.qty }}
+                </td>
+              </tr>
+            </template>
+          </t-table>
+          <hr class="my-1" />
+          <div class="flex flex-col">
+            <div class="flex justify-between">
+              <span class="text-sm">Total Item </span>
+              <span class="text-sm">{{ totalItem }} item</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm">Subtotal</span>
+              <span class="text-sm">{{ subSubTotal }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-xs">Discount </span>
+              <span class="text-xs"
+                >{{ discountPercentage }} % / Rp.{{
+                  discountValue | formatRupiah
+                }}
+              </span>
+            </div>
+            <hr class="my-1" />
+            <div class="flex justify-between">
+              <span>Total</span>
+              <span>{{ total | formatRupiah }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Cash</span>
+              <span>{{ cash | formatRupiah }}</span>
+            </div>
+            <hr class="my-1" />
+            <div class="flex justify-between">
+              <span>Change</span>
+              <span>{{ change | formatRupiah }}</span>
+            </div>
+          </div>
+          <div class="no-print pt-1">
+            <t-button
+              variant="editable"
+              class="bg-custom-color2 text-black w-full font-medium mr-1"
+              @click="printReceipt"
+            >
+              Print Receipt
+            </t-button>
+          </div>
+          <div class="no-print pt-1">
+            <t-button
+              variant="editable"
+              class="bg-red-500 text-black w-full font-medium mr-1"
+              @click="closeReceiptModal"
+            >
+              Close
+            </t-button>
+          </div>
+        </div>
+      </t-modal>
+      <!-- Receipt Modal -->
+    </div>
     <div id="printArea"></div>
   </dashboard-layouts>
 </template>
@@ -777,14 +779,14 @@ export default {
       }
     },
 
-    printReceipt() {
+    async printReceipt() {
       let printContent = this.$refs.printReceipt.innerHTML;
       const printArea = document.getElementById("printArea");
 
       printArea.innerHTML = printContent;
       window.print();
       printArea.innerHTML = "";
-      this.closeReceiptModal();
+      await this.closeReceiptModal();
     },
 
     async onLineChartDataChange() {
@@ -884,11 +886,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-@media print {
-  .no-print,
-  .no-print * {
-    display: none !important;
-  }
-}
-</style>

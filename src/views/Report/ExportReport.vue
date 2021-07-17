@@ -325,11 +325,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-@media print {
-  .no-print,
-  .no-print * {
-    display: none !important;
-  }
-}
-</style>
