@@ -57,10 +57,16 @@
           v-if="exportData.label == 'Custom' && exportData.date.length == 1"
           >{{ exportData.data[0].order_date }}</span
         >
-        <span v-if="exportData.label == 'Custom' && exportData.date.length > 1"
-          >from {{ exportData.data[0].first_trans }} ~
-          {{ exportData.data[exportData.data.length - 1].last_trans }}</span
-        >
+        <div v-if="exportData.label == 'Custom' && exportData.date.length > 1">
+          <span v-if="!exportData.data[0].first_trans"
+            >from {{ exportData.data[0].order_date }} ~
+            {{ exportData.data[exportData.data.length - 1].order_date }}</span
+          >
+          <span v-else
+            >from {{ exportData.data[0].first_trans }} ~
+            {{ exportData.data[exportData.data.length - 1].last_trans }}</span
+          >
+        </div>
       </div>
       <!-- Range Details -->
     </div>
