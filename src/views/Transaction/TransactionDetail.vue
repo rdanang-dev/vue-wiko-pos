@@ -416,6 +416,7 @@ export default {
       this.orderData.discount_value = this.totalDiscount;
       this.orderData.discount_percentage = this.discount;
       this.finalTotal = this.subTotal - this.totalDiscount;
+      this.change = this.cash - this.finalTotal;
     },
 
     onCashChange() {
