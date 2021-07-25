@@ -17,9 +17,7 @@ const state = {
     },
   ],
   selectedProduct: [],
-  unfinishTrans: {
-    amount: "",
-  },
+  unfinishTrans: {},
 };
 const getters = {
   getField,
@@ -118,15 +116,17 @@ const actions = {
       const response = await axios.delete(
         `${process.env.VUE_APP_BASE_URL}/api/order/${id}`
       );
-
       return response.data;
     } catch (error) {
       console.log(error);
     }
   },
-  async fillUnfinishTrans(context, { data }) {
+  async getUnfinishTrans(context) {
     try {
-      context.commit("setUnfinishedTrans", data);
+      const response = await axios.get(
+        `${process.env.VUE_APP_BASE_URL}/api/getcount`
+      );
+      context.commit("setUnfinishedTrans", response.data);
     } catch (error) {
       console.log(error);
     }

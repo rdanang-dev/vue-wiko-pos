@@ -205,6 +205,7 @@ export default {
     ...mapActions("order", {
       getAllOrderList: "getAllOrderList",
       createOrder: "createOrder",
+      getUnfinishTrans: "getUnfinishTrans",
     }),
 
     fetchData() {
@@ -231,6 +232,7 @@ export default {
       this.openTab = tabNumber;
       if (this.openTab == 1) {
         this.status = 1;
+        this.getUnfinishTrans();
       } else {
         this.status = 2;
       }
@@ -242,6 +244,7 @@ export default {
     async onCreateOrder() {
       await this.createOrder();
       await this.getAllOrderList();
+      await this.getUnfinishTrans();
     },
 
     onSelectRow(row) {

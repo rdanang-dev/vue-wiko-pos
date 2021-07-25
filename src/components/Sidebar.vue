@@ -146,10 +146,7 @@ export default {
   computed: {
     ...mapState(["sideBarOpen"]),
     ...mapState("login", ["profile"]),
-    ...mapState("order", ["orderList"]),
-    count() {
-      return this.orderList.data.length;
-    },
+    ...mapState("order", ["unfinishTrans"]),
   },
   data() {
     return {
@@ -158,19 +155,17 @@ export default {
     };
   },
   async mounted() {
-    await this.getAllOrderList({
-      status: 1,
-    });
-    this.unfinish = this.orderList.data.length;
+    await this.getUnfinishTrans();
+    this.unfinish = this.unfinishTrans;
   },
   watch: {
-    count(newVal) {
+    unfinishTrans(newVal) {
       this.unfinish = newVal;
     },
   },
   methods: {
     ...mapActions("login", ["handleLogOut"]),
-    ...mapActions("order", ["getAllOrderList"]),
+    ...mapActions("order", ["getUnfinishTrans"]),
     toggleSidebar() {
       this.$store.dispatch("toggleSidebar");
     },
