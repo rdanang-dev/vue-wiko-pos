@@ -6,7 +6,9 @@
     :class="sideBarOpen ? '' : 'hidden'"
     id="main-nav"
   >
-    <div class="w-full h-14 lg:h-16 noborder flex px-4 items-center">
+    <div
+      class="w-full h-14 lg:h-16 noborder flex px-4 items-center border-b-2 border-gray-100"
+    >
       <img class="object-cover max-h-20" src="~@/assets/logo.png" />
     </div>
 

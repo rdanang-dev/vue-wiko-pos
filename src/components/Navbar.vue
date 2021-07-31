@@ -1,7 +1,7 @@
 <template>
   <div class="sticky top-0 z-40 no-print lg:hidden no-print">
     <div
-      class="w-full h-16 px-6 navbarcolor noborder flex items-center justify-between"
+      class="w-full h-16 px-6 bg-white noborder flex items-center justify-between border-gray-100 border-b-2 border-l-1"
     >
       <!-- left navbar -->
       <div class="flex">
@@ -77,9 +77,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.navbarcolor {
-  /* background-color: rgba(173, 116, 117, 1); */
-  background-color: #faedcd;
-}
-</style>
