@@ -53,14 +53,14 @@
                 </td>
                 <td :class="props.tdClass" class="flex flex-row">
                   <t-button
-                    variant="secondary"
-                    class="mr-2 bg-green-400"
+                    variant="editable"
+                    class="mr-2 bg-custom-color2 font-medium"
                     @click="openFormModal(props.row.id)"
                     >Edit</t-button
                   >
                   <t-button
-                    variant="secondary"
-                    class="bg-red-400"
+                    variant="editable"
+                    class="bg-red-500 font-medium"
                     @click="confirmDelete(props.row.id)"
                     >Delete</t-button
                   >
@@ -69,10 +69,18 @@
             </template>
           </t-table>
 
-          <t-modal v-model="formModal" header="Manage Category">
+          <t-modal v-model="formModal">
+            <template v-slot:header>
+              {{
+                selectedAction == "create" ? "Create Category" : "Edit Category"
+              }}
+            </template>
             <div>
               <label for="">Nama Kategori</label>
-              <t-input v-model="categoryData.name" />
+              <t-input
+                v-model="categoryData.name"
+                placeholder="Insert Category Name"
+              />
               <span
                 class="text-sm text-left text-red-600"
                 v-if="errorData.errors && errorData.errors.name"
@@ -83,10 +91,20 @@
 
             <template v-slot:footer>
               <div class="flex justify-between">
-                <t-button @click="closeFormModal" type="button">
+                <t-button
+                  variant="editable"
+                  class="bg-red-500"
+                  @click="closeFormModal"
+                  type="button"
+                >
                   Cancel
                 </t-button>
-                <t-button @click="submitCategory" type="button">
+                <t-button
+                  variant="editable"
+                  class="bg-custom-color2"
+                  @click="submitCategory"
+                  type="button"
+                >
                   Save
                 </t-button>
               </div>

@@ -5,8 +5,8 @@
         <div class="flex flex-col lg:flex-row flex-wrap">
           <div class="w-full mb-2 lg:w-6/12 lg:pr-1">
             <div class="flex bg-white rounded-xl shadow p-2">
-              <div class="rounded-xl bg-blue-400 p-5">
-                Rp
+              <div class="rounded-xl bg-custom-color1 p-5">
+                <span class="text-white">Rp</span>
               </div>
               <div class="flex flex-col py-3 px-2">
                 <span class="text-sm">Daily Income</span>
@@ -20,8 +20,10 @@
           </div>
           <div class="w-full lg:w-6/12 pb-3 lg:pl-1 lg:pb-0">
             <div class="flex bg-white rounded-xl shadow p-2">
-              <div class="rounded-xl bg-blue-400 p-5">
-                <swap-horizontal></swap-horizontal>
+              <div class="rounded-xl bg-custom-color1 p-5">
+                <div class="text-white">
+                  <swap-horizontal></swap-horizontal>
+                </div>
               </div>
               <div class="flex flex-col py-3 px-2">
                 <span class="text-sm">Daily Transacion</span>
@@ -33,13 +35,17 @@
             </div>
           </div>
         </div>
-        <div class="w-full bg-white rounded-xl shadow p-3">
-          <div class="flex justify-between">
-            <span>Weekly Income </span>
-            <span>from {{ weeklyCount }}x Transactions</span>
+        <div class="w-full bg-white rounded-xl shadow px-4 py-3">
+          <div class="flex justify-between pt-2">
+            <span class="text-xl">Weekly Income </span>
+            <span class="text-xl">from {{ weeklyCount }}x Transactions</span>
           </div>
 
-          <bar-chart :chartdata="weeklyData" :options="options" class="pt-2" />
+          <bar-chart
+            :chartdata="weeklyData"
+            :options="options"
+            class="pt-9 pb-5"
+          />
         </div>
       </div>
       <div class="w-full lg:w-6/12 p-1">
@@ -59,7 +65,7 @@
             <div class="flex justify-between py-2">
               <span>Latest Transaction</span>
               <button
-                class="block px-2 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed bg-gray-300 rounded-lg"
+                class="block px-2 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed bg-custom-color2 border border-black"
                 @click="onMore"
               >
                 More
@@ -73,8 +79,10 @@
                 :key="key"
               >
                 <div class="flex flex-row">
-                  <div class="bg-gray-300 rounded-lg p-4">
-                    <swap-horizontal></swap-horizontal>
+                  <div class="bg-custom-color1 rounded-lg p-4">
+                    <div class="text-white">
+                      <swap-horizontal></swap-horizontal>
+                    </div>
                   </div>
                   <div class="flex flex-col pl-2 py-1">
                     <span class="text">
@@ -124,7 +132,7 @@ export default {
       datasets: [
         {
           label: "Data",
-          backgroundColor: "#f87979",
+          backgroundColor: "#94D2BD",
           data: [],
         },
       ],

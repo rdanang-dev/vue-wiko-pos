@@ -44,8 +44,9 @@
             class="transition duration-100 ease-in-out border rounded shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
             v-model.number="perPage"
           >
-            <option value="5">5</option>
+            <option value="7">7</option>
             <option value="10">10</option>
+            <option value="15">15</option>
           </select>
         </div>
 
@@ -61,14 +62,14 @@
                 </td>
                 <td :class="props.tdClass" class="flex flex-row">
                   <t-button
-                    variant="secondary"
-                    class="mr-2 bg-green-400"
+                    variant="editable"
+                    class="mr-2 bg-custom-color2 font-medium"
                     @click="openFormModal(props.row.id)"
                     >Edit</t-button
                   >
                   <t-button
-                    variant="secondary"
-                    class="bg-red-400"
+                    variant="editable"
+                    class="bg-red-500 font-medium"
                     @click="confirmDelete(props.row.name, props.row.id)"
                     >Delete</t-button
                   >
@@ -79,13 +80,16 @@
 
           <t-pagination
             class="mt-2"
-            :total-items="!!menuList.meta.total ? menuList.meta.total : 1"
+            :total-items="menuList.meta.total ? menuList.meta.total : 1"
             :per-page="perPage"
             :hideEllipsis="true"
             v-model="currentPage"
           />
 
-          <t-modal v-model="formModal" header="Manage Menu">
+          <t-modal v-model="formModal">
+            <template v-slot:header>
+              {{ selectedAction == "create" ? "Create Menu" : "Edit Menu" }}
+            </template>
             <div class="flex justify-center">
               <img
                 v-if="menuData.image_url"
@@ -167,11 +171,18 @@
 
             <template v-slot:footer>
               <div class="flex justify-between">
-                <t-button @click="closeFormModal" type="button">
+                <t-button
+                  variant="editable"
+                  class="bg-red-500"
+                  @click="closeFormModal"
+                  type="button"
+                >
                   Cancel
                 </t-button>
                 <t-button
                   @click="submitMenu"
+                  variant="editable"
+                  class="bg-custom-color2"
                   :disabled="!!selectedImage && selectedImage.size > 2048000"
                   type="button"
                 >
@@ -203,7 +214,7 @@ export default {
       selectedImage: null,
       selectedAction: "create",
       currentPage: 1,
-      perPage: 5,
+      perPage: 7,
       errors: {},
       headers: [
         {
@@ -225,9 +236,6 @@ export default {
   computed: {
     ...mapState("menu", ["menuList", "menuData", "errorData"]),
     ...mapState("category", ["allCategory"]),
-    // check() {
-    //   return this.menuList.data.length;
-    // },
   },
 
   mounted() {
@@ -236,13 +244,6 @@ export default {
   },
 
   watch: {
-    // check(menu) {
-    //   if (!menu) {
-    //     this.$toast.error("Data not Found!", {
-    //       duration: 3000,
-    //     });
-    //   }
-    // },
     currentPage(newVal) {
       this.getAllMenuList({
         page: newVal,
@@ -281,19 +282,12 @@ export default {
         per_page: this.perPage,
         filter: this.filter,
       });
-      // this.checkDataLength();
     },
 
     clearSearch() {
       this.filter = "";
       this.onSearch();
     },
-
-    // checkDataLength() {
-    //   if (!this.menuList.data.length) {
-    //     this.$toast.error("Data not Found!");
-    //   }
-    // },
 
     async openFormModal(id = null) {
       this.formModal = true;

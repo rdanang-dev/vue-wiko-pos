@@ -8,8 +8,8 @@
               class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal"
               v-on:click="toggleTabs(1)"
               v-bind:class="{
-                'text-blue-500 bg-white': openTab !== 1,
-                'text-white bg-blue-500': openTab === 1,
+                'text-black text-medium bg-white': openTab !== 1,
+                'text-black text-medium bg-custom-color2': openTab === 1,
               }"
             >
               Order List
@@ -20,8 +20,8 @@
               class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal"
               v-on:click="toggleTabs(2)"
               v-bind:class="{
-                'text-blue-500 bg-white': openTab !== 2,
-                'text-white bg-blue-500': openTab === 2,
+                'text-black text-medium bg-white': openTab !== 2,
+                'text-black text-medium bg-custom-color2': openTab === 2,
               }"
             >
               History
@@ -41,12 +41,13 @@
               >
                 <div>
                   <div class="flex pb-3">
-                    <button
+                    <t-button
                       @click="onCreateOrder"
-                      class="block py-3 w-full text-white bg-green-500 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+                      variant="editable"
+                      class="block py-3 w-full text-black font-medium bg-custom-color3 transition duration-100 ease-in-out focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                     >
-                      New Order
-                    </button>
+                      Create New Order
+                    </t-button>
                   </div>
 
                   <t-table :headers="headers" :data="orderList.data">
@@ -204,6 +205,7 @@ export default {
     ...mapActions("order", {
       getAllOrderList: "getAllOrderList",
       createOrder: "createOrder",
+      getUnfinishTrans: "getUnfinishTrans",
     }),
 
     fetchData() {
@@ -230,6 +232,7 @@ export default {
       this.openTab = tabNumber;
       if (this.openTab == 1) {
         this.status = 1;
+        this.getUnfinishTrans();
       } else {
         this.status = 2;
       }
@@ -241,6 +244,7 @@ export default {
     async onCreateOrder() {
       await this.createOrder();
       await this.getAllOrderList();
+      await this.getUnfinishTrans();
     },
 
     onSelectRow(row) {

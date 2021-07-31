@@ -253,6 +253,12 @@ const MyTheme = {
           theadTh: "border-b bg-gray-100",
           tbody: "divide-y divide-gray-100",
         },
+        report: {
+          table: "min-w-full border border-black",
+          theadTh:
+            "font-medium text-left text-md bg-white border-b border-black",
+          td: "text-sm",
+        },
         receipt: {
           theadTh: "px-0 py-0 font-semibold text-left text-sm bg-white",
           td: "px-0 py-0 text-sm",
@@ -475,6 +481,10 @@ const MyTheme = {
         danger: {
           input: "border-red-300 bg-red-50 placeholder-red-200 text-red-900",
           clearButton: "hover:bg-red-200 text-red-500",
+        },
+        editable: {
+          input: "border bg-white text-black",
+          clearButton: "hover:bg-white text-black",
         },
       },
     },

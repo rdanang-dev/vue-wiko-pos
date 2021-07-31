@@ -21,8 +21,8 @@
               <div class="flex flex-row py-4">
                 <div>
                   <t-button
-                    variant="secondary"
-                    class="mr-2 bg-blue-300 rounded-md"
+                    variant="editable"
+                    class="mr-2 bg-custom-color3 rounded-md text-black font-medium border"
                     @click="
                       openModalDetails(
                         user.image_url,
@@ -41,15 +41,15 @@
                       name: 'AccountEdit',
                       params: { action: 'edit', id: user.id },
                     }"
-                    variant="success"
-                    class="mr-2 bg-green-400 rounded-md text-white"
+                    variant="editable"
+                    class="mr-2 bg-custom-color2 rounded-md text-black font-medium border"
                     >Edit</t-button
                   >
                 </div>
                 <div>
                   <t-button
-                    variant="error"
-                    class="mr-2 bg-red-700 rounded-md text-white"
+                    variant=" "
+                    class="mr-2 bg-red-500 rounded-md text-black font-medium"
                     @click="confirmDelete(user.name, user.id)"
                     >Delete</t-button
                   >
@@ -67,8 +67,8 @@
                 name: 'AccountCreate',
                 params: { action: 'create' },
               }"
-              variant="secondary"
-              class="bg-green-400 rounded-md w-full"
+              variant="editable"
+              class="bg-custom-color2 rounded-md text-black font-medium w-full"
               >Create new user</t-button
             >
           </div>

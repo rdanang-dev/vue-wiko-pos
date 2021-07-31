@@ -1,12 +1,12 @@
 <template>
-  <div class="sticky top-0 z-40 no-print">
+  <div class="sticky top-0 z-40 no-print lg:hidden no-print">
     <div
       class="w-full h-16 px-6 bg-white noborder flex items-center justify-between border-gray-100 border-b-2 border-l-1"
     >
       <!-- left navbar -->
       <div class="flex">
         <!-- mobile hamburger -->
-        <div class="lg:hidden flex items-center mr-4">
+        <div class="flex items-center mr-4">
           <button
             class="hover:text-blue-500 hover:border-white focus:outline-none navbar-burger"
             @click="toggleSidebar()"
@@ -40,7 +40,7 @@
 
     <!-- dropdown menu -->
     <div
-      class="absolute bg-gray-100 border border-t-0 shadow-xl text-gray-700 rounded-b-lg w-48 top-20 right-0 mr-6"
+      class="absolute bg-gray-100 border border-t-0 shadow-xl text-gray-700 rounded-b-lg w-48 top-16 right-0"
       :class="dropDownOpen ? '' : 'hidden'"
     >
       <a href="#" class="block px-4 py-2 hover:bg-gray-200">Account</a>

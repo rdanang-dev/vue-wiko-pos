@@ -9,16 +9,15 @@ const state = {
     data: [],
   },
   orderData: {
-    customer_id: "",
     details: [],
   },
   cart: [
     {
-      customer_id: "",
       selectedProduct: [],
     },
   ],
   selectedProduct: [],
+  unfinishTrans: {},
 };
 const getters = {
   getField,
@@ -37,6 +36,9 @@ const mutations = {
     state.orderData.details = state.orderData.details.filter((value) => {
       return value.menu_id !== id;
     });
+  },
+  setUnfinishedTrans(state, payload) {
+    state.unfinishTrans = payload;
   },
   updateField,
 };
@@ -114,8 +116,17 @@ const actions = {
       const response = await axios.delete(
         `${process.env.VUE_APP_BASE_URL}/api/order/${id}`
       );
-
       return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  async getUnfinishTrans(context) {
+    try {
+      const response = await axios.get(
+        `${process.env.VUE_APP_BASE_URL}/api/getcount`
+      );
+      context.commit("setUnfinishedTrans", response.data);
     } catch (error) {
       console.log(error);
     }
