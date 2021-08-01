@@ -56,7 +56,7 @@
               <div class="relative flex w-full flex-wrap max-h-6 pr-1">
                 <t-input
                   v-model="filter"
-                  @change="onSearch"
+                  @keyup.enter="onSearch"
                   placeholder="Search by Price/Order_Code"
                 />
                 <span
@@ -584,6 +584,13 @@ export default {
         todate: this.date[1],
       });
     },
+    allTransaction(newVal) {
+      if (newVal.data.length == 0) {
+        this.$toast.error("Data not Found!", {
+          duration: 500,
+        });
+      }
+    },
   },
   async mounted() {
     await this.fetchData();
@@ -620,48 +627,64 @@ export default {
     },
 
     onDateChange() {
-      if (this.date) {
-        this.currentPage = 1;
-        if (this.date.length == 1) {
-          this.getAllTransaction({
-            page: this.currentPage,
-            per_page: this.perPage,
-            fromdate: this.date[0],
-            filter: this.filter,
-          });
-        }
-        if (this.date.length > 1) {
-          this.getAllTransaction({
-            page: this.currentPage,
-            per_page: this.perPage,
-            fromdate: this.date[0],
-            todate: this.date[1],
-            filter: this.filter,
-          });
-        }
-      }
+      // if (this.date) {
+      //   this.currentPage = 1;
+      //   if (this.date.length == 1) {
+      //     this.getAllTransaction({
+      //       page: this.currentPage,
+      //       per_page: this.perPage,
+      //       fromdate: this.date[0],
+      //       filter: this.filter,
+      //     });
+      //   }
+      //   if (this.date.length > 1) {
+      //     this.getAllTransaction({
+      //       page: this.currentPage,
+      //       per_page: this.perPage,
+      //       fromdate: this.date[0],
+      //       todate: this.date[1],
+      //       filter: this.filter,
+      //     });
+      //   }
+      // }
+      this.currentPage = 1;
+      this.getAllTransaction({
+        page: this.currentPage,
+        per_page: this.perPage,
+        filter: this.filter,
+        fromdate: this.date[0],
+        todate: this.date[1],
+      });
     },
 
     onSearch() {
       this.currentPage = 1;
-      if (this.date == "") {
-        this.getAllTransaction({
-          page: this.currentPage,
-          per_page: this.perPage,
-          filter: this.filter,
-          fromdate: this.date[0],
-          todate: this.date[1],
-        });
-        this.onDateChange();
-      } else {
-        this.getAllTransaction({
-          page: this.currentPage,
-          per_page: this.perPage,
-          filter: this.filter,
-          fromdate: this.date[0],
-          todate: this.date[1],
-        });
-      }
+      this.getAllTransaction({
+        page: this.currentPage,
+        per_page: this.perPage,
+        filter: this.filter,
+        fromdate: this.date[0],
+        todate: this.date[1],
+      });
+      // this.onDateChange();
+      // if (this.date == "") {
+      //   this.getAllTransaction({
+      //     page: this.currentPage,
+      //     per_page: this.perPage,
+      //     filter: this.filter,
+      //     fromdate: this.date[0],
+      //     todate: this.date[1],
+      //   });
+      //   this.onDateChange();
+      // } else {
+      //   this.getAllTransaction({
+      //     page: this.currentPage,
+      //     per_page: this.perPage,
+      //     filter: this.filter,
+      //     fromdate: this.date[0],
+      //     todate: this.date[1],
+      //   });
+      // }
     },
 
     clearSearch() {

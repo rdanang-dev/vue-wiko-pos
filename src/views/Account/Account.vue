@@ -77,7 +77,7 @@
             <div class="relative flex w-full flex-wrap items-stretch pr-1">
               <t-input
                 v-model="filter"
-                @change="onSearch"
+                @keyup.enter="onSearch"
                 placeholder="Search by name"
               />
               <span
@@ -154,6 +154,15 @@ export default {
   },
   mounted() {
     this.fetchData();
+  },
+  watch: {
+    userList(newVal) {
+      if (newVal.data.length == 0) {
+        this.$toast.error("User not Found!", {
+          duration: 500,
+        });
+      }
+    },
   },
   methods: {
     ...mapActions("user", ["getAllUserList", "deleteUser"]),

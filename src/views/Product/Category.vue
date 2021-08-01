@@ -10,7 +10,7 @@
           <div class="relative flex w-full flex-wrap items-stretch pr-1">
             <t-input
               v-model="filter"
-              @change="onSearch"
+              @keyup.enter="onSearch"
               placeholder="Search Here"
             />
             <span
@@ -152,9 +152,6 @@ export default {
 
   computed: {
     ...mapState("category", ["categoryList", "categoryData", "errorData"]),
-    check() {
-      return this.categoryList.data.length;
-    },
   },
 
   mounted() {
@@ -163,10 +160,10 @@ export default {
   },
 
   watch: {
-    check(category) {
-      if (!category) {
+    categoryList(newVal) {
+      if (newVal.data.length == 0) {
         this.$toast.error("Data not Found!", {
-          duration: 3000,
+          duration: 800,
         });
       }
     },
