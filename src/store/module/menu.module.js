@@ -54,7 +54,16 @@ const actions = {
       );
       context.commit("setMenuList", response.data);
     } catch (error) {
-      console.error(error);
+      let errorMessage = "";
+      if (error.response) {
+        errorMessage = error.response.data.message;
+      }
+      if (error.response.status >= 400) {
+        console.error("masuk error", error.response);
+        context.commit("setError", error.response.data);
+        throw new Error(errorMessage);
+      }
+      return error.message;
     }
   },
 

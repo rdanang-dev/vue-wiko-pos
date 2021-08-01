@@ -10,7 +10,7 @@
           <div class="relative flex w-full flex-wrap items-stretch pr-1">
             <t-input
               v-model="filter"
-              @change="onSearch"
+              @keyup.enter="onSearch"
               placeholder="Search Here"
             />
             <span
@@ -258,6 +258,13 @@ export default {
         filter: this.filter,
       });
     },
+    menuList(newVal) {
+      if (newVal.data.length == 0) {
+        this.$toast.error("Data not Found!", {
+          duration: 800,
+        });
+      }
+    },
   },
   methods: {
     ...mapActions("menu", [
@@ -275,9 +282,9 @@ export default {
       this.selectedImage = null;
     },
 
-    onSearch() {
+    async onSearch() {
       this.currentPage = 1;
-      this.getAllMenuList({
+      await this.getAllMenuList({
         page: this.currentPage,
         per_page: this.perPage,
         filter: this.filter,
