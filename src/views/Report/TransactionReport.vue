@@ -627,26 +627,6 @@
       },
 
       onDateChange() {
-        // if (this.date) {
-        //   this.currentPage = 1;
-        //   if (this.date.length == 1) {
-        //     this.getAllTransaction({
-        //       page: this.currentPage,
-        //       per_page: this.perPage,
-        //       fromdate: this.date[0],
-        //       filter: this.filter,
-        //     });
-        //   }
-        //   if (this.date.length > 1) {
-        //     this.getAllTransaction({
-        //       page: this.currentPage,
-        //       per_page: this.perPage,
-        //       fromdate: this.date[0],
-        //       todate: this.date[1],
-        //       filter: this.filter,
-        //     });
-        //   }
-        // }
         this.currentPage = 1
         this.getAllTransaction({
           page: this.currentPage,
@@ -666,25 +646,6 @@
           fromdate: this.date[0],
           todate: this.date[1],
         })
-        // this.onDateChange();
-        // if (this.date == "") {
-        //   this.getAllTransaction({
-        //     page: this.currentPage,
-        //     per_page: this.perPage,
-        //     filter: this.filter,
-        //     fromdate: this.date[0],
-        //     todate: this.date[1],
-        //   });
-        //   this.onDateChange();
-        // } else {
-        //   this.getAllTransaction({
-        //     page: this.currentPage,
-        //     per_page: this.perPage,
-        //     filter: this.filter,
-        //     fromdate: this.date[0],
-        //     todate: this.date[1],
-        //   });
-        // }
       },
 
       clearSearch() {
@@ -709,6 +670,9 @@
         this.transDetails = detail
         this.cashierName = ename
         this.orderDate = odate
+        this.total = total
+        this.cash = cash
+        this.change = change
         this.totalItem = 0
         this.subTotal = 0
         this.subSubTotal = 0
@@ -720,9 +684,6 @@
         this.discount = this.transDetails.discount
         this.discountPercentage = dpercent
         this.discountValue = dvalue
-        this.total = total
-        this.cash = cash
-        this.change = change
         this.receiptModal = true
       },
 
