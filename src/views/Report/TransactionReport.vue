@@ -372,540 +372,540 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
-import DashboardLayouts from "../../components/DashboardLayouts.vue";
-import BarChart from "../../components/BarChart.vue";
-import LineChart from "../../components/LineChart.vue";
-import CloseThick from "vue-material-design-icons/CloseThick";
-import Magnify from "vue-material-design-icons/Magnify";
-import SwapHorizontal from "vue-material-design-icons/SwapHorizontal";
+  import { mapActions, mapState } from "vuex"
+  import DashboardLayouts from "../../components/DashboardLayouts.vue"
+  import BarChart from "../../components/BarChart.vue"
+  import LineChart from "../../components/LineChart.vue"
+  import CloseThick from "vue-material-design-icons/CloseThick"
+  import Magnify from "vue-material-design-icons/Magnify"
+  import SwapHorizontal from "vue-material-design-icons/SwapHorizontal"
 
-export default {
-  name: "TransactionReport",
-  components: {
-    DashboardLayouts,
-    BarChart,
-    LineChart,
-    CloseThick,
-    Magnify,
-    SwapHorizontal,
-  },
-  data: () => ({
-    //pagination
-    currentPage: 1,
-    perPage: 5,
+  export default {
+    name: "TransactionReport",
+    components: {
+      DashboardLayouts,
+      BarChart,
+      LineChart,
+      CloseThick,
+      Magnify,
+      SwapHorizontal,
+    },
+    data: () => ({
+      //pagination
+      currentPage: 1,
+      perPage: 5,
 
-    //export modal
-    exportModal: null,
-    bindExportData: {
-      label: "",
+      //export modal
+      exportModal: null,
+      bindExportData: {
+        label: "",
+        date: "",
+        fromDate: "",
+        toDate: "",
+        data: [],
+      },
+
+      //openTab
+      openTab: 1,
+
+      //receipt modal
+      receiptModal: null,
+      orderCode: null,
+      orderNumber: null,
+      transDetails: null,
+      cashierName: "",
+      orderDate: null,
+      discountPercentage: 0,
+      discountValue: 0,
+      totalItem: 0,
+      subTotal: 0,
+      subSubTotal: 0,
+      total: 0,
+      cash: 0,
+      change: 0,
+
+      //table header
+      headers: [
+        {
+          value: "name",
+          text: "Name",
+        },
+        {
+          value: "qty",
+          text: "Qty",
+        },
+        {
+          value: "subtotal",
+          text: "Subtotal",
+        },
+      ],
+
+      //search and filter
       date: "",
-      fromDate: "",
-      toDate: "",
-      data: [],
-    },
+      filter: "",
 
-    //openTab
-    openTab: 1,
+      //chart data
+      chartData: null,
+      lineChartData: "Daily",
+      totalIncome: 0,
+      totalTrans: 0,
 
-    //receipt modal
-    receiptModal: null,
-    orderCode: null,
-    orderNumber: null,
-    transDetails: null,
-    cashierName: "",
-    orderDate: null,
-    discountPercentage: 0,
-    discountValue: 0,
-    totalItem: 0,
-    subTotal: 0,
-    subSubTotal: 0,
-    total: 0,
-    cash: 0,
-    change: 0,
-
-    //table header
-    headers: [
-      {
-        value: "name",
-        text: "Name",
-      },
-      {
-        value: "qty",
-        text: "Qty",
-      },
-      {
-        value: "subtotal",
-        text: "Subtotal",
-      },
-    ],
-
-    //search and filter
-    date: "",
-    filter: "",
-
-    //chart data
-    chartData: null,
-    lineChartData: "Daily",
-    totalIncome: 0,
-    totalTrans: 0,
-
-    //daily chart data
-    dailyCount: 0,
-    dailyTotal: 0,
-    dailyData: {
-      labels: [],
-      datasets: [
-        {
-          label: "Data",
-          backgroundColor: "rgba(116, 198, 157, 0.5)",
-          borderColor: "#081c16",
-          data: [],
-        },
-      ],
-    },
-
-    //weekly chartdata
-    weeklyTotal: 0,
-    weeklyCount: 0,
-    weeklyData: {
-      labels: [],
-      datasets: [
-        {
-          label: "Data",
-          backgroundColor: "rgba(116, 198, 157, 0.5)",
-          borderColor: "#52b788",
-          data: [],
-          fill: true,
-          pointBackgroundColor: "#fff",
-          radius: 8,
-          interaction: {
-            intersect: false,
-          },
-        },
-      ],
-    },
-
-    //monthly chart data
-    monthlyTotal: 0,
-    monthlyCount: 0,
-    monthlyData: {
-      labels: [],
-      datasets: [
-        {
-          label: "Data",
-          backgroundColor: "rgba(116, 198, 157, 0.5)",
-          borderColor: "#52b788",
-          data: [],
-          fill: true,
-          pointBackgroundColor: "#fff",
-          radius: 8,
-          interaction: {
-            intersect: false,
-          },
-        },
-      ],
-    },
-
-    //yearly chart data
-    yearlyData: {
-      labels: [],
-      datasets: [
-        {
-          label: "Data",
-          backgroundColor: "rgba(116, 198, 157, 0.5)",
-          borderColor: "#52b788",
-          data: [],
-          fill: true,
-          pointBackgroundColor: "#fff",
-          radius: 8,
-          interaction: {
-            intersect: false,
-          },
-        },
-      ],
-    },
-
-    //chart data options
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      base: 0,
-      legend: {
-        display: false,
-      },
-      scales: {
-        yAxes: [
+      //daily chart data
+      dailyCount: 0,
+      dailyTotal: 0,
+      dailyData: {
+        labels: [],
+        datasets: [
           {
-            ticks: {
-              beginAtZero: true,
+            label: "Data",
+            backgroundColor: "rgba(116, 198, 157, 0.5)",
+            borderColor: "#081c16",
+            data: [],
+          },
+        ],
+      },
+
+      //weekly chartdata
+      weeklyTotal: 0,
+      weeklyCount: 0,
+      weeklyData: {
+        labels: [],
+        datasets: [
+          {
+            label: "Data",
+            backgroundColor: "rgba(116, 198, 157, 0.5)",
+            borderColor: "#52b788",
+            data: [],
+            fill: true,
+            pointBackgroundColor: "#fff",
+            radius: 8,
+            interaction: {
+              intersect: false,
             },
           },
         ],
       },
-    },
-  }),
-  computed: {
-    ...mapState("report", [
-      "allTransaction",
-      "dailyReport",
-      "weeklyReport",
-      "monthlyReport",
-      "yearlyReport",
-      "exportData",
-      "exportCustom",
-    ]),
-    checkDate() {
-      return this.date;
-    },
-  },
-  watch: {
-    checkDate(date) {
-      if (date == "") {
-        this.clearDate();
-      }
-    },
-    currentPage(newVal) {
-      this.getAllTransaction({
-        page: newVal,
-        per_page: this.perPage,
-        filter: this.filter,
-        fromdate: this.date[0],
-        todate: this.date[1],
-      });
-    },
-    perPage(newVal) {
-      this.currentPage = 1;
-      this.getAllTransaction({
-        page: this.currentPage,
-        per_page: newVal,
-        filter: this.filter,
-        fromdate: this.date[0],
-        todate: this.date[1],
-      });
-    },
-    allTransaction(newVal) {
-      if (newVal.data.length == 0) {
-        this.$toast.error("Data not Found!", {
-          duration: 500,
-        });
-      }
-    },
-  },
-  async mounted() {
-    await this.fetchData();
-    this.chartData = this.dailyData;
-    await this.dailyReportChart();
-    this.totalIncome = this.dailyTotal;
-    this.totalTrans = this.dailyCount;
-  },
-  methods: {
-    ...mapActions("report", [
-      "getAllTransaction",
-      "getDailyReport",
-      "getWeeklyReport",
-      "getMonthlyReport",
-      "getYearlyReport",
-      "fillExportData",
-      "getExportCustom",
-    ]),
 
-    async fetchData() {
-      this.getAllTransaction({
-        page: this.currentPage,
-        per_page: this.perPage,
-        filter: this.filter,
-      });
-      await this.getDailyReport();
-      await this.getWeeklyReport();
-      await this.getMonthlyReport();
-      await this.getYearlyReport();
-    },
+      //monthly chart data
+      monthlyTotal: 0,
+      monthlyCount: 0,
+      monthlyData: {
+        labels: [],
+        datasets: [
+          {
+            label: "Data",
+            backgroundColor: "rgba(116, 198, 157, 0.5)",
+            borderColor: "#52b788",
+            data: [],
+            fill: true,
+            pointBackgroundColor: "#fff",
+            radius: 8,
+            interaction: {
+              intersect: false,
+            },
+          },
+        ],
+      },
 
-    clearDate() {
-      this.onSearch();
-    },
+      //yearly chart data
+      yearlyData: {
+        labels: [],
+        datasets: [
+          {
+            label: "Data",
+            backgroundColor: "rgba(116, 198, 157, 0.5)",
+            borderColor: "#52b788",
+            data: [],
+            fill: true,
+            pointBackgroundColor: "#fff",
+            radius: 8,
+            interaction: {
+              intersect: false,
+            },
+          },
+        ],
+      },
 
-    onDateChange() {
-      // if (this.date) {
-      //   this.currentPage = 1;
-      //   if (this.date.length == 1) {
-      //     this.getAllTransaction({
-      //       page: this.currentPage,
-      //       per_page: this.perPage,
-      //       fromdate: this.date[0],
-      //       filter: this.filter,
-      //     });
-      //   }
-      //   if (this.date.length > 1) {
-      //     this.getAllTransaction({
-      //       page: this.currentPage,
-      //       per_page: this.perPage,
-      //       fromdate: this.date[0],
-      //       todate: this.date[1],
-      //       filter: this.filter,
-      //     });
-      //   }
-      // }
-      this.currentPage = 1;
-      this.getAllTransaction({
-        page: this.currentPage,
-        per_page: this.perPage,
-        filter: this.filter,
-        fromdate: this.date[0],
-        todate: this.date[1],
-      });
+      //chart data options
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        base: 0,
+        legend: {
+          display: false,
+        },
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+      },
+    }),
+    computed: {
+      ...mapState("report", [
+        "allTransaction",
+        "dailyReport",
+        "weeklyReport",
+        "monthlyReport",
+        "yearlyReport",
+        "exportData",
+        "exportReport",
+      ]),
+      checkDate() {
+        return this.date
+      },
     },
-
-    onSearch() {
-      this.currentPage = 1;
-      this.getAllTransaction({
-        page: this.currentPage,
-        per_page: this.perPage,
-        filter: this.filter,
-        fromdate: this.date[0],
-        todate: this.date[1],
-      });
-      // this.onDateChange();
-      // if (this.date == "") {
-      //   this.getAllTransaction({
-      //     page: this.currentPage,
-      //     per_page: this.perPage,
-      //     filter: this.filter,
-      //     fromdate: this.date[0],
-      //     todate: this.date[1],
-      //   });
-      //   this.onDateChange();
-      // } else {
-      //   this.getAllTransaction({
-      //     page: this.currentPage,
-      //     per_page: this.perPage,
-      //     filter: this.filter,
-      //     fromdate: this.date[0],
-      //     todate: this.date[1],
-      //   });
-      // }
+    watch: {
+      checkDate(date) {
+        if (date == "") {
+          this.clearDate()
+        }
+      },
+      currentPage(newVal) {
+        this.getAllTransaction({
+          page: newVal,
+          per_page: this.perPage,
+          filter: this.filter,
+          fromdate: this.date[0],
+          todate: this.date[1],
+        })
+      },
+      perPage(newVal) {
+        this.currentPage = 1
+        this.getAllTransaction({
+          page: this.currentPage,
+          per_page: newVal,
+          filter: this.filter,
+          fromdate: this.date[0],
+          todate: this.date[1],
+        })
+      },
+      allTransaction(newVal) {
+        if (newVal.data.length == 0) {
+          this.$toast.error("Data not Found!", {
+            duration: 500,
+          })
+        }
+      },
     },
-
-    clearSearch() {
-      this.filter = "";
-      this.onSearch();
+    async mounted() {
+      await this.fetchData()
+      this.chartData = this.dailyData
+      await this.dailyReportChart()
+      this.totalIncome = this.dailyTotal
+      this.totalTrans = this.dailyCount
     },
+    methods: {
+      ...mapActions("report", [
+        "getAllTransaction",
+        "getDailyReport",
+        "getWeeklyReport",
+        "getMonthlyReport",
+        "getYearlyReport",
+        "fillExportData",
+        "getExportReport",
+      ]),
 
-    openReceiptModal(
-      ocode,
-      onumb,
-      detail,
-      ename,
-      odate,
-      dpercent,
-      dvalue,
-      total,
-      cash,
-      change
-    ) {
-      this.orderCode = ocode;
-      this.orderNumber = onumb;
-      this.transDetails = detail;
-      this.cashierName = ename;
-      this.orderDate = odate;
-      this.totalItem = 0;
-      this.subTotal = 0;
-      this.subSubTotal = 0;
-      this.transDetails.forEach((value) => {
-        this.totalItem += value.qty;
-        this.subTotal = value.price * value.qty;
-        this.subSubTotal += this.subTotal;
-      });
-      this.discount = this.transDetails.discount;
-      this.discountPercentage = dpercent;
-      this.discountValue = dvalue;
-      this.total = total;
-      this.cash = cash;
-      this.change = change;
-      this.receiptModal = true;
-    },
+      async fetchData() {
+        this.getAllTransaction({
+          page: this.currentPage,
+          per_page: this.perPage,
+          filter: this.filter,
+        })
+        await this.getDailyReport()
+        await this.getWeeklyReport()
+        await this.getMonthlyReport()
+        await this.getYearlyReport()
+      },
 
-    closeReceiptModal() {
-      this.receiptModal = false;
-    },
+      clearDate() {
+        this.onSearch()
+      },
 
-    toggleTabs: function(tabNumber) {
-      this.openTab = tabNumber;
-      if (this.openTab == 1) {
-        this.bindExportData.date = "";
-      }
-      if (this.openTab == 2) {
-        this.bindExportData.data = "";
-        this.bindExportData.label = "";
-      }
-    },
+      onDateChange() {
+        // if (this.date) {
+        //   this.currentPage = 1;
+        //   if (this.date.length == 1) {
+        //     this.getAllTransaction({
+        //       page: this.currentPage,
+        //       per_page: this.perPage,
+        //       fromdate: this.date[0],
+        //       filter: this.filter,
+        //     });
+        //   }
+        //   if (this.date.length > 1) {
+        //     this.getAllTransaction({
+        //       page: this.currentPage,
+        //       per_page: this.perPage,
+        //       fromdate: this.date[0],
+        //       todate: this.date[1],
+        //       filter: this.filter,
+        //     });
+        //   }
+        // }
+        this.currentPage = 1
+        this.getAllTransaction({
+          page: this.currentPage,
+          per_page: this.perPage,
+          filter: this.filter,
+          fromdate: this.date[0],
+          todate: this.date[1],
+        })
+      },
 
-    openExportModal() {
-      this.bindExportData.data = "";
-      this.bindExportData.label = "";
-      this.bindExportData.date = "";
-      this.exportModal = true;
-    },
+      onSearch() {
+        this.currentPage = 1
+        this.getAllTransaction({
+          page: this.currentPage,
+          per_page: this.perPage,
+          filter: this.filter,
+          fromdate: this.date[0],
+          todate: this.date[1],
+        })
+        // this.onDateChange();
+        // if (this.date == "") {
+        //   this.getAllTransaction({
+        //     page: this.currentPage,
+        //     per_page: this.perPage,
+        //     filter: this.filter,
+        //     fromdate: this.date[0],
+        //     todate: this.date[1],
+        //   });
+        //   this.onDateChange();
+        // } else {
+        //   this.getAllTransaction({
+        //     page: this.currentPage,
+        //     per_page: this.perPage,
+        //     filter: this.filter,
+        //     fromdate: this.date[0],
+        //     todate: this.date[1],
+        //   });
+        // }
+      },
 
-    closeExportModal() {
-      this.bindExportData.data = "";
-      this.bindExportData.label = "";
-      this.bindExportData.date = "";
-      this.exportModal = false;
-    },
+      clearSearch() {
+        this.filter = ""
+        this.onSearch()
+      },
 
-    async onExport() {
-      if (this.bindExportData.date) {
-        this.bindExportData.label = "Custom";
+      openReceiptModal(
+        ocode,
+        onumb,
+        detail,
+        ename,
+        odate,
+        dpercent,
+        dvalue,
+        total,
+        cash,
+        change
+      ) {
+        this.orderCode = ocode
+        this.orderNumber = onumb
+        this.transDetails = detail
+        this.cashierName = ename
+        this.orderDate = odate
+        this.totalItem = 0
+        this.subTotal = 0
+        this.subSubTotal = 0
+        this.transDetails.forEach((value) => {
+          this.totalItem += value.qty
+          this.subTotal = value.price * value.qty
+          this.subSubTotal += this.subTotal
+        })
+        this.discount = this.transDetails.discount
+        this.discountPercentage = dpercent
+        this.discountValue = dvalue
+        this.total = total
+        this.cash = cash
+        this.change = change
+        this.receiptModal = true
+      },
+
+      closeReceiptModal() {
+        this.receiptModal = false
+      },
+
+      toggleTabs: function(tabNumber) {
+        this.openTab = tabNumber
+        if (this.openTab == 1) {
+          this.bindExportData.date = ""
+        }
+        if (this.openTab == 2) {
+          this.bindExportData.data = ""
+          this.bindExportData.label = ""
+        }
+      },
+
+      openExportModal() {
+        this.bindExportData.data = ""
+        this.bindExportData.label = ""
+        this.bindExportData.date = ""
+        this.exportModal = true
+      },
+
+      closeExportModal() {
+        this.bindExportData.data = ""
+        this.bindExportData.label = ""
+        this.bindExportData.date = ""
+        this.exportModal = false
+      },
+
+      async onExport() {
+        if (this.bindExportData.date) {
+          this.bindExportData.label = "Custom"
+          if (this.bindExportData.date.length == 1) {
+            await this.getExportReport({
+              fromdate: this.bindExportData.fromDate,
+            })
+          }
+          if (this.bindExportData.date.length > 1) {
+            await this.getExportReport({
+              fromdate: this.bindExportData.fromDate,
+              todate: this.bindExportData.toDate,
+            })
+          }
+          this.bindExportData.data = this.exportReport.data
+        }
+        await this.fillExportData({
+          data: this.bindExportData,
+        })
+        this.$router.push("/ExportReport")
+      },
+
+      onBindExportDataDate() {
         if (this.bindExportData.date.length == 1) {
-          await this.getExportCustom({
-            fromdate: this.bindExportData.fromDate,
-          });
+          this.bindExportData.fromDate = this.bindExportData.date[0]
         }
         if (this.bindExportData.date.length > 1) {
-          await this.getExportCustom({
-            fromdate: this.bindExportData.fromDate,
-            todate: this.bindExportData.toDate,
-          });
+          this.bindExportData.fromDate = this.bindExportData.date[0]
+          this.bindExportData.toDate = this.bindExportData.date[1]
         }
-        this.bindExportData.data = this.exportCustom.data;
-      }
-      await this.fillExportData({
-        data: this.bindExportData,
-      });
-      this.$router.push("/ExportReport");
-    },
+      },
 
-    onBindExportDataDate() {
-      if (this.bindExportData.date.length == 1) {
-        this.bindExportData.fromDate = this.bindExportData.date[0];
-      }
-      if (this.bindExportData.date.length > 1) {
-        this.bindExportData.fromDate = this.bindExportData.date[0];
-        this.bindExportData.toDate = this.bindExportData.date[1];
-      }
-    },
+      onBindExportDataRange() {
+        if (this.bindExportData.label == "Daily") {
+          this.bindExportData.data = this.dailyReport
+        }
+        if (this.bindExportData.label == "Weekly") {
+          this.bindExportData.data = this.weeklyReport
+        }
+        if (this.bindExportData.label == "Monthly") {
+          this.bindExportData.data = this.monthlyReport
+        }
+        if (this.bindExportData.label == "Yearly") {
+          this.bindExportData.data = this.yearlyReport
+        }
+      },
 
-    onBindExportDataRange() {
-      if (this.bindExportData.label == "Daily") {
-        this.bindExportData.data = this.dailyReport;
-      }
-      if (this.bindExportData.label == "Weekly") {
-        this.bindExportData.data = this.weeklyReport;
-      }
-      if (this.bindExportData.label == "Monthly") {
-        this.bindExportData.data = this.monthlyReport;
-      }
-      if (this.bindExportData.label == "Yearly") {
-        this.bindExportData.data = this.yearlyReport;
-      }
-    },
+      async printReceipt() {
+        let printContent = this.$refs.printReceipt.innerHTML
+        const printArea = document.getElementById("printArea")
 
-    async printReceipt() {
-      let printContent = this.$refs.printReceipt.innerHTML;
-      const printArea = document.getElementById("printArea");
+        printArea.innerHTML = printContent
+        window.print()
+        printArea.innerHTML = ""
+        await this.closeReceiptModal()
+      },
 
-      printArea.innerHTML = printContent;
-      window.print();
-      printArea.innerHTML = "";
-      await this.closeReceiptModal();
-    },
+      async onLineChartDataChange() {
+        if (this.lineChartData == "Daily") {
+          this.chartData = this.dailyData
+          await this.dailyReportChart()
+          this.totalIncome = this.dailyTotal
+          this.totalTrans = this.dailyCount
+        }
+        if (this.lineChartData == "Weekly") {
+          this.chartData = this.weeklyData
+          await this.weeklyReportChart()
+          this.totalIncome = this.weeklyTotal
+          this.totalTrans = this.weeklyCount
+        }
+        if (this.lineChartData == "Monthly") {
+          this.chartData = this.monthlyData
+          await this.monthlyReportChart()
+          this.totalIncome = this.monthlyTotal
+          this.totalTrans = this.monthlyCount
+        }
+        if (this.lineChartData == "Yearly") {
+          this.chartData = this.yearlyData
+          await this.yearlyReportChart()
+          this.totalIncome = this.yearlyTotal
+          this.totalTrans = this.yearlyCount
+        }
+      },
 
-    async onLineChartDataChange() {
-      if (this.lineChartData == "Daily") {
-        this.chartData = this.dailyData;
-        await this.dailyReportChart();
-        this.totalIncome = this.dailyTotal;
-        this.totalTrans = this.dailyCount;
-      }
-      if (this.lineChartData == "Weekly") {
-        this.chartData = this.weeklyData;
-        await this.weeklyReportChart();
-        this.totalIncome = this.weeklyTotal;
-        this.totalTrans = this.weeklyCount;
-      }
-      if (this.lineChartData == "Monthly") {
-        this.chartData = this.monthlyData;
-        await this.monthlyReportChart();
-        this.totalIncome = this.monthlyTotal;
-        this.totalTrans = this.monthlyCount;
-      }
-      if (this.lineChartData == "Yearly") {
-        this.chartData = this.yearlyData;
-        await this.yearlyReportChart();
-        this.totalIncome = this.yearlyTotal;
-        this.totalTrans = this.yearlyCount;
-      }
-    },
+      dailyReportChart() {
+        this.dailyCount = 0
+        this.dailyTotal = 0
+        this.dailyReport.data.forEach((value, index) => {
+          this.dailyTotal += parseInt(value.total_price)
+          this.dailyCount = index + 1
+        })
+        const dailyLabel = this.dailyReport.data.map((value) => {
+          return value.order_code
+        })
+        this.dailyData.labels = dailyLabel
+        const dailyData = this.dailyReport.data.map((value) => {
+          return value.total_price
+        })
+        this.dailyData.datasets[0].data = dailyData
+      },
 
-    dailyReportChart() {
-      this.dailyCount = 0;
-      this.dailyTotal = 0;
-      this.dailyReport.data.forEach((value, index) => {
-        this.dailyTotal += parseInt(value.total_price);
-        this.dailyCount = index + 1;
-      });
-      const dailyLabel = this.dailyReport.data.map((value) => {
-        return value.order_code;
-      });
-      this.dailyData.labels = dailyLabel;
-      const dailyData = this.dailyReport.data.map((value) => {
-        return value.total_price;
-      });
-      this.dailyData.datasets[0].data = dailyData;
-    },
+      weeklyReportChart() {
+        this.weeklyCount = 0
+        this.weeklyTotal = 0
+        this.weeklyReport.data.forEach((value) => {
+          this.weeklyCount += parseInt(value.total_transaction)
+          this.weeklyTotal += parseInt(value.order_total)
+        })
+        const weeklyLabels = this.weeklyReport.data.map((value) => {
+          return value.order_date
+        })
+        this.weeklyData.labels = weeklyLabels
+        const weeklyData = this.weeklyReport.data.map((value) => {
+          return value.order_total
+        })
+        this.weeklyData.datasets[0].data = weeklyData
+      },
 
-    weeklyReportChart() {
-      this.weeklyCount = 0;
-      this.weeklyTotal = 0;
-      this.weeklyReport.data.forEach((value) => {
-        this.weeklyCount += parseInt(value.total_transaction);
-        this.weeklyTotal += parseInt(value.order_total);
-      });
-      const weeklyLabels = this.weeklyReport.data.map((value) => {
-        return value.order_date;
-      });
-      this.weeklyData.labels = weeklyLabels;
-      const weeklyData = this.weeklyReport.data.map((value) => {
-        return value.order_total;
-      });
-      this.weeklyData.datasets[0].data = weeklyData;
-    },
+      monthlyReportChart() {
+        this.monthlyCount = 0
+        this.monthlyTotal = 0
+        this.monthlyReport.data.forEach((value) => {
+          this.monthlyCount += parseInt(value.total_transaction)
+          this.monthlyTotal += parseInt(value.order_total)
+        })
+        const monthlyLabels = this.monthlyReport.data.map((value) => {
+          return value.order_date
+        })
+        this.monthlyData.labels = monthlyLabels
+        const monthlyData = this.monthlyReport.data.map((value) => {
+          return value.order_total
+        })
+        this.monthlyData.datasets[0].data = monthlyData
+      },
 
-    monthlyReportChart() {
-      this.monthlyCount = 0;
-      this.monthlyTotal = 0;
-      this.monthlyReport.data.forEach((value) => {
-        this.monthlyCount += parseInt(value.total_transaction);
-        this.monthlyTotal += parseInt(value.order_total);
-      });
-      const monthlyLabels = this.monthlyReport.data.map((value) => {
-        return value.order_date;
-      });
-      this.monthlyData.labels = monthlyLabels;
-      const monthlyData = this.monthlyReport.data.map((value) => {
-        return value.order_total;
-      });
-      this.monthlyData.datasets[0].data = monthlyData;
+      yearlyReportChart() {
+        this.yearlyCount = 0
+        this.yearlyTotal = 0
+        this.yearlyReport.data.forEach((value) => {
+          this.yearlyCount += parseInt(value.total_transaction)
+          this.yearlyTotal += parseInt(value.order_total)
+        })
+        const yearlyLabels = this.yearlyReport.data.map((value) => {
+          return value.month_formatted
+        })
+        this.yearlyData.labels = yearlyLabels
+        const yearlyData = this.yearlyReport.data.map((value) => {
+          return value.order_total
+        })
+        this.yearlyData.datasets[0].data = yearlyData
+      },
     },
-
-    yearlyReportChart() {
-      this.yearlyCount = 0;
-      this.yearlyTotal = 0;
-      this.yearlyReport.data.forEach((value) => {
-        this.yearlyCount += parseInt(value.total_transaction);
-        this.yearlyTotal += parseInt(value.order_total);
-      });
-      const yearlyLabels = this.yearlyReport.data.map((value) => {
-        return value.month_formatted;
-      });
-      this.yearlyData.labels = yearlyLabels;
-      const yearlyData = this.yearlyReport.data.map((value) => {
-        return value.order_total;
-      });
-      this.yearlyData.datasets[0].data = yearlyData;
-    },
-  },
-};
+  }
 </script>
