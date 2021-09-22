@@ -1,19 +1,14 @@
 <template>
-  <!-- give the sidebar z-50 class so its higher than the navbar if you want to see the logo -->
-  <!-- you will need to add a little "X" button next to the logo in order to close it though -->
   <div
     class="w-1/2 md:w-1/3 lg:w-64 fixed md:top-0 md:left-0 h-screen lg:block bg-custom-color4 noborder z-30 rounded-tr-3xl"
     :class="sideBarOpen ? '' : 'hidden'"
     id="main-nav"
   >
-    <div
-      class="w-full h-14 lg:h-16 noborder flex px-4 items-center border-b-2 border-gray-100"
-    >
+    <div class="w-full h-14 lg:h-16 noborder flex px-4 items-center">
       <img class="object-cover max-h-20" src="~@/assets/logo.png" />
     </div>
 
     <perfect-scrollbar>
-      <!-- xs:hidden xs:invisible sm:hidden sm:invisible md:hidden md:invisible  -->
       <div
         class="visible flex lg:visible lg:flex xs:hidden xs:invisible sm:hidden sm:invisible md:hidden md:invisible justify-center pt-3"
       >
@@ -128,53 +123,53 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
-import cartVariant from "vue-material-design-icons/CartVariant";
-import viewDashboard from "vue-material-design-icons/ViewDashboard";
-import food from "vue-material-design-icons/Food";
-import accountSupervisorCircle from "vue-material-design-icons/AccountSupervisorCircle";
-import clipboardPulse from "vue-material-design-icons/ClipboardPulse";
-import ballot from "vue-material-design-icons/Ballot";
-export default {
-  name: "Sidebar",
-  components: {
-    cartVariant,
-    viewDashboard,
-    food,
-    accountSupervisorCircle,
-    clipboardPulse,
-    ballot,
-  },
-  computed: {
-    ...mapState(["sideBarOpen"]),
-    ...mapState("login", ["profile"]),
-    ...mapState("order", ["unfinishTrans"]),
-  },
-  data() {
-    return {
-      menu: [],
-      unfinish: 0,
-    };
-  },
-  async mounted() {
-    await this.getUnfinishTrans();
-    this.unfinish = this.unfinishTrans;
-  },
-  watch: {
-    unfinishTrans(newVal) {
-      this.unfinish = newVal;
+  import { mapActions, mapState } from "vuex"
+  import cartVariant from "vue-material-design-icons/CartVariant"
+  import viewDashboard from "vue-material-design-icons/ViewDashboard"
+  import food from "vue-material-design-icons/Food"
+  import accountSupervisorCircle from "vue-material-design-icons/AccountSupervisorCircle"
+  import clipboardPulse from "vue-material-design-icons/ClipboardPulse"
+  import ballot from "vue-material-design-icons/Ballot"
+  export default {
+    name: "Sidebar",
+    components: {
+      cartVariant,
+      viewDashboard,
+      food,
+      accountSupervisorCircle,
+      clipboardPulse,
+      ballot,
     },
-  },
-  methods: {
-    ...mapActions("login", ["handleLogOut"]),
-    ...mapActions("order", ["getUnfinishTrans"]),
-    toggleSidebar() {
-      this.$store.dispatch("toggleSidebar");
+    computed: {
+      ...mapState(["sideBarOpen"]),
+      ...mapState("login", ["profile"]),
+      ...mapState("order", ["unfinishTrans"]),
     },
-    async onLogout() {
-      await this.handleLogOut();
-      await this.$router.push("/login");
+    data() {
+      return {
+        menu: [],
+        unfinish: 0,
+      }
     },
-  },
-};
+    async mounted() {
+      await this.getUnfinishTrans()
+      this.unfinish = this.unfinishTrans
+    },
+    watch: {
+      unfinishTrans(newVal) {
+        this.unfinish = newVal
+      },
+    },
+    methods: {
+      ...mapActions("login", ["handleLogOut"]),
+      ...mapActions("order", ["getUnfinishTrans"]),
+      toggleSidebar() {
+        this.$store.dispatch("toggleSidebar")
+      },
+      async onLogout() {
+        await this.handleLogOut()
+        await this.$router.push("/login")
+      },
+    },
+  }
 </script>

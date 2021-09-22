@@ -1,12 +1,9 @@
-const defaultTheme = require("tailwindcss/defaultTheme");
+const defaultTheme = require("tailwindcss/defaultTheme")
 module.exports = {
   purge: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
-      screens: {
-        xs: "<400px",
-      },
       fontFamily: {
         sans: ["Balsamiq", defaultTheme.fontFamily.sans],
       },
@@ -29,4 +26,4 @@ module.exports = {
     },
   },
   plugins: [require("@tailwindcss/forms")],
-};
+}
