@@ -2,6 +2,7 @@
   <div
     class="min-h-screen w-full flex justify-center items-center background-login"
   >
+    <!-- Login Box -->
     <div class="bg-gray-50 rounded-lg shadow-2xl">
       <div class="flex flex-col p-5">
         <div class="flex flex-row px-16">
@@ -20,7 +21,7 @@
             <label class="text-gray-900 text-left">Email</label>
             <div class="flex flex-col">
               <input
-                class="w-full pl-3 py-4 rounded-lg text-xs placeholder-blueGray-400 font-semibold leading-none bg-blueGray-50 outline-none"
+                class="w-full pl-3 py-4 rounded-lg text-xs placeholder-blueGray-400 leading-none bg-blueGray-50 outline-none"
                 type="email"
                 placeholder="name@email.com"
                 v-model="login.email"
@@ -40,7 +41,7 @@
             <div class="flex flex-row">
               <input
                 :type="passwordField"
-                class="w-full pl-3 py-4 rounded-lg text-xs font-semibold leading-none outline-none"
+                class="w-full pl-3 py-4 rounded-lg text-xs leading-none outline-none"
                 placeholder="Enter your password"
                 v-model="login.password"
                 @keyup.enter="onLogin"
@@ -74,60 +75,60 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
-import lock from "vue-material-design-icons/Lock";
-import lockOpenVariant from "vue-material-design-icons/LockOpenVariant";
+  import { mapActions, mapState } from "vuex"
+  import lock from "vue-material-design-icons/Lock"
+  import lockOpenVariant from "vue-material-design-icons/LockOpenVariant"
 
-export default {
-  name: "Login",
-  components: {
-    lock,
-    lockOpenVariant,
-  },
-  data() {
-    return {
-      passwordField: "password",
-      user: null,
-      login: {
-        email: "",
-        password: "",
+  export default {
+    name: "Login",
+    components: {
+      lock,
+      lockOpenVariant,
+    },
+    data() {
+      return {
+        passwordField: "password",
+        user: null,
+        login: {
+          email: "",
+          password: "",
+        },
+        errors: {},
+      }
+    },
+    computed: {
+      ...mapState("login", ["userList", "userData", "errorData"]),
+    },
+    mounted() {
+      this.clearError()
+    },
+    methods: {
+      ...mapActions("login", ["handleLogin", "clearError"]),
+      onShowPassword: function() {
+        if (this.passwordField === "password") {
+          this.passwordField = "text"
+        } else {
+          this.passwordField = "password"
+        }
       },
-      errors: {},
-    };
-  },
-  computed: {
-    ...mapState("login", ["userList", "userData", "errorData"]),
-  },
-  mounted() {
-    this.clearError();
-  },
-  methods: {
-    ...mapActions("login", ["handleLogin", "clearError"]),
-    onShowPassword: function() {
-      if (this.passwordField === "password") {
-        this.passwordField = "text";
-      } else {
-        this.passwordField = "password";
-      }
+      async onLogin() {
+        try {
+          await this.handleLogin({ payload: this.login })
+          this.$router.push("/")
+          this.clearError()
+        } catch (error) {
+          console.log(error)
+          this.$toast.error(error.message)
+        }
+      },
     },
-    async onLogin() {
-      try {
-        await this.handleLogin({ payload: this.login });
-        this.$router.push("/");
-        this.clearError();
-      } catch (error) {
-        console.log(error);
-        this.$toast.error(error.message);
-      }
-    },
-  },
-};
+  }
 </script>
 
 <style scoped>
-.background-login {
-  background-image: url("~@/assets/login_background1.png");
-  background-position: center center;
-  overflow: hidden;
-}
+  .background-login {
+    background-image: url("~@/assets/login_background1.png");
+    background-position: center center;
+    overflow: hidden;
+  }
 </style>
