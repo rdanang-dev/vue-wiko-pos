@@ -16,7 +16,6 @@
           <hr />
         </div>
       </div>
-      <!-- Top Menu -->
 
       <!-- Chart -->
       <div class="flex justify-center pb-1 flex-grow h-full">
@@ -46,7 +45,6 @@
           </div>
         </div>
       </div>
-      <!-- Chart -->
 
       <div class="flex justify-center py-1 flex-grow h-full">
         <div class="p-5 bg-white rounded-xl w-full">
@@ -97,7 +95,6 @@
               @change="onDateChange"
             />
           </div>
-          <!-- Search Perpage and Date Picker -->
 
           <!-- Table Data -->
           <div class="pt-4">
@@ -260,7 +257,6 @@
           </div>
         </template>
       </t-modal>
-      <!-- Export Modal -->
 
       <!-- Receipt Modal -->
       <t-modal class="no-print" v-model="receiptModal" hideCloseButton:true>
@@ -553,7 +549,7 @@
         "monthlyReport",
         "yearlyReport",
         "exportData",
-        "exportReport",
+        "exportCustom",
       ]),
       checkDate() {
         return this.date
@@ -607,7 +603,7 @@
         "getMonthlyReport",
         "getYearlyReport",
         "fillExportData",
-        "getExportReport",
+        "getExportCustom",
       ]),
 
       async fetchData() {
@@ -670,9 +666,6 @@
         this.transDetails = detail
         this.cashierName = ename
         this.orderDate = odate
-        this.total = total
-        this.cash = cash
-        this.change = change
         this.totalItem = 0
         this.subTotal = 0
         this.subSubTotal = 0
@@ -684,6 +677,9 @@
         this.discount = this.transDetails.discount
         this.discountPercentage = dpercent
         this.discountValue = dvalue
+        this.total = total
+        this.cash = cash
+        this.change = change
         this.receiptModal = true
       },
 
@@ -720,17 +716,17 @@
         if (this.bindExportData.date) {
           this.bindExportData.label = "Custom"
           if (this.bindExportData.date.length == 1) {
-            await this.getExportReport({
+            await this.getExportCustom({
               fromdate: this.bindExportData.fromDate,
             })
           }
           if (this.bindExportData.date.length > 1) {
-            await this.getExportReport({
+            await this.getExportCustom({
               fromdate: this.bindExportData.fromDate,
               todate: this.bindExportData.toDate,
             })
           }
-          this.bindExportData.data = this.exportReport.data
+          this.bindExportData.data = this.exportCustom.data
         }
         await this.fillExportData({
           data: this.bindExportData,
